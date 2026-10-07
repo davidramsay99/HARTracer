@@ -493,6 +493,43 @@ def secrets_fixture():
     return log([e1, e2, e3, e4, e5, e6, e7, e8], pages=pages)
 
 
+def saz_fixture(path):
+    """A Fiddler Session Archive with an HTTPS JSON call (chunked + gzip), a form POST, a CONNECT, and a session without response."""
+    import zipfile
+
+    def meta(sid, begin, https=False, comment=None):
+        flags = ['<SessionFlag N="x-hostip" V="192.0.2.%d" />' % (10 + sid), '<SessionFlag N="x-clientport" V="5%04d" />' % sid,
+                 '<SessionFlag N="x-processinfo" V="msedge:4242" />']
+        if https:
+            flags.append('<SessionFlag N="x-https" V="true" />')
+        if comment:
+            flags.append('<SessionFlag N="ui-comments" V="%s" />' % comment)
+        return ('<?xml version="1.0" encoding="utf-8"?>\n<Session SID="%d" BitFlags="0">'
+                '<SessionTimers ClientConnected="2026-10-07T10:00:0%d.0000000+00:00" ClientBeginRequest="2026-10-07T10:00:0%d.1000000+00:00" '
+                'FiddlerBeginRequest="2026-10-07T10:00:0%d.1100000+00:00" ServerConnected="2026-10-07T10:00:0%d.1200000+00:00" '
+                'ServerGotRequest="2026-10-07T10:00:0%d.1300000+00:00" ServerBeginResponse="2026-10-07T10:00:0%d.2300000+00:00" '
+                'ServerDoneResponse="2026-10-07T10:00:0%d.2500000+00:00" DNSTime="4" TCPConnectTime="20" HTTPSHandshakeTime="%d" />'
+                '<SessionFlags>%s</SessionFlags></Session>') % (sid, begin, begin, begin, begin, begin, begin, begin, 15 if https else 0, "".join(flags))
+
+    body = b'{"saz":"chunked gzip json","ok":true}'
+    gz = gzip.compress(body, mtime=0)
+    chunked = b"%x\r\n" % 10 + gz[:10] + b"\r\n" + b"%x\r\n" % (len(gz) - 10) + gz[10:] + b"\r\n0\r\n\r\n"
+    with zipfile.ZipFile(path, "w", zipfile.ZIP_DEFLATED) as z:
+        z.writestr("[Content_Types].xml", '<?xml version="1.0" encoding="utf-8"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="txt" ContentType="text/plain" /></Types>')
+        z.writestr("_index.htm", "<html><body>synthetic</body></html>")
+        z.writestr("raw/1_c.txt", b"CONNECT api.northwind.test:443 HTTP/1.1\r\nHost: api.northwind.test:443\r\n\r\n")
+        z.writestr("raw/1_s.txt", b"HTTP/1.1 200 Connection Established\r\nFiddlerGateway: Direct\r\n\r\n")
+        z.writestr("raw/1_m.xml", meta(1, 1, https=True))
+        z.writestr("raw/2_c.txt", b"GET https://api.northwind.test/v1/orders?id=42 HTTP/1.1\r\nHost: api.northwind.test\r\nAccept: application/json\r\nCookie: nw=1\r\n\r\n")
+        z.writestr("raw/2_s.txt", b"HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nContent-Encoding: gzip\r\nTransfer-Encoding: chunked\r\n\r\n" + chunked)
+        z.writestr("raw/2_m.xml", meta(2, 2, https=True, comment="slow order lookup"))
+        z.writestr("raw/3_c.txt", b"POST http://legacy.northwind.test/login HTTP/1.1\r\nHost: legacy.northwind.test\r\nContent-Type: application/x-www-form-urlencoded\r\nContent-Length: 19\r\n\r\nuser=a&remember=yes")
+        z.writestr("raw/3_s.txt", b"HTTP/1.1 302 Found\r\nLocation: /home\r\nSet-Cookie: sid=abc; Path=/; HttpOnly\r\nContent-Length: 0\r\n\r\n")
+        z.writestr("raw/3_m.xml", meta(3, 3))
+        z.writestr("raw/4_c.txt", b"GET http://down.northwind.test/ HTTP/1.1\r\nHost: down.northwind.test\r\n\r\n")
+        z.writestr("raw/4_m.xml", meta(4, 4))
+
+
 def main():
     os.makedirs(OUT, exist_ok=True)
     chromium_bytes = write("chromium.har", chromium())
@@ -546,7 +583,10 @@ def main():
                    "path": "$.log.entries[2].response.status"}, f, indent=2)
     with open(os.path.join(OUT, "truncated.expected.json"), "w") as f:
         json.dump({"recovered": 4, "length": len(truncated)}, f, indent=2)
-    print("fixtures written to", OUT)
+    saz_dir = os.path.join("tests", "fixtures", "saz")
+    os.makedirs(saz_dir, exist_ok=True)
+    saz_fixture(os.path.join(saz_dir, "sample.saz"))
+    print("fixtures written to", OUT, "and", saz_dir)
 
 
 if __name__ == "__main__":
