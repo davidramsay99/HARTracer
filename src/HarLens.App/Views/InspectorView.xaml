@@ -1,0 +1,210 @@
+<UserControl x:Class="HarLens.App.Views.InspectorView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:views="clr-namespace:HarLens.App.Views"
+             xmlns:controls="clr-namespace:HarLens.App.Controls">
+  <UserControl.Resources>
+    <!-- General block above the headers: URL, method, status, remote address, HTTP version, connection ID (SPEC 6.3). -->
+    <DataTemplate x:Key="GeneralBlock">
+      <ItemsControl ItemsSource="{Binding DataContext.General, RelativeSource={RelativeSource AncestorType=UserControl}}" Margin="0,0,0,6">
+        <ItemsControl.ItemTemplate>
+          <DataTemplate>
+            <Grid>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="130" />
+                <ColumnDefinition Width="*" />
+              </Grid.ColumnDefinitions>
+              <TextBlock Text="{Binding Label}" Foreground="{DynamicResource MutedForeground}" />
+              <TextBox Grid.Column="1" Text="{Binding Value, Mode=OneWay}" IsReadOnly="True" BorderThickness="0" Background="Transparent"
+                       Padding="0" MinHeight="0" TextWrapping="Wrap" Style="{StaticResource MonoTextBox}" />
+            </Grid>
+          </DataTemplate>
+        </ItemsControl.ItemTemplate>
+      </ItemsControl>
+    </DataTemplate>
+
+    <ContextMenu x:Key="HeaderMenu" x:Shared="False">
+      <MenuItem Header="Copy Name: Value" Command="{Binding PlacementTarget.Tag.CopyHeaderCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                CommandParameter="{Binding PlacementTarget.SelectedItem, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
+      <MenuItem Header="Copy Name" Command="{Binding PlacementTarget.Tag.CopyHeaderNameCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                CommandParameter="{Binding PlacementTarget.SelectedItem, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
+      <MenuItem Header="Copy Value" Command="{Binding PlacementTarget.Tag.CopyHeaderValueCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                CommandParameter="{Binding PlacementTarget.SelectedItem, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
+    </ContextMenu>
+
+    <DataTemplate x:Key="TimingTab">
+      <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+        <StackPanel Margin="8" DataContext="{Binding DataContext, RelativeSource={RelativeSource AncestorType=UserControl}}">
+          <TextBlock Text="{Binding TimingSummary}" FontWeight="SemiBold" Margin="0,0,0,8" />
+          <ItemsControl ItemsSource="{Binding Timings}">
+            <ItemsControl.ItemTemplate>
+              <DataTemplate>
+                <Grid Margin="0,2" ToolTip="{Binding Explanation}">
+                  <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="80" />
+                    <ColumnDefinition Width="100" />
+                    <ColumnDefinition Width="370" />
+                  </Grid.ColumnDefinitions>
+                  <TextBlock Text="{Binding Phase}" />
+                  <TextBlock Grid.Column="1" Text="{Binding Value}" Style="{StaticResource MonoText}" />
+                  <Canvas Grid.Column="2" Height="14">
+                    <Rectangle Canvas.Left="{Binding BarLeft}" Width="{Binding BarWidth}" Height="14"
+                               Fill="{Binding BrushKey, Converter={StaticResource ResourceBrush}}" />
+                  </Canvas>
+                </Grid>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+          <TextBlock Style="{StaticResource SectionHeader}" Text="Phases" />
+          <ItemsControl ItemsSource="{Binding Timings}">
+            <ItemsControl.ItemTemplate>
+              <DataTemplate>
+                <TextBlock TextWrapping="Wrap" Margin="0,1" MaxWidth="560" HorizontalAlignment="Left">
+                  <Run Text="{Binding Phase, Mode=OneWay}" FontWeight="SemiBold" /><Run Text=": " /><Run Text="{Binding Explanation, Mode=OneWay}" />
+                </TextBlock>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+          <TextBlock Margin="0,8,0,0" Foreground="{DynamicResource MutedForeground}" TextWrapping="Wrap" MaxWidth="560" HorizontalAlignment="Left"
+                     Text="HAR timings of -1 mean 'not applicable' and are excluded from sums. 'ssl' is part of 'connect' and is not counted twice." />
+        </StackPanel>
+      </ScrollViewer>
+    </DataTemplate>
+  </UserControl.Resources>
+
+  <Grid x:Name="Root">
+    <TextBlock Text="Select an entry to inspect it." HorizontalAlignment="Center" VerticalAlignment="Center"
+               Foreground="{DynamicResource MutedForeground}" Visibility="{Binding HasEntry, Converter={StaticResource InverseBoolToVisibility}}" />
+
+    <Grid x:Name="Panes" Visibility="{Binding HasEntry, Converter={StaticResource BoolToVisibility}}">
+      <Grid.RowDefinitions>
+        <RowDefinition x:Name="RequestRow" Height="*" MinHeight="60" />
+        <RowDefinition Height="5" />
+        <RowDefinition x:Name="ResponseRow" Height="*" MinHeight="60" />
+      </Grid.RowDefinitions>
+
+      <!-- Request side -->
+      <TabControl x:Name="RequestTabs" Grid.Row="0" AutomationProperties.Name="Request inspector">
+        <TabItem Header="Request Headers" x:Name="RequestHeadersTab">
+          <DockPanel Margin="4">
+            <ContentControl DockPanel.Dock="Top" ContentTemplate="{StaticResource GeneralBlock}" Content="{Binding}" />
+            <TextBox DockPanel.Dock="Top" Text="{Binding Request.HeaderFilter, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,4"
+                     AutomationProperties.Name="Find in request headers" ToolTip="Find in headers" />
+            <DataGrid x:Name="RequestHeadersGrid" Style="{StaticResource CompactGrid}" ItemsSource="{Binding Request.FilteredHeaders}"
+                      Tag="{Binding}" ContextMenu="{StaticResource HeaderMenu}" SelectionMode="Single" AutomationProperties.Name="Request headers">
+              <DataGrid.Columns>
+                <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="200" />
+                <DataGridTextColumn Header="Value" Binding="{Binding Value}" Width="*" />
+              </DataGrid.Columns>
+            </DataGrid>
+          </DockPanel>
+        </TabItem>
+        <TabItem Header="Query">
+          <DataGrid Style="{StaticResource CompactGrid}" ItemsSource="{Binding Request.Query}" Margin="4" AutomationProperties.Name="Query string">
+            <DataGrid.Columns>
+              <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="200" />
+              <DataGridTextColumn Header="Value" Binding="{Binding Value}" Width="*" />
+            </DataGrid.Columns>
+          </DataGrid>
+        </TabItem>
+        <TabItem Header="Cookies">
+          <DataGrid Style="{StaticResource CompactGrid}" ItemsSource="{Binding Request.Cookies}" Margin="4" AutomationProperties.Name="Request cookies">
+            <DataGrid.Columns>
+              <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="180" />
+              <DataGridTextColumn Header="Value" Binding="{Binding Value}" Width="*" />
+            </DataGrid.Columns>
+          </DataGrid>
+        </TabItem>
+        <TabItem Header="Body" x:Name="RequestBodyTab">
+          <views:BodyView x:Name="RequestBodyView" DataContext="{Binding Request.Body}" />
+        </TabItem>
+        <TabItem Header="Raw" x:Name="RequestRawTab">
+          <controls:CodeEditor Code="{Binding Request.RawText}" />
+        </TabItem>
+        <TabItem Header="Timing" ContentTemplate="{StaticResource TimingTab}" Content="{Binding}" />
+        <TabItem Header="Initiator" Visibility="{Binding HasInitiator, Converter={StaticResource BoolToVisibility}}">
+          <controls:CodeEditor Code="{Binding InitiatorText}" Syntax="Json" />
+        </TabItem>
+        <TabItem Header="Raw HAR Entry">
+          <controls:CodeEditor Code="{Binding RawEntryJson}" Syntax="Json" />
+        </TabItem>
+        <TabItem Header="Notes">
+          <StackPanel Margin="8">
+            <TextBlock Text="Comment (saved to the entry's HAR 'comment' field)" Margin="0,0,0,4" />
+            <TextBox Text="{Binding Comment, UpdateSourceTrigger=LostFocus}" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="70"
+                     AutomationProperties.Name="Entry comment" />
+            <TextBlock Text="Color mark (saved under '_harlens')" Margin="0,10,0,4" />
+            <ComboBox ItemsSource="{Binding ColorChoices}" SelectedItem="{Binding ColorMark, FallbackValue=none, TargetNullValue=none}"
+                      Width="160" HorizontalAlignment="Left" AutomationProperties.Name="Color mark" />
+          </StackPanel>
+        </TabItem>
+      </TabControl>
+
+      <GridSplitter Grid.Row="1" Height="5" HorizontalAlignment="Stretch" ResizeDirection="Rows" ResizeBehavior="PreviousAndNext"
+                    DragCompleted="OnSplitterDragCompleted" AutomationProperties.Name="Resize request and response" />
+
+      <!-- Response side -->
+      <TabControl x:Name="ResponseTabs" Grid.Row="2" AutomationProperties.Name="Response inspector">
+        <TabItem Header="Response Headers" x:Name="ResponseHeadersTab">
+          <DockPanel Margin="4">
+            <TextBox DockPanel.Dock="Top" Text="{Binding Response.HeaderFilter, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,4"
+                     AutomationProperties.Name="Find in response headers" ToolTip="Find in headers" />
+            <DataGrid x:Name="ResponseHeadersGrid" Style="{StaticResource CompactGrid}" ItemsSource="{Binding Response.FilteredHeaders}"
+                      Tag="{Binding}" ContextMenu="{StaticResource HeaderMenu}" SelectionMode="Single" AutomationProperties.Name="Response headers">
+              <DataGrid.Columns>
+                <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="200" />
+                <DataGridTextColumn Header="Value" Binding="{Binding Value}" Width="*" />
+              </DataGrid.Columns>
+            </DataGrid>
+          </DockPanel>
+        </TabItem>
+        <TabItem Header="Cookies">
+          <DataGrid Style="{StaticResource CompactGrid}" ItemsSource="{Binding Response.Cookies}" Margin="4" AutomationProperties.Name="Response cookies">
+            <DataGrid.Columns>
+              <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="140" />
+              <DataGridTextColumn Header="Value" Binding="{Binding Value}" Width="*" />
+              <DataGridTextColumn Header="Domain" Binding="{Binding Domain}" Width="120" />
+              <DataGridTextColumn Header="Path" Binding="{Binding Path}" Width="70" />
+              <DataGridTextColumn Header="Expires" Binding="{Binding Expires}" Width="150" />
+              <DataGridTextColumn Header="Max-Age" Binding="{Binding MaxAge}" Width="70" />
+              <DataGridCheckBoxColumn Header="HttpOnly" Binding="{Binding HttpOnly, Mode=OneWay}" Width="70" />
+              <DataGridCheckBoxColumn Header="Secure" Binding="{Binding Secure, Mode=OneWay}" Width="60" />
+              <DataGridTextColumn Header="SameSite" Binding="{Binding SameSite}" Width="70" />
+              <DataGridCheckBoxColumn Header="Partitioned" Binding="{Binding Partitioned, Mode=OneWay}" Width="80" />
+              <DataGridTextColumn Header="Other" Binding="{Binding Other}" Width="120" />
+            </DataGrid.Columns>
+          </DataGrid>
+        </TabItem>
+        <TabItem Header="Body" x:Name="ResponseBodyTab">
+          <views:BodyView x:Name="ResponseBodyView" DataContext="{Binding Response.Body}" />
+        </TabItem>
+        <TabItem Header="Raw" x:Name="ResponseRawTab">
+          <controls:CodeEditor Code="{Binding Response.RawText}" />
+        </TabItem>
+        <TabItem Header="Timing" ContentTemplate="{StaticResource TimingTab}" Content="{Binding}" />
+        <TabItem Header="WebSocket" Visibility="{Binding HasWebSocket, Converter={StaticResource BoolToVisibility}}">
+          <DataGrid Style="{StaticResource CompactGrid}" ItemsSource="{Binding WebSocketFrames}" Margin="4" AutomationProperties.Name="WebSocket frames">
+            <DataGrid.Columns>
+              <DataGridTextColumn Header="Dir" Width="50" Binding="{Binding Type}" />
+              <DataGridTextColumn Header="Time" Width="110" Binding="{Binding Timestamp, StringFormat=HH:mm:ss.fff}" />
+              <DataGridTextColumn Header="Opcode" Width="70" Binding="{Binding OpcodeName}" />
+              <DataGridTextColumn Header="Data" Width="*" Binding="{Binding Data}" />
+            </DataGrid.Columns>
+          </DataGrid>
+        </TabItem>
+        <TabItem Header="Cache" Visibility="{Binding CacheText, Converter={StaticResource NullToVisibility}}">
+          <controls:CodeEditor Code="{Binding CacheText}" Syntax="Json" />
+        </TabItem>
+        <TabItem Header="TLS" Visibility="{Binding Response.TlsText, Converter={StaticResource NullToVisibility}}">
+          <controls:CodeEditor Code="{Binding Response.TlsText}" Syntax="Json" />
+        </TabItem>
+        <TabItem Header="Replay" Visibility="{Binding IsComposerEntry, Converter={StaticResource BoolToVisibility}}">
+          <StackPanel Margin="8">
+            <TextBlock TextWrapping="Wrap" Text="This entry was sent from the composer. The Raw tabs show the exact bytes sent and received." />
+            <Button Content="Diff Against Original" Command="{Binding DiffAgainstOriginCommand}" HorizontalAlignment="Left" Margin="0,8,0,0" />
+          </StackPanel>
+        </TabItem>
+      </TabControl>
+    </Grid>
+  </Grid>
+</UserControl>
