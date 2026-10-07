@@ -222,7 +222,7 @@ public sealed class EntryDetail : IDisposable
         _ => value.GetRawText(),
     };
 
-    internal static JsonElement? Child(JsonElement? parent, string name) =>
+    public static JsonElement? Child(JsonElement? parent, string name) =>
         parent is { ValueKind: JsonValueKind.Object } p && p.TryGetProperty(name, out var v) ? v : null;
 
     private static string? Str(JsonElement? parent, string name) =>
