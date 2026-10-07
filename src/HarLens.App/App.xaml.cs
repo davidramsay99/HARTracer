@@ -38,12 +38,8 @@ public partial class App : Application
         };
 
         var settings = SettingsStore.Load(paths.SettingsFile);
-        AppServices.Initialize(paths, settings);
+        InitializeServices(this, paths, settings);
         AppLog.Info($"HarLens started (portable: {paths.IsPortable}, offline mode: {settings.OfflineMode})");
-
-        ThemeManager.Initialize(settings.Theme);
-        Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri("pack://application:,,,/HarLens;component/Themes/Common.xaml") });
-        Resources["MonoFontSize"] = settings.MonoFontSize;
 
         var commandLine = CommandLine.Parse(e.Args);
         _main = new MainViewModel();
@@ -57,6 +53,15 @@ public partial class App : Application
         }
 
         _ = OpenStartupFilesAsync(commandLine);
+    }
+
+    /// <summary>Services, theme and shared resources. Also used by the UI smoke tests.</summary>
+    public static void InitializeServices(Application app, AppPaths paths, AppSettings settings)
+    {
+        AppServices.Initialize(paths, settings);
+        ThemeManager.Initialize(settings.Theme);
+        app.Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri("pack://application:,,,/HarLens;component/Themes/Common.xaml") });
+        app.Resources["MonoFontSize"] = settings.MonoFontSize;
     }
 
     private async Task OpenStartupFilesAsync(CommandLine commandLine)
