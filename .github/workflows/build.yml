@@ -48,6 +48,37 @@ jobs:
           name: HarLens-zips
           path: artifacts/*.zip
 
+      - name: Installers
+        shell: pwsh
+        run: |
+          choco install innosetup -y --no-progress
+          $iscc = Get-ChildItem "${env:ProgramFiles(x86)}\Inno Setup*\ISCC.exe", "$env:ProgramFiles\Inno Setup*\ISCC.exe" -ErrorAction SilentlyContinue | Select-Object -First 1
+          if (-not $iscc) { throw "ISCC.exe not found" }
+          $version = ([xml](Get-Content Directory.Build.props)).Project.PropertyGroup.Version | Where-Object { $_ } | Select-Object -First 1
+          foreach ($arch in "x64", "arm64") {
+            & $iscc.FullName "/DArch=$arch" "/DAppVersion=$version" installer\HarLens.iss
+            if ($LASTEXITCODE -ne 0) { throw "installer for $arch failed" }
+          }
+
+      - name: Installer install and uninstall check
+        shell: pwsh
+        run: |
+          $setup = Get-ChildItem artifacts\*-x64-setup.exe | Select-Object -First 1
+          Start-Process $setup.FullName -ArgumentList "/VERYSILENT", "/SUPPRESSMSGBOXES", "/NORESTART", "/CURRENTUSER", "/TASKS=harfiles" -Wait
+          $exe = "$env:LOCALAPPDATA\Programs\HarLens\HarLens.exe"
+          if (-not (Test-Path $exe)) { throw "HarLens.exe was not installed to $exe" }
+          if (-not (Test-Path "HKCU:\Software\Classes\HarLens.har\shell\open\command")) { throw ".har association missing" }
+          Start-Process "$env:LOCALAPPDATA\Programs\HarLens\unins000.exe" -ArgumentList "/VERYSILENT", "/SUPPRESSMSGBOXES", "/NORESTART" -Wait
+          # The uninstaller hands off to a copy of itself; wait for it to finish.
+          for ($i = 0; $i -lt 60 -and (Test-Path $exe); $i++) { Start-Sleep -Seconds 1 }
+          if (Test-Path $exe) { throw "uninstall left HarLens.exe behind" }
+          if (Test-Path "HKCU:\Software\Classes\HarLens.har") { throw "uninstall left the .har association behind" }
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: HarLens-installers
+          path: artifacts/*-setup.exe
+
       - uses: actions/upload-artifact@v4
         if: always()
         with:
