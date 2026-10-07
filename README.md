@@ -123,6 +123,18 @@ Not yet measured: cold start to an interactive window, and scrolling 200,000 row
 
 ## Open questions
 
-1. **License**: the placeholder reserves all rights.
-2. **h2c**: offer prior-knowledge HTTP/2 over plain http, or keep the HTTP/1.1 fallback?
-3. **Password-protected SAZ**: support needs a zip AES decoder, a new dependency.
+1. **h2c**: offer prior-knowledge HTTP/2 over plain http, or keep the HTTP/1.1 fallback?
+2. **Password-protected SAZ**: support needs a zip AES decoder, a new dependency.
+
+## License
+
+Copyright (C) 2026 davidramsay99
+
+HarLens is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation, version 3 or (at your option) any later version. It is distributed in
+the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE. See [LICENSE](LICENSE) for the full text.
+
+Bundled third-party components keep their own permissive licenses (MIT, Apache-2.0, BSD, zlib, Unicode), listed in
+[THIRD-PARTY-NOTICES.txt](THIRD-PARTY-NOTICES.txt); all are compatible with GPL-3.0.
+
