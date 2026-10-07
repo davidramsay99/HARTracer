@@ -165,13 +165,18 @@ public sealed class MemoryHarSource : HarSource
     }
 
     /// <summary>Copies a whole stream into the source, for example a gzip decompression stream.</summary>
-    public void AppendFrom(Stream stream, CancellationToken cancellationToken = default)
+    public void AppendFrom(Stream stream, CancellationToken cancellationToken = default, long maxBytes = long.MaxValue)
     {
         var buffer = new byte[1024 * 1024];
         int read;
         while ((read = stream.Read(buffer, 0, buffer.Length)) > 0)
         {
             cancellationToken.ThrowIfCancellationRequested();
+            if (Length + read > maxBytes)
+            {
+                throw new InvalidDataException($"The file expands beyond {maxBytes / (1024 * 1024 * 1024)} GB when decompressed.");
+            }
+
             Append(buffer.AsSpan(0, read));
         }
     }

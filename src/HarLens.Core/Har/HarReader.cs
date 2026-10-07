@@ -7,6 +7,9 @@ namespace HarLens.Core.Har;
 /// <summary>Opens HAR 1.1 and 1.2 files (.har, .json, .har.gz) into an index.</summary>
 public static class HarReader
 {
+    /// <summary>A compressed HAR is held in memory; this caps a decompression bomb.</summary>
+    public const long MaxDecompressedBytes = 4L * 1024 * 1024 * 1024;
+
     /// <summary>Opens a file. Gzip content is detected by its magic bytes and decompressed in memory; no temporary file is written.</summary>
     public static HarLoadResult Load(string path, IProgress<HarLoadProgress>? progress = null, CancellationToken cancellationToken = default)
     {
@@ -15,7 +18,7 @@ public static class HarReader
         {
             source = OpenSource(path, cancellationToken);
         }
-        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or InvalidDataException or NotSupportedException or ArgumentException)
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or InvalidDataException or NotSupportedException or ArgumentException or OverflowException)
         {
             var failed = new HarLoadResult { FatalError = $"Cannot read '{path}': {ex.Message}" };
             return failed;
@@ -53,7 +56,7 @@ public static class HarReader
             var memory = new MemoryHarSource(name, full) { WasCompressed = true };
             using var file = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.Read);
             using var gzip = new GZipStream(file, CompressionMode.Decompress);
-            memory.AppendFrom(gzip, cancellationToken);
+            memory.AppendFrom(gzip, cancellationToken, MaxDecompressedBytes);
             return memory;
         }
 

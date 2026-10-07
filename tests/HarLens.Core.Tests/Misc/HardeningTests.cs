@@ -77,3 +77,35 @@ public sealed class HardeningTests
         }
     }
 }
+
+public sealed class SanitizerContainerTests
+{
+    [Fact]
+    public void Sanitized_export_cleans_log_fields_and_drops_extras_and_wire_bytes()
+    {
+        const string har = """
+            {"log":{"version":"1.2","creator":{"name":"t","version":"1","comment":"Bearer creator-secret-0004"},
+              "_meta":{"note":"access_token=meta-secret-0005"},
+              "entries":[{
+              "startedDateTime":"2026-01-01T00:00:00Z","time":1,
+              "request":{"method":"GET","url":"https://x.test/","httpVersion":"HTTP/1.1","cookies":[],"headers":[],"queryString":[],"headersSize":-1,"bodySize":0},
+              "response":{"status":200,"statusText":"OK","httpVersion":"HTTP/1.1","cookies":[],"headers":[],
+                "content":{"size":0,"mimeType":"text/plain"},"redirectURL":"","headersSize":-1,"bodySize":0},
+              "cache":{},"timings":{"send":0,"wait":1,"receive":0},
+              "_harlens":{"wire":{"sent":"d2lyZS1zZWNyZXQtMDAwNg=="}}}],
+              "entries":[{"leaked":"duplicate-secret-0007"}]},
+             "extra":{"token":"root-secret-0008"}}
+            """;
+        using var session = HarSession.FromDocument(HarReader.LoadBytes(Encoding.UTF8.GetBytes(har), "t").Document!);
+        var path = Path.Combine(FixturePaths.Generated, $"containers-{Guid.NewGuid():N}.har");
+        new Sanitizer(new SanitizeOptions()).ExportToFile(session, path);
+        var output = File.ReadAllText(path);
+        File.Delete(path);
+        foreach (var secret in new[] { "creator-secret-0004", "meta-secret-0005", "d2lyZS1zZWNyZXQtMDAwNg", "duplicate-secret-0007", "root-secret-0008" })
+        {
+            Assert.DoesNotContain(secret, output, StringComparison.Ordinal);
+        }
+
+        Assert.True(HarReader.LoadBytes(Encoding.UTF8.GetBytes(output), "out").Success);
+    }
+}

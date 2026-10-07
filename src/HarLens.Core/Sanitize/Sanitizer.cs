@@ -118,6 +118,7 @@ public sealed class Sanitizer
                 return TransformEntry(entry, raw);
             },
             LogPropertyTransform = TransformLogProperty,
+            DropUnrecognizedContainers = true,
         });
         var result = _result;
         _result = null;
@@ -217,6 +218,12 @@ public sealed class Sanitizer
             }
         }
 
+        // Recorded composer wire bytes hold every header in base64; they are not exported.
+        if (node["_harlens"] is JsonObject vendor)
+        {
+            vendor.Remove("wire");
+        }
+
         // Every remaining string, vendor fields included (_initiator URLs, WebSocket frames, comments).
         SweepStrings(node, "", ctx);
         return _collecting ? null : JsonSerializer.SerializeToUtf8Bytes(node, HarWriter.NodeOptions);
@@ -224,7 +231,7 @@ public sealed class Sanitizer
 
     private byte[]? TransformLogProperty(string name, byte[] raw)
     {
-        if (name is not ("pages" or "page" or "comment"))
+        if (name == "version")
         {
             return null;
         }

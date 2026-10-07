@@ -45,9 +45,12 @@ internal static class RedirectPolicy
 
     public static bool IsFollowable(int status) => status is 300 or 301 or 302 or 303 or 307 or 308;
 
+    /// <summary>Headers dropped when a redirect leaves the original origin. Host is included, as curl drops a custom Host.</summary>
     public static bool IsCredentialHeader(string name) =>
         name.Equals("Authorization", StringComparison.OrdinalIgnoreCase) ||
-        name.Equals("Cookie", StringComparison.OrdinalIgnoreCase);
+        name.Equals("Proxy-Authorization", StringComparison.OrdinalIgnoreCase) ||
+        name.Equals("Cookie", StringComparison.OrdinalIgnoreCase) ||
+        name.Equals("Host", StringComparison.OrdinalIgnoreCase);
 
     /// <summary>Builds the next hop. Credentials are compared against the original URL, like curl without --location-trusted.</summary>
     public static HopRequest Next(HopRequest current, Uri originalUri, int status, string location)
@@ -91,7 +94,7 @@ internal static class RedirectPolicy
         bool strip = !SameOrigin(originalUri, target);
         if (strip && headers.Any(h => IsCredentialHeader(h.Name)))
         {
-            notices.Add("Authorization and Cookie headers were not sent: the redirect leaves the original host (curl without --location-trusted)");
+            notices.Add("Authorization, Proxy-Authorization, Cookie and Host headers were not sent: the redirect leaves the original host (curl without --location-trusted)");
         }
 
         return new HopRequest(method, target, headers, body, current.Version, strip, notices);

@@ -377,12 +377,29 @@ internal sealed partial class CurlCommandInterpreter
                 break;
             case CurlOptionKind.Proxy:
                 _proxy = arg.Length == 0 ? null : SchemePrefix().IsMatch(arg) ? arg : "http://" + arg;
+                if (_proxy is not null)
+                {
+                    _warnings.Add($"'{written}': requests go through the proxy {_proxy}, not directly to the URL's host.");
+                }
+
                 break;
             case CurlOptionKind.Resolve:
+                var resolved = _overrides.Count;
                 ParseResolve(written, arg);
+                if (_overrides.Count > resolved)
+                {
+                    _warnings.Add($"'{written} {arg}': the connection goes to the address given here, not the one DNS returns for the URL's host.");
+                }
+
                 break;
             case CurlOptionKind.ConnectTo:
+                var connected = _overrides.Count;
                 ParseConnectTo(written, arg);
+                if (_overrides.Count > connected)
+                {
+                    _warnings.Add($"'{written} {arg}': the connection goes to the host given here, not to the URL's host.");
+                }
+
                 break;
             case CurlOptionKind.Http10:
                 _warnings.Add($"'{written}' (HTTP/1.0) is not supported; the default HTTP version is used.");
