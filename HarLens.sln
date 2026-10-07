@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HarLens.Net.Tests", "tests\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HarLens.Isolation.Tests", "tests\HarLens.Isolation.Tests\HarLens.Isolation.Tests.csproj", "{B0C347C8-5A70-43FA-A412-9CFE04090FDD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HarLens.App.Tests", "tests\HarLens.App.Tests\HarLens.App.Tests.csproj", "{DAF00197-E226-4FBD-96A1-3FA51191DDB6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -101,6 +103,18 @@ Global
 		{B0C347C8-5A70-43FA-A412-9CFE04090FDD}.Release|x64.Build.0 = Release|Any CPU
 		{B0C347C8-5A70-43FA-A412-9CFE04090FDD}.Release|x86.ActiveCfg = Release|Any CPU
 		{B0C347C8-5A70-43FA-A412-9CFE04090FDD}.Release|x86.Build.0 = Release|Any CPU
+		{DAF00197-E226-4FBD-96A1-3FA51191DDB6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DAF00197-E226-4FBD-96A1-3FA51191DDB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DAF00197-E226-4FBD-96A1-3FA51191DDB6}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{DAF00197-E226-4FBD-96A1-3FA51191DDB6}.Debug|x64.Build.0 = Debug|Any CPU
+		{DAF00197-E226-4FBD-96A1-3FA51191DDB6}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{DAF00197-E226-4FBD-96A1-3FA51191DDB6}.Debug|x86.Build.0 = Debug|Any CPU
+		{DAF00197-E226-4FBD-96A1-3FA51191DDB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DAF00197-E226-4FBD-96A1-3FA51191DDB6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DAF00197-E226-4FBD-96A1-3FA51191DDB6}.Release|x64.ActiveCfg = Release|Any CPU
+		{DAF00197-E226-4FBD-96A1-3FA51191DDB6}.Release|x64.Build.0 = Release|Any CPU
+		{DAF00197-E226-4FBD-96A1-3FA51191DDB6}.Release|x86.ActiveCfg = Release|Any CPU
+		{DAF00197-E226-4FBD-96A1-3FA51191DDB6}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -112,5 +126,6 @@ Global
 		{B4F6E390-2A13-46F5-8A37-8483719CD7EF} = {0AB3BF05-4346-4AA6-1389-037BE0695223}
 		{239E03DD-03DB-49AC-A14C-8DA401B9A83E} = {0AB3BF05-4346-4AA6-1389-037BE0695223}
 		{B0C347C8-5A70-43FA-A412-9CFE04090FDD} = {0AB3BF05-4346-4AA6-1389-037BE0695223}
+		{DAF00197-E226-4FBD-96A1-3FA51191DDB6} = {0AB3BF05-4346-4AA6-1389-037BE0695223}
 	EndGlobalSection
 EndGlobal
