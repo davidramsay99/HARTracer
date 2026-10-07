@@ -4,7 +4,7 @@ using Microsoft.Win32;
 
 namespace HarLens.App.Services;
 
-/// <summary>Thin wrappers over WPF dialogs and the clipboard so view models stay testable in spirit and readable.</summary>
+/// <summary>Thin wrappers over WPF dialogs and the clipboard so view models stay short and readable.</summary>
 public static class Ui
 {
     public const string HarFilter = "HAR files (*.har;*.json;*.har.gz)|*.har;*.json;*.har.gz;*.gz|All files (*.*)|*.*";
