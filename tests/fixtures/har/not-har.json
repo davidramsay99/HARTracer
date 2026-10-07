@@ -1,0 +1,11 @@
+{
+  "name": "not a har",
+  "items": [
+    1,
+    2,
+    3
+  ],
+  "nested": {
+    "log": "this is a string"
+  }
+}

@@ -10,3 +10,4 @@ nuget-offline/
 TestResults/
 tests/fixtures/generated/
 *.binlog
+.claude/worktrees/
