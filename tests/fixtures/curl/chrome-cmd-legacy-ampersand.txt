@@ -1,0 +1,18 @@
+curl ^"https://shop.example.com/api/v2/cart?session=abc123&currency=EUR&items^\[0^\]=42^" ^
+  -H ^"accept: application/json, text/plain, */*^" ^
+  -H ^"accept-language: en-GB,en;q=0.9,de;q=0.8^" ^
+  -H ^"cache-control: no-cache^" ^
+  -b ^"sid=s^%^3A9f8e7d.Xy; theme=dark; consent=^{^\^"ads^\^":false^}^" ^
+  -H ^"pragma: no-cache^" ^
+  -H ^"priority: u=1, i^" ^
+  -H ^"referer: https://shop.example.com/cart^" ^
+  -H ^"sec-ch-ua: ^\^"Chromium^\^";v=^\^"128^\^", ^\^"Not;A=Brand^\^";v=^\^"24^\^", ^\^"Google Chrome^\^";v=^\^"128^\^"^" ^
+  -H ^"sec-ch-ua-mobile: ?0^" ^
+  -H ^"sec-ch-ua-platform: ^\^"Windows^\^"^" ^
+  -H ^"sec-fetch-dest: empty^" ^
+  -H ^"sec-fetch-mode: cors^" ^
+  -H ^"sec-fetch-site: same-origin^" ^
+  -H ^"user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36^" ^
+  -H ^"x-empty;^" ^
+  -H ^"x-request-id: 7d0f3a^" ^
+  --compressed

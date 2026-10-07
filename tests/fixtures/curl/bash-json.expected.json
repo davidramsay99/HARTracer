@@ -1,0 +1,15 @@
+{
+  "description": "Two --json options are concatenated without a separator; --json adds Content-Type: application/json, and Accept only when no -H names it.",
+  "dialect": "Bash",
+  "bodyMode": "Json",
+  "request": {
+    "method": "POST",
+    "url": "https://api.example.com/v2/events",
+    "headers": [
+      { "name": "Accept", "value": "application/x-ndjson" },
+      { "name": "Content-Type", "value": "application/json" }
+    ],
+    "body": { "mode": "Json", "text": "{\"type\":\"click\",\"at\":1}" },
+    "options": { "autoDecompress": false }
+  }
+}

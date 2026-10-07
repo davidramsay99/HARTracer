@@ -1,0 +1,18 @@
+{
+  "description": "curl.exe typed in PowerShell: backtick line continuation, '' inside single quotes, `t and `\" escapes and \"\" inside double quotes, and a literal $ in single quotes.",
+  "dialect": "PowerShell",
+  "bodyMode": "Json",
+  "request": {
+    "method": "PATCH",
+    "url": "https://api.example.com/v1/users/42?fields=name,tags",
+    "headers": [
+      { "name": "Content-Type", "value": "application/json" },
+      { "name": "Authorization", "value": "Bearer abc.def.ghi" },
+      { "name": "X-Note", "value": "it's $fine" },
+      { "name": "X-Tabbed", "value": "a\tb" },
+      { "name": "X-Quoted", "value": "say \"hi\" and \"bye\"" }
+    ],
+    "body": { "mode": "Json", "text": "{\"name\":\"Zoë\",\"tags\":[\"a\",\"b\"],\"cost\":\"$5\"}" },
+    "options": { "autoDecompress": true, "timeout": "00:00:30" }
+  }
+}

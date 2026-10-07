@@ -1,0 +1,7 @@
+curl https://upload.example.com/files \
+  -F 'file=@photos/cat 1.png;type=image/png' \
+  -F 'meta={"a":1};type=application/json' \
+  --form-string 'note=@literal; not a file' \
+  -F 'caption="hello; \"world\"";filename=caption.txt' \
+  -F 'raw=<notes.txt' \
+  -F 'doc=@"C:\docs\report,final.pdf";filename="report.pdf";type=application/pdf'

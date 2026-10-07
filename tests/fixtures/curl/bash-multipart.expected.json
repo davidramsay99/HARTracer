@@ -1,0 +1,23 @@
+{
+  "description": "Multipart form: file upload with type, text with type, --form-string taken literally, a quoted value with escapes and a filename, content read from a file with '<', and a quoted Windows path containing a comma. Without a base directory every file reference is reported.",
+  "dialect": "Bash",
+  "bodyMode": "Multipart",
+  "warnings": [ "'photos/cat 1.png'", "'notes.txt'", "'C:\\docs\\report,final.pdf'" ],
+  "request": {
+    "method": "POST",
+    "url": "https://upload.example.com/files",
+    "headers": [],
+    "body": {
+      "mode": "Multipart",
+      "parts": [
+        { "name": "file", "filePath": "photos/cat 1.png", "contentType": "image/png" },
+        { "name": "meta", "value": "{\"a\":1}", "contentType": "application/json" },
+        { "name": "note", "value": "@literal; not a file" },
+        { "name": "caption", "value": "hello; \"world\"", "fileName": "caption.txt" },
+        { "name": "raw", "filePath": "notes.txt", "fileContentAsValue": true },
+        { "name": "doc", "filePath": "C:\\docs\\report,final.pdf", "fileName": "report.pdf", "contentType": "application/pdf" }
+      ]
+    },
+    "options": { "autoDecompress": false }
+  }
+}

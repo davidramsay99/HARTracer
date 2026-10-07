@@ -1,0 +1,16 @@
+curl ^"https://forms.example.com/submit?q=100^%^25^&path=^%^PATH^%^" ^
+  -X ^"PUT^" ^
+  -H ^"content-type: text/plain;charset=UTF-8^" ^
+  -H ^"x-path: C:^\^\Users^\^\^" ^
+  -H ^"x-quote: say ^\^"hi^\^"^" ^
+  -H ^"user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36^" ^
+  --data-raw ^"line one^
+
+it's ^\^"quoted^\^" ^& ^<tagged^> ^| piped ^^caret ^!bang ^%^PATH^% ^%^%^
+
+back^\^\slash C:^\^\temp^\^\ end	tab^
+
+caf^é na^ïve ^東^京 ^😀^
+
+^" ^
+  --compressed
