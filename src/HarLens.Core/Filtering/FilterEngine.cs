@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using HarLens.Core.Har;
 
 namespace HarLens.Core.Filtering;
@@ -18,6 +19,7 @@ public sealed class QuickFilter
 
     public bool IsEmpty => Categories.Count == 0 && StatusClasses.Count == 0;
 
+    [MethodImpl(MethodImplOptions.AggressiveOptimization)]
     public bool Matches(HarEntry entry)
     {
         if (Categories.Count > 0 && !Categories.Contains(ResourceCategories.Of(entry)))
@@ -91,7 +93,7 @@ public static class FilterEngine
         var flags = new bool[count];
         Parallel.ForEach(System.Collections.Concurrent.Partitioner.Create(0, count, 16_384),
             new ParallelOptions { CancellationToken = cancellationToken },
-            range =>
+            [MethodImpl(MethodImplOptions.AggressiveOptimization)] (range) =>
             {
                 for (var i = range.Item1; i < range.Item2; i++)
                 {

@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using HarLens.Core.Har;
@@ -49,6 +50,7 @@ public sealed class FilterExpression
 
     public bool IsEmpty => _clauses.Length == 0;
 
+    [MethodImpl(MethodImplOptions.AggressiveOptimization)]
     public bool Matches(HarEntry entry)
     {
         var clauses = _clauses;
@@ -271,8 +273,8 @@ public sealed class FilterExpression
         var expected = Unquote(value[(eq + 1)..]);
         Func<string, bool> test = expected.Contains('*', StringComparison.Ordinal)
             ? Wildcard(expected)
-            : v => v.Contains(expected, StringComparison.OrdinalIgnoreCase);
-        return e =>
+            : [MethodImpl(MethodImplOptions.AggressiveOptimization)] (v) => v.Contains(expected, StringComparison.OrdinalIgnoreCase);
+        return [MethodImpl(MethodImplOptions.AggressiveOptimization)] (e) =>
         {
             foreach (var h in e.RequestHeaders)
             {
@@ -307,7 +309,7 @@ public sealed class FilterExpression
         var last = segments[^1];
         var middle = segments[1..^1].Where(m => m.Length > 0).ToArray();
         var minLength = segments.Sum(x => x.Length);
-        return s =>
+        return [MethodImpl(MethodImplOptions.AggressiveOptimization)] (s) =>
         {
             if (s.Length < minLength ||
                 !s.StartsWith(first, StringComparison.OrdinalIgnoreCase) ||

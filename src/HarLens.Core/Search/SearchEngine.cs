@@ -204,9 +204,9 @@ public static class SearchEngine
         }
     }
 
-    private static void SearchHeaders(HarEntry entry, SearchScope scope, HarHeader[] headers, SearchQuery query, Matcher matcher, List<SearchHit> hits)
+    private static void SearchHeaders(HarEntry entry, SearchScope scope, ArraySegment<HarHeader> headers, SearchQuery query, Matcher matcher, List<SearchHit> hits)
     {
-        for (var i = 0; i < headers.Length; i++)
+        for (var i = 0; i < headers.Count; i++)
         {
             // Search "Name: Value" so that a query can span the name and the value.
             var line = headers[i].Name + ": " + headers[i].Value;
