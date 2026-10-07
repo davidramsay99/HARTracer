@@ -4,7 +4,7 @@ using HarLens.Core.Har;
 namespace HarLens.Core.Filtering;
 
 /// <summary>
-/// Quick-toggle chips (SPEC 6.4). Within the type group and within the status group selections combine with OR;
+/// Quick-toggle chips. Within the type group and within the status group selections combine with OR;
 /// the groups and the filter text combine with AND. An empty group means "All".
 /// </summary>
 public sealed class QuickFilter
@@ -49,7 +49,7 @@ public sealed class QuickFilter
     }
 }
 
-/// <summary>Applies a filter to the index only (no body reads), in parallel for large sessions (SPEC 6.4: under 100 ms for 200,000 entries).</summary>
+/// <summary>Applies a filter to the index only (no body reads), in parallel for large sessions (under 100 ms for 200,000 entries).</summary>
 public static class FilterEngine
 {
     private const int ParallelThreshold = 20_000;

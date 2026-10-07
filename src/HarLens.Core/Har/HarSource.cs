@@ -4,7 +4,7 @@ namespace HarLens.Core.Har;
 
 /// <summary>
 /// The bytes behind a loaded HAR. The index keeps byte offsets into a source and reads bodies and raw entries
-/// back on demand (SPEC 5.3), so the full document is never materialized.
+/// back on demand, so the full document is never materialized.
 /// </summary>
 public abstract class HarSource : IDisposable
 {

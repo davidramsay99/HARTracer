@@ -74,7 +74,7 @@ public sealed class SearchResult
 }
 
 /// <summary>
-/// Searches across all entries on background threads with cancellation and progress (SPEC 6.5).
+/// Searches across all entries on background threads with cancellation and progress.
 /// Base64 bodies are decoded first when their MIME type is textual.
 /// </summary>
 public static class SearchEngine

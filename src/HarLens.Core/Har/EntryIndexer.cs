@@ -5,7 +5,7 @@ namespace HarLens.Core.Har;
 
 /// <summary>
 /// Builds the index row for one complete entry object. Reads only the list columns, headers and body
-/// offsets; everything else is skipped and read later from the source on demand (SPEC 5.3).
+/// offsets; everything else is skipped and read later from the source on demand.
 /// </summary>
 internal sealed class EntryIndexer
 {

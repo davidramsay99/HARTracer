@@ -7,7 +7,7 @@ using System.Xml;
 
 namespace HarLens.Core.Text;
 
-/// <summary>Pretty-printing for the Body "Pretty" view and for compare (SPEC 6.3, 6.6).</summary>
+/// <summary>Pretty-printing for the Body "Pretty" view and for compare.</summary>
 public static class JsonPretty
 {
     private static readonly JsonWriterOptions Options = new()
@@ -56,7 +56,7 @@ public static class JsonPretty
 
 public static class XmlPretty
 {
-    /// <summary>Indents XML. DTDs are prohibited and no resolver is set, so nothing external is ever fetched (SPEC 3).</summary>
+    /// <summary>Indents XML. DTDs are prohibited and no resolver is set, so nothing external is ever fetched.</summary>
     public static bool TryFormat(string? text, out string pretty)
     {
         pretty = text ?? "";
@@ -91,7 +91,7 @@ public static class XmlPretty
 }
 
 /// <summary>
-/// Indents HTML by tag structure without a DOM or a rendering engine (SPEC 3.4: HTML is shown as text only).
+/// Indents HTML by tag structure without a DOM or a rendering engine (HTML is shown as text only).
 /// Script, style, pre and textarea contents are left as written.
 /// </summary>
 public static partial class HtmlIndenter
@@ -225,7 +225,7 @@ public static class HexDump
     }
 }
 
-/// <summary>A JSON Web Token found in a header or body, decoded without signature verification (SPEC 6.3).</summary>
+/// <summary>A JSON Web Token found in a header or body, decoded without signature verification.</summary>
 public sealed record JwtToken(string Token, string Location, string HeaderJson, string PayloadJson, string Signature)
 {
     public DateTimeOffset? Expires => Claim("exp");

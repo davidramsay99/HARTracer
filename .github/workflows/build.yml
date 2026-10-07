@@ -1,4 +1,4 @@
-# Builds, tests and packages HarLens on Windows (SPEC 11, 12).
+# Builds, tests and packages HarLens on Windows.
 name: build
 
 on:

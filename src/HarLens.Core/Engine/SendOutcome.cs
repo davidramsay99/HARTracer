@@ -2,7 +2,7 @@ using HarLens.Core.Model;
 
 namespace HarLens.Core.Engine;
 
-/// <summary>Result of one Send. Each redirect hop that was followed is a separate exchange (SPEC 7.4).</summary>
+/// <summary>Result of one Send. Each redirect hop that was followed is a separate exchange.</summary>
 public sealed class SendOutcome
 {
     public List<ExchangeRecord> Exchanges { get; } = [];

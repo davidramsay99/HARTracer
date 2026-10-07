@@ -4,7 +4,7 @@ using HarLens.Core.Model;
 
 namespace HarLens.Core.Http;
 
-/// <summary>Reconstructs HTTP/1.1-style message text for the Raw inspector tab (SPEC 6.3).</summary>
+/// <summary>Reconstructs HTTP/1.1-style message text for the Raw inspector tab.</summary>
 public static class RawMessage
 {
     public const int MaxInlineBody = 2 * 1024 * 1024;

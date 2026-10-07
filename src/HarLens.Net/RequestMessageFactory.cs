@@ -61,7 +61,7 @@ internal static class RequestMessageFactory
 
             if (name.Equals("Content-Length", StringComparison.OrdinalIgnoreCase))
             {
-                // Computed from the body (SPEC 7.1). Mention it only when the edited value would have been wrong.
+                // Computed from the body. Mention it only when the edited value would have been wrong.
                 string actual = (bodyBytes?.Length ?? 0).ToString(CultureInfo.InvariantCulture);
                 if (value.Trim() != actual)
                 {

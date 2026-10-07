@@ -60,7 +60,7 @@ public sealed record HarDiagnostic(HarDiagnosticSeverity Severity, string Messag
     public override string ToString() => $"{Severity}: {Message}";
 }
 
-/// <summary>Where and why parsing stopped (SPEC 5.4).</summary>
+/// <summary>Where and why parsing stopped.</summary>
 public sealed class HarParseFailure
 {
     public required string Message { get; init; }

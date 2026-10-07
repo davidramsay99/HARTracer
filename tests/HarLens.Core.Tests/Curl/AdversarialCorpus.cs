@@ -5,7 +5,7 @@ namespace HarLens.Core.Tests.Curl;
 /// <summary>
 /// Requests built to break shell quoting: every kind of quote, backslashes before quotes, cmd.exe and PowerShell
 /// metacharacters, variables, control characters, line feeds and CRLF, non-ASCII text and very long values.
-/// Excluded on purpose, because curl itself cannot express them (see DECISIONS.md): NUL characters, header values
+/// Excluded on purpose, because curl itself cannot express them: NUL characters, header values
 /// made only of blanks, header names that are not HTTP tokens, form field names containing '=', and non-text bodies.
 /// </summary>
 internal static class AdversarialCorpus

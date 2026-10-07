@@ -15,7 +15,7 @@ public partial class App : Application
     {
         base.OnStartup(e);
 
-        // State lives under %LOCALAPPDATA%\HarLens, or data\ beside the exe in portable mode (SPEC 3.6, 10).
+        // State lives under %LOCALAPPDATA%\HarLens, or data\ beside the exe in portable mode.
         var paths = AppPaths.Resolve();
         try
         {
@@ -88,7 +88,7 @@ public partial class App : Application
         base.OnExit(e);
     }
 
-    /// <summary>SPEC 10: a local dialog with a copyable stack trace, written to the logs folder; nothing is transmitted.</summary>
+    /// <summary>A local dialog with a copyable stack trace, written to the logs folder; nothing is transmitted.</summary>
     private void OnDispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
     {
         AppLog.Error("Unhandled exception on the UI thread", e.Exception);
@@ -104,7 +104,7 @@ public partial class App : Application
     }
 }
 
-/// <summary><c>HarLens.exe &lt;file.har&gt; [--filter "&lt;expr&gt;"]</c> (SPEC 9).</summary>
+/// <summary><c>HarLens.exe &lt;file.har&gt; [--filter "&lt;expr&gt;"]</c>.</summary>
 public sealed class CommandLine
 {
     public List<string> Files { get; } = [];

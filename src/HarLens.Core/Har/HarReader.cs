@@ -4,7 +4,7 @@ using System.Text.Json;
 
 namespace HarLens.Core.Har;
 
-/// <summary>Opens HAR 1.1 and 1.2 files (.har, .json, .har.gz) into an index (SPEC 5).</summary>
+/// <summary>Opens HAR 1.1 and 1.2 files (.har, .json, .har.gz) into an index.</summary>
 public static class HarReader
 {
     /// <summary>Opens a file. Gzip content is detected by its magic bytes and decompressed in memory; no temporary file is written.</summary>
@@ -194,7 +194,7 @@ internal sealed class HarScanner
 
         if (!_sawEntries)
         {
-            // Nothing usable was reached: report the parse error as fatal, naming line, column and path (SPEC 5.4).
+            // Nothing usable was reached: report the parse error as fatal, naming line, column and path.
             return new HarLoadResult { FatalError = failure.ToString(), Failure = failure };
         }
 

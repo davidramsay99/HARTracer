@@ -12,7 +12,7 @@ using HarLens.Core.Text;
 namespace HarLens.Core.Saz;
 
 /// <summary>
-/// Imports a Fiddler Session Archive (SAZ, phase 4): a zip with <c>raw/NN_c.txt</c> (request bytes),
+/// Imports a SAZ session archive: a zip with <c>raw/NN_c.txt</c> (request bytes),
 /// <c>raw/NN_s.txt</c> (response bytes) and <c>raw/NN_m.xml</c> (timers and flags). Each session becomes a HAR 1.2
 /// entry in memory, and the result is indexed by the normal parser. Password-protected archives are not supported.
 /// </summary>
@@ -44,7 +44,7 @@ public static partial class SazImporter
         }
         catch (NotSupportedException)
         {
-            return new HarLoadResult { FatalError = "Password-protected SAZ archives are not supported. Re-save the sessions from Fiddler without a password." };
+            return new HarLoadResult { FatalError = "Password-protected SAZ archives are not supported. Re-save the sessions without a password." };
         }
         catch (IOException ex)
         {
@@ -69,7 +69,7 @@ public static partial class SazImporter
             w.WriteStartObject("log");
             w.WriteString("version", "1.2");
             w.WriteStartObject("creator");
-            w.WriteString("name", "Fiddler SAZ (imported by HarLens)");
+            w.WriteString("name", "SAZ archive (imported by HarLens)");
             w.WriteString("version", HarWriter.CreatorVersion);
             w.WriteEndObject();
             w.WriteStartArray("entries");
@@ -127,11 +127,11 @@ public static partial class SazImporter
         w.WriteStartObject();
         w.WriteString("startedDateTime", (meta.ClientBeginRequest ?? DateTimeOffset.UnixEpoch).ToString("o", CultureInfo.InvariantCulture));
 
-        // Timings from Fiddler's session timers.
+        // Timings from the archive's session timers.
         var dns = meta.DnsTime ?? -1;
         var ssl = meta.HttpsHandshakeTime is > 0 ? meta.HttpsHandshakeTime.Value : -1;
         var connect = meta.TcpConnectTime is >= 0 ? meta.TcpConnectTime.Value + Math.Max(0, ssl) : -1;
-        var send = Span(meta.ServerConnected ?? meta.FiddlerBeginRequest, meta.ServerGotRequest);
+        var send = Span(meta.ServerConnected ?? meta.ProxyBeginRequest, meta.ServerGotRequest);
         var wait = Span(meta.ServerGotRequest, meta.ServerBeginResponse);
         var receive = Span(meta.ServerBeginResponse, meta.ServerDoneResponse);
         var total = Math.Max(0, dns) + Math.Max(0, connect) + Math.Max(0, send) + Math.Max(0, wait) + Math.Max(0, receive);
@@ -252,7 +252,7 @@ public static partial class SazImporter
             w.WriteString("comment", meta.Comment);
         }
 
-        w.WriteStartObject("_fiddler");
+        w.WriteStartObject("_saz");
         w.WriteNumber("sessionId", number);
         if (meta.ProcessInfo is not null)
         {
@@ -298,7 +298,7 @@ public static partial class SazImporter
         }
     }
 
-    /// <summary>An HTTP/1.x message as Fiddler stores it: start line, headers, blank line, body as transmitted.</summary>
+    /// <summary>An HTTP/1.x message as the archive stores it: start line, headers, blank line, body as transmitted.</summary>
     internal sealed class RawHttpMessage
     {
         public string StartLine { get; private init; } = "";
@@ -392,7 +392,7 @@ public static partial class SazImporter
     {
         public DateTimeOffset? ClientBeginRequest { get; private set; }
 
-        public DateTimeOffset? FiddlerBeginRequest { get; private set; }
+        public DateTimeOffset? ProxyBeginRequest { get; private set; }
 
         public DateTimeOffset? ServerConnected { get; private set; }
 
@@ -434,7 +434,7 @@ public static partial class SazImporter
                 if (doc.SelectSingleNode("/Session/SessionTimers") is XmlElement timers)
                 {
                     meta.ClientBeginRequest = Time(timers, "ClientBeginRequest");
-                    meta.FiddlerBeginRequest = Time(timers, "FiddlerBeginRequest");
+                    meta.ProxyBeginRequest = Time(timers, "FiddlerBeginRequest"); // attribute name fixed by the SAZ format
                     meta.ServerConnected = Time(timers, "ServerConnected");
                     meta.ServerGotRequest = Time(timers, "ServerGotRequest");
                     meta.ServerBeginResponse = Time(timers, "ServerBeginResponse");

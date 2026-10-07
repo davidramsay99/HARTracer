@@ -69,7 +69,7 @@
       </DockPanel>
     </Border>
 
-    <!-- Warnings and parse failures (SPEC 5.4) -->
+    <!-- Warnings and parse failures -->
     <Border DockPanel.Dock="Top" Style="{StaticResource NoticeBorder}" Margin="4,4,4,0"
             Visibility="{Binding Banner, Converter={StaticResource NullToVisibility}}">
       <DockPanel>
@@ -79,7 +79,7 @@
       </DockPanel>
     </Border>
 
-    <!-- Filter bar (SPEC 6.4) -->
+    <!-- Filter bar -->
     <Grid DockPanel.Dock="Top" Margin="4,4,4,0">
       <Grid.ColumnDefinitions>
         <ColumnDefinition Width="*" />

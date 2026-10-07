@@ -7,7 +7,7 @@ public sealed record CountAndBytes(string Key, int Count, long Bytes, double Tot
 
 public sealed record HistogramBucket(double StartMs, double EndMs, int Count, int Failed);
 
-/// <summary>Status-bar summary of a selection (SPEC 6.2): count, total bytes, time span.</summary>
+/// <summary>Status-bar summary of a selection: count, total bytes, time span.</summary>
 public sealed record SelectionSummary(int Count, long Bytes, TimeSpan Span)
 {
     public static SelectionSummary Empty { get; } = new(0, 0, TimeSpan.Zero);
@@ -46,7 +46,7 @@ public sealed record SelectionSummary(int Count, long Bytes, TimeSpan Span)
     }
 }
 
-/// <summary>The statistics panel for the selection or the whole session (SPEC 6.7).</summary>
+/// <summary>The statistics panel for the selection or the whole session.</summary>
 public sealed class SessionStatistics
 {
     public int Count { get; private init; }

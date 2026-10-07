@@ -12,7 +12,7 @@ namespace HarLens.App.Views;
 
 /// <summary>
 /// The session tab. Columns are built in code so that they can be hidden, reordered, persisted, and extended with
-/// custom header or vendor-field columns (SPEC 6.2). Sorting is done by the view model on the filtered list rather
+/// custom header or vendor-field columns. Sorting is done by the view model on the filtered list rather
 /// than through a CollectionView, which keeps 200,000-row sessions responsive.
 /// </summary>
 public partial class SessionView : UserControl
@@ -136,7 +136,7 @@ public partial class SessionView : UserControl
         }
     }
 
-    /// <summary>Plain list for speed; a grouped view only when "Group by page" is on and the HAR has pages (SPEC 6.2).</summary>
+    /// <summary>Plain list for speed; a grouped view only when "Group by page" is on and the HAR has pages.</summary>
     private void UpdateItemsSource()
     {
         if (_vm is null)
@@ -399,7 +399,7 @@ public partial class SessionView : UserControl
         var shift = Keyboard.Modifiers.HasFlag(ModifierKeys.Shift);
         if (ctrl && !shift && e.Key == Key.C)
         {
-            // SPEC 9: Ctrl+C copies the URL rather than the grid cells.
+            // Ctrl+C copies the URL rather than the grid cells.
             _vm?.CopyUrlCommand.Execute(null);
             e.Handled = true;
         }
@@ -444,7 +444,7 @@ public partial class SessionView : UserControl
         }
     }
 
-    /// <summary>F6 cycles filter, list, request inspector, response inspector (SPEC 9).</summary>
+    /// <summary>F6 cycles filter, list, request inspector, response inspector.</summary>
     private void CyclePanes(bool backwards)
     {
         var panes = new Func<bool>[]
@@ -468,7 +468,7 @@ public partial class SessionView : UserControl
         panes[next]();
     }
 
-    // ------------------------------------------------------------------ layout (SPEC 6.1)
+    // ------------------------------------------------------------------ layout
 
     private void ApplyLayout()
     {

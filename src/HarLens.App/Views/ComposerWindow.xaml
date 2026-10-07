@@ -9,12 +9,12 @@
     <KeyBinding Gesture="Escape" Command="{Binding CancelSendCommand}" />
   </Window.InputBindings>
   <DockPanel Margin="10">
-    <!-- Offline Mode (SPEC 3.3) -->
+    <!-- Offline Mode -->
     <Border DockPanel.Dock="Top" Style="{StaticResource NoticeBorder}" Visibility="{Binding OfflineMode, Converter={StaticResource BoolToVisibility}}">
       <TextBlock TextWrapping="Wrap" Foreground="{DynamicResource NoticeForeground}"
                  Text="Offline Mode is on, so Send is disabled. You can still edit, import and export requests. Turn Offline Mode off in the Tools menu to send." />
     </Border>
-    <!-- Certificate validation off (SPEC 7.1) -->
+    <!-- Certificate validation off -->
     <Border DockPanel.Dock="Top" Background="{DynamicResource DangerBannerBackground}" Padding="8,4" Margin="0,0,0,4"
             Visibility="{Binding Insecure, Converter={StaticResource BoolToVisibility}}">
       <TextBlock Foreground="{DynamicResource DangerBannerForeground}" FontWeight="SemiBold"

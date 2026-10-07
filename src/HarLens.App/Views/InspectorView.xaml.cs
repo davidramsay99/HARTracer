@@ -54,7 +54,7 @@ public partial class InspectorView : UserControl
         }
     }
 
-    /// <summary>Jumps to the tab that holds a search hit and highlights the match (SPEC 6.5).</summary>
+    /// <summary>Jumps to the tab that holds a search hit and highlights the match.</summary>
     public void ShowSearchHit(SearchHit hit)
     {
         _pendingHit = hit;

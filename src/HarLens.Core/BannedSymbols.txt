@@ -1,16 +1,16 @@
-N:System.Net.Http;SPEC 3.1: only HarLens.Net may use the network
-N:System.Net.Sockets;SPEC 3.1: only HarLens.Net may use the network
-N:System.Net.WebSockets;SPEC 3.1: only HarLens.Net may use the network
-T:System.Net.Dns;SPEC 3.1: only HarLens.Net may use the network
-N:System.Net.NetworkInformation;SPEC 3.1: only HarLens.Net may use the network
-N:System.Net.Security;SPEC 3.1: only HarLens.Net may use the network
-N:System.Net.Quic;SPEC 3.1: only HarLens.Net may use the network
-N:System.Net.Mail;SPEC 3.1: only HarLens.Net may use the network
-T:System.Net.WebClient;SPEC 3.1: only HarLens.Net may use the network
-T:System.Net.WebRequest;SPEC 3.1: only HarLens.Net may use the network
-T:System.Net.HttpWebRequest;SPEC 3.1: only HarLens.Net may use the network
-T:System.Net.FtpWebRequest;SPEC 3.1: only HarLens.Net may use the network
-T:System.Net.FileWebRequest;SPEC 3.1: only HarLens.Net may use the network
-T:System.Net.HttpListener;SPEC 3.1: only HarLens.Net may use the network
-T:System.Net.ServicePointManager;SPEC 3.1: only HarLens.Net may use the network
-T:System.Net.WebProxy;SPEC 3.1: only HarLens.Net may use the network
+N:System.Net.Http;only HarLens.Net may use the network
+N:System.Net.Sockets;only HarLens.Net may use the network
+N:System.Net.WebSockets;only HarLens.Net may use the network
+T:System.Net.Dns;only HarLens.Net may use the network
+N:System.Net.NetworkInformation;only HarLens.Net may use the network
+N:System.Net.Security;only HarLens.Net may use the network
+N:System.Net.Quic;only HarLens.Net may use the network
+N:System.Net.Mail;only HarLens.Net may use the network
+T:System.Net.WebClient;only HarLens.Net may use the network
+T:System.Net.WebRequest;only HarLens.Net may use the network
+T:System.Net.HttpWebRequest;only HarLens.Net may use the network
+T:System.Net.FtpWebRequest;only HarLens.Net may use the network
+T:System.Net.FileWebRequest;only HarLens.Net may use the network
+T:System.Net.HttpListener;only HarLens.Net may use the network
+T:System.Net.ServicePointManager;only HarLens.Net may use the network
+T:System.Net.WebProxy;only HarLens.Net may use the network

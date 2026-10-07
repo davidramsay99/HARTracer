@@ -59,7 +59,7 @@ public sealed class HarReaderTests
     [Theory]
     [InlineData("firefox.har", 3)]
     [InlineData("safari.har", 4)]
-    [InlineData("fiddler.har", 3)]
+    [InlineData("proxy-export.har", 3)]
     [InlineData("har11.har", 3)]
     [InlineData("base64-bodies.har", 5)]
     [InlineData("compressed-bodies.har", 5)]
@@ -102,12 +102,12 @@ public sealed class HarReaderTests
     }
 
     [Fact]
-    public void Fiddler_dates_with_seven_fraction_digits_and_offset()
+    public void Dates_with_seven_fraction_digits_and_offset()
     {
-        using var doc = HarReader.Load(FixturePaths.Har("fiddler.har")).Document!;
+        using var doc = HarReader.Load(FixturePaths.Har("proxy-export.har")).Document!;
         var expected = new DateTimeOffset(2026, 10, 7, 10, 15, 2, TimeSpan.FromHours(1)).AddTicks(1234567);
         Assert.Equal(expected, doc.Entries[0].StartedDateTime);
-        Assert.Equal("Fiddler session 12", doc.Entries[0].Comment);
+        Assert.Equal("Proxy session 12", doc.Entries[0].Comment);
     }
 
     [Fact]

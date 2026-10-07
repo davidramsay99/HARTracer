@@ -1,7 +1,7 @@
 <#
 .SYNOPSIS
   Fills ./nuget-offline/ with every package the build, the tests and both publishes need,
-  so that later builds restore with no internet (SPEC 11).
+  so that later builds restore with no internet.
 
 .DESCRIPTION
   This is the single point at which internet is used, and only on the build machine.

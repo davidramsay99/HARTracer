@@ -65,7 +65,7 @@ internal static class Preflight
         return text;
     }
 
-    /// <summary>Builds the explicit proxy. The system proxy is never consulted (SPEC 3.5).</summary>
+    /// <summary>Builds the explicit proxy. The system proxy is never consulted.</summary>
     public static WebProxy? CreateProxy(string? proxy)
     {
         string text = proxy?.Trim() ?? "";

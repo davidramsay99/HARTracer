@@ -11,7 +11,7 @@ public sealed record FieldDiff(string Field, string Left, string Right)
     public bool Same => string.Equals(Left, Right, StringComparison.Ordinal);
 }
 
-/// <summary>Headers matched by name, case-insensitively (SPEC 6.6). Repeated headers are joined with a newline.</summary>
+/// <summary>Headers matched by name, case-insensitively. Repeated headers are joined with a newline.</summary>
 public sealed record HeaderDiff(string Name, string? Left, string? Right)
 {
     public DiffKind Kind => Left is null ? DiffKind.Inserted
@@ -20,7 +20,7 @@ public sealed record HeaderDiff(string Name, string? Left, string? Right)
         : DiffKind.Modified;
 }
 
-/// <summary>Side-by-side comparison of two entries: request line, headers, bodies (SPEC 6.6, also original versus replay).</summary>
+/// <summary>Side-by-side comparison of two entries: request line, headers, bodies (also original versus replay).</summary>
 public sealed class EntryComparison
 {
     public required HarEntry Left { get; init; }

@@ -26,7 +26,7 @@ public enum SizeDisplay
 
 public enum LayoutOrientation
 {
-    /// <summary>Fiddler Classic: list left, inspector right.</summary>
+    /// <summary>List left, inspector right.</summary>
     SideBySide,
 
     /// <summary>Inspector beneath the list.</summary>
@@ -44,7 +44,7 @@ public sealed class ColumnSetting
     public bool Visible { get; set; } = true;
 }
 
-/// <summary>A user column bound to a header or a vendor field (SPEC 6.2).</summary>
+/// <summary>A user column bound to a header or a vendor field.</summary>
 public sealed class CustomColumn
 {
     /// <summary>"request-header", "response-header", "header" (either side) or "field".</summary>
@@ -71,12 +71,12 @@ public sealed class FilterPreset
 }
 
 /// <summary>
-/// Everything in <c>settings.json</c> (SPEC 10): human-readable, and tolerant of unknown keys, which are kept
+/// Everything in <c>settings.json</c>: human-readable, and tolerant of unknown keys, which are kept
 /// and written back so that a newer version's settings survive an older version.
 /// </summary>
 public sealed class AppSettings
 {
-    /// <summary>SPEC 3.3: ON at first run. While ON the Send button is disabled and HarLens.Net is never loaded.</summary>
+    /// <summary>ON at first run. While ON the Send button is disabled and HarLens.Net is never loaded.</summary>
     public bool OfflineMode { get; set; } = true;
 
     public ThemeChoice Theme { get; set; } = ThemeChoice.System;

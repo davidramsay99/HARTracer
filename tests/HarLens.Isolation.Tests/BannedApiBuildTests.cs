@@ -3,7 +3,7 @@ using System.Diagnostics;
 namespace HarLens.Isolation.Tests;
 
 /// <summary>
-/// Acceptance test 3: the build fails if a banned network API is added to HarLens.Core or HarLens.App.
+/// The build fails if a banned network API is added to HarLens.Core or HarLens.App.
 /// Copies the sources to a temporary directory, adds one offending file, and runs <c>dotnet build</c>.
 /// Restore uses the local package cache populated by the normal build, so no network is needed.
 /// </summary>

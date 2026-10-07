@@ -6,7 +6,7 @@ using HarLens.Core.Sanitize;
 
 namespace HarLens.App.ViewModels;
 
-/// <summary>One row of the session list (SPEC 6.2). Display strings are computed on access so recycled rows stay cheap.</summary>
+/// <summary>One row of the session list. Display strings are computed on access so recycled rows stay cheap.</summary>
 public sealed class EntryRowViewModel : ObservableObject
 {
     private readonly SessionViewModel _owner;
@@ -58,7 +58,7 @@ public sealed class EntryRowViewModel : ObservableObject
 
     public string PageGroup => _owner.PageGroupLabel(Entry);
 
-    /// <summary>"failed", "5xx", "4xx", "3xx" or "ok", for row styling (SPEC 6.2).</summary>
+    /// <summary>"failed", "5xx", "4xx", "3xx" or "ok", for row styling.</summary>
     public string RowState => Entry.IsFailed ? "failed" : Entry.StatusClass switch
     {
         5 => "5xx",
@@ -105,7 +105,7 @@ public sealed class EntryRowViewModel : ObservableObject
         }
     }
 
-    /// <summary>Custom column values (SPEC 6.2), keyed by <c>kind:name</c>, for example <c>response-header:x-azure-ref</c>.</summary>
+    /// <summary>Custom column values, keyed by <c>kind:name</c>, for example <c>response-header:x-azure-ref</c>.</summary>
     public string? this[string key]
     {
         get

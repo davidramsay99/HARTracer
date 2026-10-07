@@ -24,7 +24,7 @@ public sealed record TimingRow(string Phase, string Value, double Offset, double
     public double BarWidth { get; init; }
 }
 
-/// <summary>The inspector for the selected entry: request side, response side and entry-level tabs (SPEC 6.3).</summary>
+/// <summary>The inspector for the selected entry: request side, response side and entry-level tabs.</summary>
 public sealed partial class InspectorViewModel : ObservableObject, IDisposable
 {
     private const double TimingBarWidth = 360;
@@ -207,7 +207,7 @@ public sealed partial class InspectorViewModel : ObservableObject, IDisposable
         var isComposer = EntryDetail.Child(harlens, "composer") is { ValueKind: System.Text.Json.JsonValueKind.True };
         if (isComposer && ExchangeConverter.ReadWire(entry) is { } wire)
         {
-            // Composer entries show the exact bytes that crossed the wire (SPEC 7.4).
+            // Composer entries show the exact bytes that crossed the wire.
             requestRaw = WireText(wire.Sent);
             responseRaw = WireText(wire.Received);
         }
@@ -390,7 +390,7 @@ public sealed partial class InspectorViewModel : ObservableObject, IDisposable
     }
 }
 
-/// <summary>Request side or response side tabs: Headers, Query, Cookies, Body, Raw (SPEC 6.3).</summary>
+/// <summary>Request side or response side tabs: Headers, Query, Cookies, Body, Raw.</summary>
 public sealed partial class MessageViewModel : ObservableObject
 {
     public MessageViewModel(bool isRequest)

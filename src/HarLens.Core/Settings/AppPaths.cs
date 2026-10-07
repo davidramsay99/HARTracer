@@ -1,7 +1,7 @@
 namespace HarLens.Core.Settings;
 
 /// <summary>
-/// Where state lives (SPEC 3.6, 10): <c>%LOCALAPPDATA%\HarLens\</c>, or a <c>data\</c> folder beside the executable
+/// Where state lives: <c>%LOCALAPPDATA%\HarLens\</c>, or a <c>data\</c> folder beside the executable
 /// when a <c>portable.flag</c> file is present there.
 /// </summary>
 public sealed class AppPaths
@@ -53,7 +53,7 @@ public sealed class AppPaths
 }
 
 /// <summary>
-/// The application log (SPEC 8, 10): file paths and error text only. Callers must never pass header values,
+/// The application log: file paths and error text only. Callers must never pass header values,
 /// bodies or URLs with query strings. Nothing is transmitted.
 /// </summary>
 public static class AppLog

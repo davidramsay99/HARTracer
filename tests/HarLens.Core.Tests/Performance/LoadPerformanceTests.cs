@@ -27,7 +27,7 @@ public sealed class LoadPerformanceTests(ITestOutputHelper output)
 [Collection("Large files")]
 public sealed class GigabyteLoadTests(ITestOutputHelper output)
 {
-    /// <summary>SPEC 5.3: a 1 GB HAR opens with peak working set under 1.5 GB.</summary>
+    /// <summary>A 1 GB HAR opens with peak working set under 1.5 GB.</summary>
     [LargeFact]
     public void One_gigabyte_file_opens_within_memory_budget()
     {

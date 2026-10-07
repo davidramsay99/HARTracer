@@ -1,7 +1,7 @@
 <#
 .SYNOPSIS
   Builds, tests and publishes HarLens, then writes one zip per architecture containing
-  HarLens.exe, LICENSE and THIRD-PARTY-NOTICES.txt (SPEC 11). No installer.
+  HarLens.exe, LICENSE and THIRD-PARTY-NOTICES.txt. No installer.
 
 .PARAMETER Offline
   Restore from ./nuget-offline (filled by vendor-packages.ps1) instead of nuget.org.

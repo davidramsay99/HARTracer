@@ -9,8 +9,8 @@ namespace HarLens.App.Controls;
 
 /// <summary>
 /// Read-only, virtualized, syntax-highlighted text view (AvalonEdit) with a bindable <see cref="Code"/>.
-/// Ctrl+F opens AvalonEdit's search panel ("find within the current inspector view", SPEC 6.5).
-/// Hyperlinks are disabled: a click must never open a browser (SPEC 3).
+/// Ctrl+F opens AvalonEdit's search panel ("find within the current inspector view").
+/// Hyperlinks are disabled: a click must never open a browser.
 /// </summary>
 public sealed class CodeEditor : TextEditor
 {
@@ -40,7 +40,7 @@ public sealed class CodeEditor : TextEditor
         // AvalonEdit's built-in palettes are made for light backgrounds; in dark mode text is shown unhighlighted.
         s_editors.Add(new WeakReference<CodeEditor>(this));
 
-        // Word wrap follows the View menu toggle (SPEC 6.3).
+        // Word wrap follows the View menu toggle.
         WordWrap = Services.AppServices.Current.Settings.WordWrap;
         if (ViewModels.MainViewModel.Instance is { } main)
         {

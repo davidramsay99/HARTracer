@@ -8,7 +8,7 @@ public sealed class HarWriterTests
 {
     public static IEnumerable<object[]> Fixtures() => FixturePaths.AllHarFixtures().Select(p => new object[] { Path.GetFileName(p) });
 
-    /// <summary>Acceptance test 4: open, save, reopen gives a semantically identical HAR, vendor fields included.</summary>
+    /// <summary>Open, save, reopen gives a semantically identical HAR, vendor fields included.</summary>
     [Theory]
     [MemberData(nameof(Fixtures))]
     public void Save_round_trip_is_semantically_identical(string fixture)

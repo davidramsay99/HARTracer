@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generates the synthetic HAR fixtures in tests/fixtures/har (SPEC 12.3).
+"""Generates the synthetic HAR fixtures in tests/fixtures/har.
 
 Every value is invented; no real capture is used. Run from the repository root:
 
@@ -271,7 +271,7 @@ def safari():
     return log(entries, creator=("WebKit Web Inspector", "1.0"), pages=pages)
 
 
-def fiddler():
+def proxy_export():
     entries = []
     t = {"blocked": 0, "dns": 3, "connect": 25, "ssl": 14, "send": 1, "wait": 78, "receive": 6}
     e1 = entry("GET", "https://api.northwind.test/orders/42", 200, "application/json", None, start_ms=0, t=t,
@@ -281,7 +281,7 @@ def fiddler():
     e1["response"]["content"] = {"size": len(body), "mimeType": "application/json",
                                  "text": base64.b64encode(body.encode()).decode(), "encoding": "base64"}
     e1["startedDateTime"] = "2026-10-07T10:15:02.1234567+01:00"
-    e1["comment"] = "Fiddler session 12"
+    e1["comment"] = "Proxy session 12"
     e1["serverIPAddress"] = "192.0.2.44"
     e1["connection"] = "52314"
     entries.append(e1)
@@ -292,7 +292,7 @@ def fiddler():
                encoding="base64", size=len(GIF_1X1), t=t)
     e3["startedDateTime"] = "2026-10-07T10:15:03.5000000+01:00"
     entries.append(e3)
-    doc = log(entries, creator=("Fiddler", "5.0.20253.3311"))
+    doc = log(entries, creator=("Desktop debugging proxy", "5.0.20253.3311"))
     doc["log"]["creator"]["comment"] = "synthetic export"
     return doc
 
@@ -376,7 +376,7 @@ def failures():
 
 
 def filter_fixture():
-    """Entries designed for the SPEC 6.4 filter expressions. Entry N (1-based) starts N*100 ms in."""
+    """Entries designed for the documented filter expressions. Entry N (1-based) starts N*100 ms in."""
     E = []
 
     def add(method, url, status, mime, *, req=(), resp=(), size=1000, time_ms=100.0, extra=None, resp_extra=None):
@@ -494,7 +494,7 @@ def secrets_fixture():
 
 
 def saz_fixture(path):
-    """A Fiddler Session Archive with an HTTPS JSON call (chunked + gzip), a form POST, a CONNECT, and a session without response."""
+    """A SAZ session archive with an HTTPS JSON call (chunked + gzip), a form POST, a CONNECT, and a session without response."""
     import zipfile
 
     def meta(sid, begin, https=False, comment=None):
@@ -518,7 +518,7 @@ def saz_fixture(path):
         z.writestr("[Content_Types].xml", '<?xml version="1.0" encoding="utf-8"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="txt" ContentType="text/plain" /></Types>')
         z.writestr("_index.htm", "<html><body>synthetic</body></html>")
         z.writestr("raw/1_c.txt", b"CONNECT api.northwind.test:443 HTTP/1.1\r\nHost: api.northwind.test:443\r\n\r\n")
-        z.writestr("raw/1_s.txt", b"HTTP/1.1 200 Connection Established\r\nFiddlerGateway: Direct\r\n\r\n")
+        z.writestr("raw/1_s.txt", b"HTTP/1.1 200 Connection Established\r\n\r\n")
         z.writestr("raw/1_m.xml", meta(1, 1, https=True))
         z.writestr("raw/2_c.txt", b"GET https://api.northwind.test/v1/orders?id=42 HTTP/1.1\r\nHost: api.northwind.test\r\nAccept: application/json\r\nCookie: nw=1\r\n\r\n")
         z.writestr("raw/2_s.txt", b"HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nContent-Encoding: gzip\r\nTransfer-Encoding: chunked\r\n\r\n" + chunked)
@@ -537,7 +537,7 @@ def main():
         f.write(gzip.compress(chromium_bytes, mtime=0))
     write("firefox.har", firefox())
     write("safari.har", safari())
-    write("fiddler.har", fiddler())
+    write("proxy-export.har", proxy_export())
     write("har11.har", har11())
     write("base64-bodies.har", base64_bodies())
     write("compressed-bodies.har", compressed_bodies())

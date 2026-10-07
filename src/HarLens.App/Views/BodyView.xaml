@@ -4,7 +4,7 @@
              xmlns:vm="clr-namespace:HarLens.App.ViewModels"
              xmlns:controls="clr-namespace:HarLens.App.Controls">
   <DockPanel Margin="4">
-    <!-- Sub-view selector (SPEC 6.3): auto-selected from the MIME type, overridable. -->
+    <!-- Sub-view selector: auto-selected from the MIME type, overridable. -->
     <DockPanel DockPanel.Dock="Top" Margin="0,0,0,4">
       <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
         <CheckBox Content="JSON as text" IsChecked="{Binding ShowJsonAsText}" Margin="0,0,10,0" VerticalAlignment="Center"

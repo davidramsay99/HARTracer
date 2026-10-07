@@ -34,8 +34,8 @@ public enum PrettyKind
 }
 
 /// <summary>
-/// The Body tab with its sub-views (SPEC 6.3): Pretty, Text, Hex, Image, JWT. The view is auto-selected from the MIME
-/// type and can be overridden. HTML is shown as text only (SPEC 3.4).
+/// The Body tab with its sub-views: Pretty, Text, Hex, Image, JWT. The view is auto-selected from the MIME
+/// type and can be overridden. HTML is shown as text only.
 /// </summary>
 public sealed partial class BodyViewModel : ObservableObject, IDisposable
 {
@@ -124,7 +124,7 @@ public sealed partial class BodyViewModel : ObservableObject, IDisposable
         PrettyKind = PrettyKind.None;
         ShowJsonAsText = false;
 
-        // JWTs in headers are offered even when there is no body (SPEC 6.3).
+        // JWTs in headers are offered even when there is no body.
         var mask = AppServices.Current.Settings.MaskSecrets;
         var tokens = new List<JwtToken>();
         foreach (var h in headers)

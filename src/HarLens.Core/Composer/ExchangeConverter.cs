@@ -11,7 +11,7 @@ using HarLens.Core.Text;
 namespace HarLens.Core.Composer;
 
 /// <summary>
-/// Turns what the request engine captured into HAR 1.2 entries for the "Composer" session (SPEC 7.5).
+/// Turns what the request engine captured into HAR 1.2 entries for the "Composer" session.
 /// TLS details, wire bytes and notices go in the <c>_harlens</c> vendor object.
 /// </summary>
 public static class ExchangeConverter

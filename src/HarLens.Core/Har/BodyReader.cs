@@ -32,7 +32,7 @@ public sealed class DecodedBody
     internal long Weight => Bytes.Length + (Text?.Length ?? 0) * 2L + 64;
 }
 
-/// <summary>Reads body strings from a <see cref="HarSource"/> by offset and decodes them (SPEC 5.2, 5.3).</summary>
+/// <summary>Reads body strings from a <see cref="HarSource"/> by offset and decodes them.</summary>
 public static class BodyReader
 {
     public static DecodedBody? Read(HarEntry entry, BodySide side)
@@ -88,7 +88,7 @@ public static class BodyReader
         return result;
     }
 
-    /// <summary>Text of a body for searching: decoded when the body is textual, null for binary (SPEC 6.5).</summary>
+    /// <summary>Text of a body for searching: decoded when the body is textual, null for binary.</summary>
     public static string? ReadSearchableText(HarEntry entry, BodySide side)
     {
         var bodyRef = side == BodySide.Response ? entry.ResponseBody : entry.RequestBody;
@@ -200,7 +200,7 @@ public static class BodyReader
     }
 }
 
-/// <summary>Bounded LRU cache of decoded bodies (SPEC 5.3). Thread-safe.</summary>
+/// <summary>Bounded LRU cache of decoded bodies. Thread-safe.</summary>
 public sealed class BodyCache
 {
     private readonly Lock _lock = new();

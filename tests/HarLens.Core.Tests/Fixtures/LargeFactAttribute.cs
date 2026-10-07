@@ -2,7 +2,7 @@ namespace HarLens.Core.Tests.Fixtures;
 
 /// <summary>
 /// A test that generates hundreds of megabytes of fixture data. Runs when HARLENS_LARGE_TESTS=1
-/// (the phase 1 exit check and the CI performance job); skipped otherwise to keep the default run fast.
+/// (the CI performance job); skipped otherwise to keep the default run fast.
 /// </summary>
 public sealed class LargeFactAttribute : FactAttribute
 {

@@ -41,7 +41,7 @@ internal enum CurlOptionKind
     Variable,
     Next,
 
-    /// <summary>Affects only what curl prints or saves; accepted silently (SPEC 7.2).</summary>
+    /// <summary>Affects only what curl prints or saves; accepted silently.</summary>
     OutputOnly,
 
     /// <summary>A real curl option that HarLens does not model; ignored with a warning.</summary>
@@ -81,7 +81,7 @@ internal static class CurlOptionTable
             }
         }
 
-        // Supported (SPEC 7.2), plus --form-string, --oauth2-bearer, --cert-type, --pass, --globoff and --variable.
+        // Supported, plus --form-string, --oauth2-bearer, --cert-type, --pass, --globoff and --variable.
         Add("request", 'X', CurlOptionKind.Request, true);
         Add("header", 'H', CurlOptionKind.Header, true);
         Add("data", 'd', CurlOptionKind.Data, true);

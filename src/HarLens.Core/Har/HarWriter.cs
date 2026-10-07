@@ -13,7 +13,7 @@ public sealed class HarWriteOptions
 
     public bool Indented { get; init; } = true;
 
-    /// <summary>Write user annotations to <c>comment</c> and <c>_harlens</c> (SPEC 6.2).</summary>
+    /// <summary>Write user annotations to <c>comment</c> and <c>_harlens</c>.</summary>
     public bool WriteAnnotations { get; init; } = true;
 
     /// <summary>
@@ -31,7 +31,7 @@ public sealed class HarWriteOptions
 
 /// <summary>
 /// Writes HAR 1.2. Unchanged entries are copied byte for byte from their source, so unknown and vendor fields
-/// survive (SPEC 5.1, acceptance test 4). Only entries with annotations, merge tags or renamed pages are rewritten.
+/// survive. Only entries with annotations, merge tags or renamed pages are rewritten.
 /// </summary>
 public static class HarWriter
 {
@@ -53,7 +53,7 @@ public static class HarWriter
         WriteIndented = true,
     };
 
-    /// <summary>Saves to a file. Refuses to overwrite any file the session reads from (SPEC 8: never modified in place).</summary>
+    /// <summary>Saves to a file. Refuses to overwrite any file the session reads from (never modified in place).</summary>
     public static void Save(HarSession session, string path, HarWriteOptions? options = null)
     {
         EnsureNotSource(session, path);

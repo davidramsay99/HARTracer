@@ -3,7 +3,7 @@ using HarLens.Core.Http;
 
 namespace HarLens.Core.Tests.Curl;
 
-/// <summary>Acceptance test 6 (SPEC 7.3): parse(generate(request)) is equivalent to request for every curl format.</summary>
+/// <summary>Parse(generate(request)) is equivalent to request for every curl format.</summary>
 public class CurlRoundTripTests
 {
     public static readonly ExportFormat[] CurlFormats = [ExportFormat.CurlBash, ExportFormat.CurlCmd, ExportFormat.CurlPowerShell];

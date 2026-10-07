@@ -24,10 +24,10 @@ public sealed class AppServices
 
     public ComposerStore ComposerStore { get; }
 
-    /// <summary>Decoded bodies shared by all tabs (SPEC 5.3: bounded LRU).</summary>
+    /// <summary>Decoded bodies shared by all tabs (bounded LRU).</summary>
     public BodyCache BodyCache { get; } = new(256L * 1024 * 1024);
 
-    /// <summary>Hosts for which the replay prompt is suppressed in this run only (SPEC 7.6).</summary>
+    /// <summary>Hosts for which the replay prompt is suppressed in this run only.</summary>
     public ReplayGuardSuppressions ReplaySuppressions { get; } = new();
 
     /// <summary>Raised when display settings (time, size, mask, font) change so views can refresh.</summary>

@@ -5,7 +5,7 @@ using Microsoft.Win32;
 namespace HarLens.App.Services;
 
 /// <summary>
-/// Light and dark themes following the system setting, with an override (SPEC 9). Controls use WPF's Fluent theme
+/// Light and dark themes following the system setting, with an override. Controls use WPF's Fluent theme
 /// (Application.ThemeMode); HarLens' own semantic brushes (row colors, waterfall phases, diff colors) swap with it.
 /// Reads the Windows "apps use light theme" preference; never writes the registry.
 /// </summary>

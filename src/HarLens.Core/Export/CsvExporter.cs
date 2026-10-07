@@ -8,7 +8,7 @@ namespace HarLens.Core.Export;
 /// <summary>A list column for CSV export: header text and a value selector.</summary>
 public sealed record CsvColumn(string Header, Func<HarEntry, string> Value, bool Numeric = false);
 
-/// <summary>Exports the session list as CSV (SPEC 6.8), RFC 4180 quoting, UTF-8 with BOM for Excel.</summary>
+/// <summary>Exports the session list as CSV, RFC 4180 quoting, UTF-8 with BOM for Excel.</summary>
 public static class CsvExporter
 {
     public static IReadOnlyList<CsvColumn> DefaultColumns(DateTimeOffset firstStart) =>

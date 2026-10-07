@@ -27,7 +27,7 @@ public sealed class SavedRequest
     public HttpRequestSpec Request { get; set; } = new();
 }
 
-/// <summary>A named group of saved requests, stored as one JSON file under <c>collections\</c> (SPEC 7.5).</summary>
+/// <summary>A named group of saved requests, stored as one JSON file under <c>collections\</c>.</summary>
 public sealed class RequestCollection
 {
     public string Name { get; set; } = "";

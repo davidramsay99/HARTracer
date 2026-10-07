@@ -95,7 +95,7 @@ public static class InputDialog
 
 public static class CustomColumnDialog
 {
-    /// <summary>Asks for a header name or vendor field to show as a list column (SPEC 6.2).</summary>
+    /// <summary>Asks for a header name or vendor field to show as a list column.</summary>
     public static CustomColumn? Ask()
     {
         var w = DialogKit.Create("Add custom column", 460, 260);
@@ -136,7 +136,7 @@ public static class CustomColumnDialog
 
 public static class MergeDialog
 {
-    /// <summary>Chooses the tabs to merge into one session (SPEC 5.5).</summary>
+    /// <summary>Chooses the tabs to merge into one session.</summary>
     public static List<SessionViewModel>? Choose(IReadOnlyList<SessionViewModel> candidates)
     {
         var w = DialogKit.Create("Merge into new session", 480, 360);
@@ -165,7 +165,7 @@ public sealed record CurlImportInput(string Command, CurlDialect Dialect, string
 public static class CurlImportDialog
 {
     /// <summary>
-    /// Paste a cURL command (SPEC 7.2). File references (@file) are only read when a base directory is chosen here.
+    /// Paste a cURL command. File references (@file) are only read when a base directory is chosen here.
     /// </summary>
     public static CurlImportInput? Ask(string? baseDirectory)
     {
@@ -233,7 +233,7 @@ public enum ReplayGuardChoice
 
 public static class ReplayGuardDialog
 {
-    /// <summary>Names the target host and the credential-bearing fields before a replay (SPEC 7.6).</summary>
+    /// <summary>Names the target host and the credential-bearing fields before a replay.</summary>
     public static ReplayGuardChoice Ask(string host, IReadOnlyList<CredentialFinding> findings)
     {
         var w = DialogKit.Create("Captured credentials", 560, 340);
@@ -288,7 +288,7 @@ public static class ReplayGuardDialog
 
 public static class CrashDialog
 {
-    /// <summary>SPEC 10: an unhandled exception shows a local dialog with a copyable stack trace. Nothing is transmitted.</summary>
+    /// <summary>An unhandled exception shows a local dialog with a copyable stack trace. Nothing is transmitted.</summary>
     public static void Show(Exception exception, string? logFile)
     {
         var w = DialogKit.Create("HarLens: unexpected error", 720, 460);

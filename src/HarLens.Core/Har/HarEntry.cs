@@ -5,7 +5,7 @@ using HarLens.Core.Text;
 
 namespace HarLens.Core.Har;
 
-/// <summary>HAR <c>timings</c>. A value of -1 means "not applicable" (SPEC 5.2).</summary>
+/// <summary>HAR <c>timings</c>. A value of -1 means "not applicable".</summary>
 public readonly record struct HarTimings(
     double Blocked,
     double Dns,
@@ -20,7 +20,7 @@ public readonly record struct HarTimings(
     /// <summary>Connect time excluding TLS, since HAR includes <c>ssl</c> inside <c>connect</c>.</summary>
     public double TcpConnect => Connect < 0 ? -1 : Ssl > 0 ? Math.Max(0, Connect - Ssl) : Connect;
 
-    /// <summary>Sum of applicable phases without double counting <c>ssl</c> (SPEC 5.2).</summary>
+    /// <summary>Sum of applicable phases without double counting <c>ssl</c>.</summary>
     public double Total
     {
         get
@@ -54,7 +54,7 @@ public enum BodyTextEncoding : byte
     /// <summary>The JSON string is the text itself.</summary>
     None,
 
-    /// <summary><c>encoding: "base64"</c>; the JSON string must be decoded before display (SPEC 5.2).</summary>
+    /// <summary><c>encoding: "base64"</c>; the JSON string must be decoded before display.</summary>
     Base64,
 
     /// <summary>An encoding value this application does not understand; shown undecoded.</summary>
@@ -72,14 +72,14 @@ public readonly record struct BodyRef(long Offset, int Length, BodyTextEncoding 
     public int ApproximateLength => Exists ? Math.Max(0, Length - 2) : 0;
 }
 
-/// <summary>Display color marks for user annotations (SPEC 6.2).</summary>
+/// <summary>Display color marks for user annotations.</summary>
 public static class ColorMarks
 {
     public static readonly IReadOnlyList<string> All = ["red", "orange", "yellow", "green", "blue", "purple"];
 }
 
 /// <summary>
-/// One row of the index: the list columns, the headers, and byte offsets of the bodies (SPEC 5.3).
+/// One row of the index: the list columns, the headers, and byte offsets of the bodies.
 /// Everything else about the entry is read from <see cref="Source"/> on demand.
 /// </summary>
 public sealed class HarEntry
@@ -178,7 +178,7 @@ public sealed class HarEntry
 
     public string? Connection { get; internal set; }
 
-    // Vendor fields surfaced in the UI (SPEC 5.1).
+    // Vendor fields surfaced in the UI.
     public string? ResourceType { get; internal set; }
 
     public string? Priority { get; internal set; }
@@ -201,7 +201,7 @@ public sealed class HarEntry
 
     public bool HasCacheInfo { get; internal set; }
 
-    // Annotations (SPEC 6.2), written back to `comment` and `_harlens` on save.
+    // Annotations, written back to `comment` and `_harlens` on save.
     public string? Comment { get; set; }
 
     public string? ColorMark { get; set; }
@@ -219,7 +219,7 @@ public sealed class HarEntry
     /// <summary>UI flag: edited since the session was last saved.</summary>
     public bool AnnotationsDirty { get; set; }
 
-    /// <summary>Source file label for merged sessions (SPEC 5.5).</summary>
+    /// <summary>Source file label for merged sessions.</summary>
     public string? SourceTag { get; set; }
 
     /// <summary>Cached resource category for the type chips, -1 until computed.</summary>
@@ -312,7 +312,7 @@ public sealed class HarEntry
     /// <summary>Path and query, computed on demand (list column).</summary>
     public string Path => UrlParts.Split(_url).PathAndQuery;
 
-    /// <summary>Host with port when the port is not the scheme default (Fiddler's Host column).</summary>
+    /// <summary>Host with port when the port is not the scheme default.</summary>
     public string HostDisplay => Port > 0 && !Http.UrlParts.IsDefaultPort(Scheme, Port)
         ? $"{Host}:{Port.ToString(CultureInfo.InvariantCulture)}"
         : Host;

@@ -3,7 +3,7 @@ using System.Globalization;
 namespace HarLens.Core.Http;
 
 /// <summary>
-/// Semantic equality for <see cref="HttpRequestSpec"/>, used by the cURL round-trip rule (SPEC 7.3).
+/// Semantic equality for <see cref="HttpRequestSpec"/>, used by the cURL round-trip rule.
 /// Two requests are equivalent when they would put the same request on the wire with the same options.
 /// The body editing mode (raw, JSON, form grid) is a UI hint and is not compared; the body content is.
 /// Disabled headers are not compared because they are never sent or exported.

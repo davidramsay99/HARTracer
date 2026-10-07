@@ -4,7 +4,7 @@ using HarLens.Core.Text;
 
 namespace HarLens.Core.Http;
 
-/// <summary>One part of a captured multipart/form-data body, for the Pretty parts grid (SPEC 6.3).</summary>
+/// <summary>One part of a captured multipart/form-data body, for the Pretty parts grid.</summary>
 public sealed class MultipartSection
 {
     public List<HarHeader> Headers { get; } = [];

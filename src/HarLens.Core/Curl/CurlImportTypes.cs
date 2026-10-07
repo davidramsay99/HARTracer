@@ -24,7 +24,7 @@ public sealed class CurlParseOptions
 
     /// <summary>
     /// Directory that relative <c>@file</c> references resolve against. When null, no referenced file is read
-    /// or checked: each reference is reported as unresolved with a warning (SPEC 7.2).
+    /// or checked: each reference is reported as unresolved with a warning.
     /// </summary>
     public string? FileBaseDirectory { get; set; }
 }

@@ -22,7 +22,7 @@ public sealed class SanitizeResult
 }
 
 /// <summary>
-/// Produces a sanitized copy of a session (SPEC 8). Two passes: the first applies the name-based rules and
+/// Produces a sanitized copy of a session. Two passes: the first applies the name-based rules and
 /// collects every secret value removed; the second applies all rules plus a sweep that removes any other
 /// occurrence of those values anywhere in the file. Bodies are decoded in memory; nothing temporary is written,
 /// and the source file is never modified.

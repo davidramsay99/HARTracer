@@ -7,7 +7,7 @@ using HarLens.Core.Settings;
 namespace HarLens.App.Tests;
 
 /// <summary>
-/// Drives the real windows with fixtures (SPEC 12.2 items 1 and 2 at the application level): opening, selecting,
+/// Drives the real windows with fixtures: opening, selecting,
 /// every body view, filtering, the tool windows, themes, and that HarLens.Net stays unloaded throughout.
 /// </summary>
 public sealed class UiSmokeTests
@@ -22,7 +22,7 @@ public sealed class UiSmokeTests
         Application.Current.MainWindow = window;
         window.Show();
 
-        foreach (var fixture in new[] { "chromium.har", "firefox.har", "fiddler.har", "base64-bodies.har", "compressed-bodies.har", "chromium.har.gz", "truncated.har" })
+        foreach (var fixture in new[] { "chromium.har", "firefox.har", "proxy-export.har", "base64-bodies.har", "compressed-bodies.har", "chromium.har.gz", "truncated.har" })
         {
             await main.OpenFileAsync(Fixture(fixture));
             var tab = main.SelectedSession!;

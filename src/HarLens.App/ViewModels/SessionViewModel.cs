@@ -18,7 +18,7 @@ using HarLens.Core.Stats;
 
 namespace HarLens.App.ViewModels;
 
-/// <summary>One tab: a loaded session with its list, filter bar and inspector (SPEC 5.5, 6).</summary>
+/// <summary>One tab: a loaded session with its list, filter bar and inspector.</summary>
 public sealed partial class SessionViewModel : ObservableObject, IDisposable
 {
     private readonly DispatcherTimer _filterTimer;
@@ -91,7 +91,7 @@ public sealed partial class SessionViewModel : ObservableObject, IDisposable
     [ObservableProperty]
     public partial bool HasUnsavedChanges { get; set; }
 
-    // Type chips (SPEC 6.4).
+    // Type chips.
     [ObservableProperty]
     public partial bool ChipFetch { get; set; }
 
@@ -181,7 +181,7 @@ public sealed partial class SessionViewModel : ObservableObject, IDisposable
         return _pageLabels.TryGetValue((entry.Source, pageRef), out var label) ? label : pageRef;
     }
 
-    /// <summary>Loads a file off the UI thread with progress and cancel (SPEC 10: no UI-thread work over 50 ms).</summary>
+    /// <summary>Loads a file off the UI thread with progress and cancel (no UI-thread work over 50 ms).</summary>
     public async Task LoadAsync(string path)
     {
         IsLoading = true;
@@ -291,7 +291,7 @@ public sealed partial class SessionViewModel : ObservableObject, IDisposable
         _ = ApplyFilterAsync();
     }
 
-    /// <summary>Filters the index off the UI thread, then re-applies the current sort (SPEC 6.4).</summary>
+    /// <summary>Filters the index off the UI thread, then re-applies the current sort.</summary>
     public async Task ApplyFilterAsync()
     {
         if (Session is null)
@@ -530,7 +530,7 @@ public sealed partial class SessionViewModel : ObservableObject, IDisposable
         }
     }
 
-    // ------------------------------------------------------------------ per-entry actions (SPEC 6.8)
+    // ------------------------------------------------------------------ per-entry actions
 
     private static bool Masking => AppServices.Current.Settings.MaskSecrets;
 
@@ -577,7 +577,7 @@ public sealed partial class SessionViewModel : ObservableObject, IDisposable
         }
     }
 
-    /// <summary>Copy as cURL (bash or cmd), PowerShell Invoke-WebRequest or raw HTTP (SPEC 6.8).</summary>
+    /// <summary>Copy as cURL (bash or cmd), PowerShell Invoke-WebRequest or raw HTTP.</summary>
     [RelayCommand]
     private void CopyAs(string? format)
     {
@@ -706,7 +706,7 @@ public sealed partial class SessionViewModel : ObservableObject, IDisposable
     [RelayCommand]
     private void Statistics() => _main.ShowStatistics(this, SelectedRowList.Count > 1 ? SelectedRowList.Select(r => r.Entry).ToList() : null);
 
-    // ------------------------------------------------------------------ per-session exports (SPEC 6.8)
+    // ------------------------------------------------------------------ per-session exports
 
     public string SuggestedName(string suffix, string extension)
     {

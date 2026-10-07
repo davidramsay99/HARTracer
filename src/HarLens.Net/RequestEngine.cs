@@ -9,7 +9,7 @@ using HarLens.Core.Http;
 namespace HarLens.Net;
 
 /// <summary>
-/// The request engine (SPEC 7.4). Sends a composed request over SocketsHttpHandler, one handler per hop, follows
+/// The request engine. Sends a composed request over SocketsHttpHandler, one handler per hop, follows
 /// redirects itself when asked (curl -L semantics), and records every hop as its own exchange with exact wire bytes,
 /// timings and TLS details. Loaded by reflection through <see cref="RequestEngineLoader"/>; it holds no state, so one
 /// instance can serve concurrent sends.

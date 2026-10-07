@@ -1,5 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <!-- Request engine. The single assembly permitted to use System.Net.* (SPEC 3.1).
+  <!-- Request engine. The single assembly permitted to use System.Net.*.
        HarLens.App never references these types directly; it loads this assembly
        through HarLens.Core.Engine.RequestEngineLoader the first time Send is pressed. -->
   <PropertyGroup>

@@ -19,7 +19,7 @@ public sealed class SanitizerTests
         return options;
     }
 
-    /// <summary>Acceptance test 9: the sanitized export contains none of the planted secret strings (byte search).</summary>
+    /// <summary>The sanitized export contains none of the planted secret strings (byte search).</summary>
     [Theory]
     [InlineData(false)]
     [InlineData(true)]

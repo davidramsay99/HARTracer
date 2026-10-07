@@ -6,7 +6,7 @@ namespace HarLens.Net;
 internal sealed record DecodeResult(byte[] Body, bool Decoded, bool Truncated, List<string> Notices);
 
 /// <summary>
-/// Decodes a response body according to Content-Encoding with System.IO.Compression (SPEC 4.1). Done after the raw
+/// Decodes a response body according to Content-Encoding with System.IO.Compression. Done after the raw
 /// bytes are read, instead of AutomaticDecompression, so the header and the wire size stay visible.
 /// </summary>
 internal static class ContentDecoder

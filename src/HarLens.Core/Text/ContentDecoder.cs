@@ -3,7 +3,7 @@ using System.IO.Compression;
 namespace HarLens.Core.Text;
 
 /// <summary>
-/// Decodes HTTP content codings with System.IO.Compression (SPEC 4.1): gzip, deflate (zlib or raw) and brotli.
+/// Decodes HTTP content codings with System.IO.Compression: gzip, deflate (zlib or raw) and brotli.
 /// Zstandard has no decoder in the base library and is reported, not decoded.
 /// </summary>
 public static class ContentDecoder

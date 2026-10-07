@@ -10,7 +10,7 @@ public sealed class FilterTests : IDisposable
 
     public void Dispose() => _session.Dispose();
 
-    /// <summary>Acceptance test 11: every SPEC 6.4 example returns the expected entry IDs from the filter fixture.</summary>
+    /// <summary>Every documented filter example returns the expected entry IDs from the filter fixture.</summary>
     [Theory]
     [InlineData("status-code:403", new[] { 3 })]
     [InlineData("status-code:5xx", new[] { 6, 7 })]

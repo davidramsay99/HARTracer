@@ -128,7 +128,7 @@ public enum ConnectOverrideKind
 
 /// <summary>
 /// Sends the TCP connection for <see cref="Host"/>:<see cref="Port"/> to a different address while the URL host
-/// stays in the Host header and in SNI (SPEC 7.1).
+/// stays in the Host header and in SNI.
 /// </summary>
 public sealed class ConnectOverride
 {
@@ -211,7 +211,7 @@ public sealed class RequestOptions
 
     public ClientCertificateSpec? ClientCertificate { get; set; }
 
-    /// <summary>Proxy URI. Null means a direct connection; the system proxy is never used implicitly (SPEC 3.5).</summary>
+    /// <summary>Proxy URI. Null means a direct connection; the system proxy is never used implicitly.</summary>
     public string? Proxy { get; set; }
 
     public List<ConnectOverride> ConnectOverrides { get; set; } = [];

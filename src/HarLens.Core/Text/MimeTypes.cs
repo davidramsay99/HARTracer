@@ -82,7 +82,7 @@ public static class MimeTypes
 
     public static bool IsImage(string? mimeType) => StripParameters(mimeType).StartsWith("image/", StringComparison.Ordinal);
 
-    /// <summary>True for MIME types whose bodies are text (SPEC 6.5: base64 bodies are decoded before searching when textual).</summary>
+    /// <summary>True for MIME types whose bodies are text (base64 bodies are decoded before searching when textual).</summary>
     public static bool IsTextual(string? mimeType)
     {
         var m = StripParameters(mimeType);

@@ -3,7 +3,7 @@ using HarLens.Core.Model;
 
 namespace HarLens.Net.Tests;
 
-/// <summary>SPEC 12.2 acceptance test 8 and curl -L semantics.</summary>
+/// <summary>Redirects follow curl -L semantics.</summary>
 public sealed class RedirectTests
 {
     private static LoopbackServer StartRedirectServer() => LoopbackServer.Start(request => request.Path switch

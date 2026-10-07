@@ -5,10 +5,10 @@ public enum SessionKind
     /// <summary>A single opened file.</summary>
     File,
 
-    /// <summary>Entries combined from several files (SPEC 5.5).</summary>
+    /// <summary>Entries combined from several files.</summary>
     Merged,
 
-    /// <summary>Requests sent from the composer (SPEC 7.5).</summary>
+    /// <summary>Requests sent from the composer.</summary>
     Composer,
 }
 
@@ -76,7 +76,7 @@ public sealed class HarSession : IDisposable
         return session;
     }
 
-    /// <summary>Combines sessions into one, tagging each entry with its source file (SPEC 5.5).</summary>
+    /// <summary>Combines sessions into one, tagging each entry with its source file.</summary>
     public static HarSession Merge(IReadOnlyList<HarSession> sessions, string name)
     {
         var merged = new HarSession(name, SessionKind.Merged);

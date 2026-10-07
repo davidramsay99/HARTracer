@@ -1,7 +1,7 @@
 namespace HarLens.Core.Curl;
 
 /// <summary>
-/// Imports a pasted curl command into an <see cref="Http.HttpRequestSpec"/> (SPEC 7.2). Parsing never throws for
+/// Imports a pasted curl command into an <see cref="Http.HttpRequestSpec"/>. Parsing never throws for
 /// malformed input: anything that cannot be represented is reported in <see cref="CurlImportResult.Warnings"/>.
 /// Referenced files are read only when <see cref="CurlParseOptions.FileBaseDirectory"/> is set.
 /// </summary>

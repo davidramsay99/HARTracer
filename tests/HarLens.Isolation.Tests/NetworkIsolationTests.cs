@@ -12,7 +12,7 @@ using HarLens.Core.Stats;
 namespace HarLens.Isolation.Tests;
 
 /// <summary>
-/// SPEC 3.1 and acceptance test 2: after opening a HAR, filtering, searching and exporting, HarLens.Net.dll is not
+/// After opening a HAR, filtering, searching and exporting, HarLens.Net.dll is not
 /// loaded. The DLL is present beside this assembly (project reference), so the test proves it is not loaded rather
 /// than merely absent. This is the only test in this assembly that touches the engine, and it runs in its own
 /// test host process.

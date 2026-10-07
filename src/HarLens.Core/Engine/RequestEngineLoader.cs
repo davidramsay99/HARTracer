@@ -3,7 +3,7 @@ using System.Reflection;
 namespace HarLens.Core.Engine;
 
 /// <summary>
-/// Loads HarLens.Net on demand (SPEC 3.1). Nothing else in HarLens.Core or HarLens.App names a type from that
+/// Loads HarLens.Net on demand. Nothing else in HarLens.Core or HarLens.App names a type from that
 /// assembly, so the runtime never loads it until <see cref="Load"/> is called.
 /// </summary>
 public static class RequestEngineLoader

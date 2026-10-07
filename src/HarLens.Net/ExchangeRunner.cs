@@ -151,7 +151,7 @@ internal static class ExchangeRunner
             UseCookies = false,
             AutomaticDecompression = DecompressionMethods.None,
 
-            // Only the explicit proxy, never the system or default proxy, never WPAD (SPEC 3.5).
+            // Only the explicit proxy, never the system or default proxy, never WPAD.
             UseProxy = context.Proxy is not null,
             Proxy = context.Proxy,
             Credentials = null,
@@ -167,7 +167,7 @@ internal static class ExchangeRunner
             PlaintextStreamFilter = trace.FilterAsync,
             SslOptions = new SslClientAuthenticationOptions
             {
-                // No CRL, OCSP or AIA fetches: the engine connects only where the user pointed it (SPEC 3.2).
+                // No CRL, OCSP or AIA fetches: the engine connects only where the user pointed it.
                 CertificateRevocationCheckMode = X509RevocationMode.NoCheck,
                 CertificateChainPolicy = new X509ChainPolicy
                 {

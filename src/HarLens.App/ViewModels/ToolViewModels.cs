@@ -11,7 +11,7 @@ using HarLens.Core.Stats;
 
 namespace HarLens.App.ViewModels;
 
-/// <summary>Search across all entries (Ctrl+Shift+F, SPEC 6.5): background thread, progress, cancel.</summary>
+/// <summary>Search across all entries (Ctrl+Shift+F): background thread, progress, cancel.</summary>
 public sealed partial class SearchViewModel : ObservableObject
 {
     private readonly MainViewModel _main;
@@ -158,7 +158,7 @@ public sealed partial class SearchViewModel : ObservableObject
 
 public sealed record HeaderDiffRowView(string Name, string Left, string Right, DiffKind Kind);
 
-/// <summary>Side-by-side compare of two entries (SPEC 6.6), also used for original versus replay.</summary>
+/// <summary>Side-by-side compare of two entries, also used for original versus replay.</summary>
 public sealed class CompareViewModel
 {
     public CompareViewModel(HarEntry left, HarEntry right)
@@ -204,7 +204,7 @@ public sealed record EntryStatRow(int Id, string Method, string Url, string Valu
 
 public sealed record HistogramBar(double Height, string ToolTip, double FailedHeight);
 
-/// <summary>The statistics panel (SPEC 6.7) for a selection or the whole session.</summary>
+/// <summary>The statistics panel for a selection or the whole session.</summary>
 public sealed class StatisticsViewModel
 {
     private const double BarMax = 160;
@@ -260,7 +260,7 @@ public sealed class StatisticsViewModel
             total == 0 ? "" : $"{100.0 * g.Count / total:0.#}%", total == 0 ? 0 : 200.0 * g.Count / total)).ToList();
 }
 
-/// <summary>Export sanitized HAR (SPEC 8): options, a preview of every redaction, then write.</summary>
+/// <summary>Export sanitized HAR: options, a preview of every redaction, then write.</summary>
 public sealed partial class SanitizeViewModel : ObservableObject
 {
     private readonly SessionViewModel _tab;

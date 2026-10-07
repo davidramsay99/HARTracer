@@ -1,22 +1,22 @@
-N:System.Net.Http;SPEC 3.1: only HarLens.Net may use the network
-N:System.Net.Sockets;SPEC 3.1: only HarLens.Net may use the network
-N:System.Net.WebSockets;SPEC 3.1: only HarLens.Net may use the network
-T:System.Net.Dns;SPEC 3.1: only HarLens.Net may use the network
-N:System.Net.NetworkInformation;SPEC 3.1: only HarLens.Net may use the network
-N:System.Net.Security;SPEC 3.1: only HarLens.Net may use the network
-N:System.Net.Quic;SPEC 3.1: only HarLens.Net may use the network
-N:System.Net.Mail;SPEC 3.1: only HarLens.Net may use the network
-T:System.Net.WebClient;SPEC 3.1: only HarLens.Net may use the network
-T:System.Net.WebRequest;SPEC 3.1: only HarLens.Net may use the network
-T:System.Net.HttpWebRequest;SPEC 3.1: only HarLens.Net may use the network
-T:System.Net.FtpWebRequest;SPEC 3.1: only HarLens.Net may use the network
-T:System.Net.FileWebRequest;SPEC 3.1: only HarLens.Net may use the network
-T:System.Net.HttpListener;SPEC 3.1: only HarLens.Net may use the network
-T:System.Net.ServicePointManager;SPEC 3.1: only HarLens.Net may use the network
-T:System.Net.WebProxy;SPEC 3.1: only HarLens.Net may use the network
-N:HarLens.Net;SPEC 3.1: load the engine through HarLens.Core.Engine.RequestEngineLoader so HarLens.Net stays unloaded until Send
-T:System.Windows.Controls.WebBrowser;SPEC 3.4: no embedded browser
-T:System.Windows.Controls.Frame;SPEC 3.4: Frame can navigate to remote content
-T:System.Windows.Navigation.NavigationWindow;SPEC 3.4: navigation can fetch remote content
-P:System.Windows.Media.Imaging.BitmapImage.UriSource;SPEC 3.1: images load from in-memory streams only
-T:System.Diagnostics.Process;SPEC 3.1: the application launches no external program (no online help, no browser)
+N:System.Net.Http;only HarLens.Net may use the network
+N:System.Net.Sockets;only HarLens.Net may use the network
+N:System.Net.WebSockets;only HarLens.Net may use the network
+T:System.Net.Dns;only HarLens.Net may use the network
+N:System.Net.NetworkInformation;only HarLens.Net may use the network
+N:System.Net.Security;only HarLens.Net may use the network
+N:System.Net.Quic;only HarLens.Net may use the network
+N:System.Net.Mail;only HarLens.Net may use the network
+T:System.Net.WebClient;only HarLens.Net may use the network
+T:System.Net.WebRequest;only HarLens.Net may use the network
+T:System.Net.HttpWebRequest;only HarLens.Net may use the network
+T:System.Net.FtpWebRequest;only HarLens.Net may use the network
+T:System.Net.FileWebRequest;only HarLens.Net may use the network
+T:System.Net.HttpListener;only HarLens.Net may use the network
+T:System.Net.ServicePointManager;only HarLens.Net may use the network
+T:System.Net.WebProxy;only HarLens.Net may use the network
+N:HarLens.Net;load the engine through HarLens.Core.Engine.RequestEngineLoader so HarLens.Net stays unloaded until Send
+T:System.Windows.Controls.WebBrowser;no embedded browser
+T:System.Windows.Controls.Frame;Frame can navigate to remote content
+T:System.Windows.Navigation.NavigationWindow;navigation can fetch remote content
+P:System.Windows.Media.Imaging.BitmapImage.UriSource;images load from in-memory streams only
+T:System.Diagnostics.Process;the application launches no external program (no online help, no browser)

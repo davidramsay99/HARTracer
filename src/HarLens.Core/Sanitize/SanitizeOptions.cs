@@ -1,6 +1,6 @@
 namespace HarLens.Core.Sanitize;
 
-/// <summary>Redaction rules for the sanitized export (SPEC 8). Name lists are case-insensitive.</summary>
+/// <summary>Redaction rules for the sanitized export. Name lists are case-insensitive.</summary>
 public sealed class SanitizeOptions
 {
     public static readonly IReadOnlyList<string> DefaultHeaderNames =
@@ -87,5 +87,5 @@ public enum RedactionKind
     BodyDropped,
 }
 
-/// <summary>One redaction, listed in the preview before anything is written (SPEC 8). The original is shown masked.</summary>
+/// <summary>One redaction, listed in the preview before anything is written. The original is shown masked.</summary>
 public sealed record Redaction(int EntryId, string Location, RedactionKind Kind, string Rule, string MaskedOriginal, string Replacement);

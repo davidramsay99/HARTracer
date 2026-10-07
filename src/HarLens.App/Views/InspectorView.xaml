@@ -4,7 +4,7 @@
              xmlns:views="clr-namespace:HarLens.App.Views"
              xmlns:controls="clr-namespace:HarLens.App.Controls">
   <UserControl.Resources>
-    <!-- General block above the headers: URL, method, status, remote address, HTTP version, connection ID (SPEC 6.3). -->
+    <!-- General block above the headers: URL, method, status, remote address, HTTP version, connection ID. -->
     <DataTemplate x:Key="GeneralBlock">
       <ItemsControl ItemsSource="{Binding DataContext.General, RelativeSource={RelativeSource AncestorType=UserControl}}" Margin="0,0,0,6">
         <ItemsControl.ItemTemplate>

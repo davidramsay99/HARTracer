@@ -3,7 +3,7 @@ using HarLens.Core.Text;
 
 namespace HarLens.Core.Filtering;
 
-/// <summary>The quick-toggle type chips (SPEC 6.4), in Chrome DevTools order.</summary>
+/// <summary>The quick-toggle type chips, in Chrome DevTools order.</summary>
 public enum ResourceCategory
 {
     Fetch,

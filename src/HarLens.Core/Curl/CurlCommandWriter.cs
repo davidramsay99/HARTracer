@@ -5,7 +5,7 @@ using HarLens.Core.Http;
 namespace HarLens.Core.Curl;
 
 /// <summary>
-/// Writes a request as a curl command for bash, cmd.exe or PowerShell (SPEC 7.3). The output is designed so that
+/// Writes a request as a curl command for bash, cmd.exe or PowerShell. The output is designed so that
 /// <see cref="CurlParser.Parse"/> reads back an equivalent request; every export is checked that way and any
 /// difference is reported as a warning.
 /// </summary>

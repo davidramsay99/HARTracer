@@ -8,7 +8,7 @@ public sealed class GlobalStateCollection
     public const string Name = "Process-wide state";
 }
 
-/// <summary>SPEC 3.5: the system proxy is never used; an explicit proxy is opt-in per request.</summary>
+/// <summary>The system proxy is never used; an explicit proxy is opt-in per request.</summary>
 [Collection(GlobalStateCollection.Name)]
 public sealed class SystemProxyTests
 {

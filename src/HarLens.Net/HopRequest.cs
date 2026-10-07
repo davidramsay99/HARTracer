@@ -37,7 +37,7 @@ internal sealed record HopRequest(
 /// <summary>curl -L semantics for following redirects one hop at a time.</summary>
 internal static class RedirectPolicy
 {
-    // Headers that describe a body; dropped together with the body when a redirect switches to GET (Fetch spec).
+    // Headers that describe a body; dropped together with the body when a redirect switches to GET (Fetch Standard).
     private static readonly HashSet<string> s_bodyHeaders = new(StringComparer.OrdinalIgnoreCase)
     {
         "Content-Type", "Content-Encoding", "Content-Language", "Content-Location", "Content-Length",

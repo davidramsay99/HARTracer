@@ -22,10 +22,10 @@ public enum ExportFormat
 
 public sealed class ExportOptions
 {
-    /// <summary>Export a Content-Length header found in the request. Off by default (SPEC 7.3).</summary>
+    /// <summary>Export a Content-Length header found in the request. Off by default.</summary>
     public bool IncludeContentLength { get; set; }
 
-    /// <summary>Export HTTP/2 pseudo-headers (names starting with ':'). Off by default (SPEC 7.3).</summary>
+    /// <summary>Export HTTP/2 pseudo-headers (names starting with ':'). Off by default.</summary>
     public bool IncludePseudoHeaders { get; set; }
 }
 
@@ -38,7 +38,7 @@ public sealed class ExportResult
     public List<string> Warnings { get; } = [];
 }
 
-/// <summary>Generates curl commands, an Invoke-WebRequest script or a raw HTTP message from a request (SPEC 7.3).</summary>
+/// <summary>Generates curl commands, an Invoke-WebRequest script or a raw HTTP message from a request.</summary>
 public static class RequestExporter
 {
     public static ExportResult Export(HttpRequestSpec request, ExportFormat format, ExportOptions? options = null)

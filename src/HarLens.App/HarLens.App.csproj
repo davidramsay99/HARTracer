@@ -1,5 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <!-- WPF shell, views, view models. No network (SPEC 3.1, enforced by BannedSymbols.txt).
+  <!-- WPF shell, views, view models. No network (enforced by BannedSymbols.txt).
        References HarLens.Net only so that the assembly ships beside (or inside) HarLens.exe;
        BannedSymbols.txt forbids naming its types, and RequestEngineLoader loads it on first Send. -->
   <PropertyGroup>
@@ -11,7 +11,7 @@
     <RootNamespace>HarLens.App</RootNamespace>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <EnforceLocalOnly>true</EnforceLocalOnly>
-    <!-- WPF0001: Application.ThemeMode (Fluent light/dark) is marked experimental. See DECISIONS.md. -->
+    <!-- WPF0001: Application.ThemeMode (Fluent light/dark) is marked experimental. -->
     <NoWarn>$(NoWarn);WPF0001</NoWarn>
     <PublishTrimmed>false</PublishTrimmed>
     <PublishAot>false</PublishAot>

@@ -2,7 +2,7 @@ using HarLens.Core.Http;
 
 namespace HarLens.Net.Tests;
 
-/// <summary>SPEC 12.2 acceptance test 7: the connect override reaches the loopback server with the URL host in Host and SNI.</summary>
+/// <summary>The connect override reaches the loopback server with the URL host in Host and SNI.</summary>
 public sealed class ConnectOverrideTests
 {
     private static readonly LoopbackServerOptions s_tls = new() { Certificate = TestCertificates.Server };

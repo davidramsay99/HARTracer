@@ -2,7 +2,7 @@ using HarLens.Core.Model;
 
 namespace HarLens.Core.Http;
 
-/// <summary>A request cookie or a parsed <c>Set-Cookie</c> with its attributes as columns (SPEC 6.3).</summary>
+/// <summary>A request cookie or a parsed <c>Set-Cookie</c> with its attributes as columns.</summary>
 public sealed class CookieInfo
 {
     public string Name { get; init; } = "";

@@ -7,7 +7,7 @@ using HarLens.Core.Har;
 namespace HarLens.App.Controls;
 
 /// <summary>
-/// The Waterfall column (SPEC 6.2): stacked bars for blocked, DNS, connect, TLS, send, wait and receive on a shared
+/// The Waterfall column: stacked bars for blocked, DNS, connect, TLS, send, wait and receive on a shared
 /// time axis, drawn directly in OnRender so that recycled rows stay cheap. The tooltip lists each phase in milliseconds.
 /// </summary>
 public sealed class WaterfallBar : FrameworkElement

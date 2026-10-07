@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 namespace HarLens.Core.Sanitize;
 
 /// <summary>
-/// "Mask secrets in UI" (SPEC 8): replaces sensitive values with <c>••••</c> plus the last four characters, for
+/// "Mask secrets in UI": replaces sensitive values with <c>••••</c> plus the last four characters, for
 /// screen sharing. Copy operations use the same functions so that the clipboard honors the mask.
 /// </summary>
 public static class SecretMasker

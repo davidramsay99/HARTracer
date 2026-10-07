@@ -149,7 +149,7 @@
       <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center"
                   Visibility="{Binding Sessions.Count, Converter={StaticResource InverseBoolToVisibility}}">
         <TextBlock Text="Open a HAR file (Ctrl+O) or drop files here." FontSize="16" HorizontalAlignment="Center" />
-        <TextBlock Text="HAR 1.1 and 1.2, .har.gz, and Fiddler .saz archives. Nothing is sent anywhere."
+        <TextBlock Text="HAR 1.1 and 1.2, .har.gz, and .saz session archives. Nothing is sent anywhere."
                    Foreground="{DynamicResource MutedForeground}" HorizontalAlignment="Center" Margin="0,6,0,0" />
         <Button Content="Open…" Command="{Binding OpenCommand}" HorizontalAlignment="Center" Margin="0,14,0,0" Padding="18,4" />
       </StackPanel>

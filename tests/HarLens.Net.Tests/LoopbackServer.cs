@@ -124,7 +124,7 @@ internal sealed class LoopbackServerOptions
 }
 
 /// <summary>
-/// In-process HTTP/1.1 server on 127.0.0.1 and an ephemeral port (SPEC 4.2). Records every request and answers each
+/// In-process HTTP/1.1 server on 127.0.0.1 and an ephemeral port. Records every request and answers each
 /// with a scripted response. Optional TLS captures the SNI and the client certificate.
 /// </summary>
 internal sealed class LoopbackServer : IAsyncDisposable

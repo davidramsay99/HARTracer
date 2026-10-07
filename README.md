@@ -1,8 +1,7 @@
 # HarLens
 
-A local Windows viewer for HAR (HTTP Archive) files, laid out like Fiddler Classic, with a request composer that
-imports, edits, sends and exports cURL commands. Built from [SPEC.md](SPEC.md); deviations and judgment calls are in
-[DECISIONS.md](DECISIONS.md).
+A local Windows viewer for HAR (HTTP Archive) files, with a session list beside a request and response inspector,
+and a request composer that imports, edits, sends and exports cURL commands.
 
 ## Local only
 
@@ -22,7 +21,7 @@ This is enforced, not just intended:
 
 ## What it does
 
-- Opens HAR 1.1 and 1.2 (`.har`, `.json`, `.har.gz`) and Fiddler `.saz` archives, keeping unknown and vendor fields so
+- Opens HAR 1.1 and 1.2 (`.har`, `.json`, `.har.gz`) and `.saz` session archives, keeping unknown and vendor fields so
   that Save loses nothing. Large files stream into an index; bodies are read on demand. Truncated files load every
   complete entry and report where parsing stopped.
 - Session list: sortable, reorderable, hideable columns; custom columns bound to any header or vendor field; status
@@ -78,12 +77,46 @@ On Linux and macOS, Core, Net and the isolation tests run normally; the WPF app 
 src/HarLens.Core   HAR model, streaming parser, index, filter, search, sanitizer, cURL, compare, SAZ. No UI, no network.
 src/HarLens.Net    Request engine: the only assembly that uses System.Net.*
 src/HarLens.App    WPF shell, views, view models
-tests/             Core, Net, Isolation (SPEC 3.1), App (Windows UI smoke) tests; fixtures/ (synthetic only)
+tests/             Core, Net, Isolation, App (Windows UI smoke) tests; fixtures/ (synthetic only)
 scripts/           vendor-packages, package, fixture and notices generators
 ```
 
-## Status
+## Dependencies
 
-Builds and passes every test on Linux and on Windows Server 2025 (GitHub Actions), including a UI smoke test that
-drives the real windows. Cold start time and 200,000-row scrolling still need a manual check on a Windows desktop.
-Details and measurements: [DECISIONS.md](DECISIONS.md#verification-status).
+| Package | Version | Use |
+| :- | :- | :- |
+| CommunityToolkit.Mvvm | 8.4.2 | View-model source generators |
+| AvalonEdit | 6.3.1.120 | Body and raw-message editors |
+| Microsoft.CodeAnalysis.BannedApiAnalyzers | 4.14.0 | Build-time network API ban. 5.x needs a newer compiler than SDK 10.0.1xx ships. |
+| xunit / xunit.runner.visualstudio / Microsoft.NET.Test.Sdk | 2.9.3 / 3.1.5 / 18.10.1 | Tests |
+
+Python 3 is needed only to regenerate committed files (`scripts/fixtures/make_fixtures.py`, `scripts/make-notices.py`).
+
+## Known limitations
+
+- A custom Host header in the composer also sets the TLS server name and certificate check, unlike curl, which uses
+  the URL host. Connect overrides (`--resolve`, `--connect-to`) keep the URL host in both.
+- HTTP/2 over plain http (h2c) falls back to HTTP/1.1 with a notice. HTTP/3 is never attempted.
+- Password-protected `.saz` archives are reported as unsupported.
+- The exe is unsigned. Third-party antivirus can delay start and file opening until HarLens is excluded.
+- On Windows 10 the Fluent theme may render differently from Windows 11.
+
+## Verification
+
+| Check | Linux (SDK 10.0.112) | Windows Server 2025, GitHub Actions (SDK 10.0.401) |
+| :- | :- | :- |
+| `dotnet restore --locked-mode`; `dotnet build -c Release -warnaserror` | Pass | Pass |
+| Core, Net and Isolation tests | Pass | Pass |
+| UI smoke test (real windows, every fixture, filters, themes, tool windows, merge) | Not runnable | Pass |
+| 100 MB HAR indexed | 0.5 to 1.2 s | 0.46 s |
+| 1.43 GB HAR | 6.7 s, peak working set 269 MB | 5.8 s, peak working set 250 MB |
+| 200,000 entries, eight filter expressions, cold first pass | slowest 92 ms | slowest 55 ms |
+| Single-file publish, win-x64 and win-arm64 | Pass | Pass |
+
+Not yet measured: cold start to an interactive window, and scrolling 200,000 rows.
+
+## Open questions
+
+1. **License**: the placeholder reserves all rights.
+2. **h2c**: offer prior-knowledge HTTP/2 over plain http, or keep the HTTP/1.1 fallback?
+3. **Password-protected SAZ**: support needs a zip AES decoder, a new dependency.

@@ -5,7 +5,7 @@ using System.Text.Json;
 namespace HarLens.Core.Tests.Fixtures;
 
 /// <summary>
-/// Writes large synthetic HAR files at test time (SPEC 12.3: the 200,000-entry and 1 GB fixtures are generated, not committed).
+/// Writes large synthetic HAR files at test time (the 200,000-entry and 1 GB fixtures are generated, not committed).
 /// Output is deterministic for a given argument set and cached in the temp directory between runs.
 /// </summary>
 internal static class LargeHarGenerator

@@ -3,7 +3,7 @@ using HarLens.Core.Http;
 
 namespace HarLens.Core.Tests.Curl;
 
-/// <summary>Acceptance test 5: each browser-style fixture imports to its expected request model.</summary>
+/// <summary>Each browser-style fixture imports to its expected request model.</summary>
 public class CurlFixtureImportTests
 {
     public static TheoryData<string> Fixtures() => CurlFixtures.All();

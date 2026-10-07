@@ -9,7 +9,7 @@ using HarLens.Core.Settings;
 
 namespace HarLens.App.ViewModels;
 
-/// <summary>The shell: tabs, file commands, display toggles, and the tool windows (SPEC 5.5, 6, 9).</summary>
+/// <summary>The shell: tabs, file commands, display toggles, and the tool windows.</summary>
 public sealed partial class MainViewModel : ObservableObject
 {
     private ComposerWindow? _composerWindow;
@@ -406,7 +406,7 @@ public sealed partial class MainViewModel : ObservableObject
         _composerWindow.Activate();
     }
 
-    /// <summary>The "Composer" session tab that every send appends to (SPEC 7.5), created on first use.</summary>
+    /// <summary>The "Composer" session tab that every send appends to, created on first use.</summary>
     public SessionViewModel EnsureComposerSession()
     {
         if (ComposerSession is not null && Sessions.Contains(ComposerSession))

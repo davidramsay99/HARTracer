@@ -3,7 +3,7 @@ using HarLens.Core.Settings;
 
 namespace HarLens.App.Services;
 
-/// <summary>Size and time formatting according to the display toggles (SPEC 9).</summary>
+/// <summary>Size and time formatting according to the display toggles.</summary>
 public static class DisplayFormat
 {
     private static AppSettings Settings => AppServices.Current.Settings;

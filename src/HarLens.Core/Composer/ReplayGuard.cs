@@ -17,7 +17,7 @@ public sealed record CredentialFinding(CredentialLocation Location, string Name,
 }
 
 /// <summary>
-/// Captured requests carry live credentials (SPEC 7.6). Before sending a request that originates from a HAR entry,
+/// Captured requests carry live credentials. Before sending a request that originates from a HAR entry,
 /// the composer asks for confirmation when the captured Authorization, Proxy-Authorization, Cookie or a known
 /// token query parameter is still present with its captured value.
 /// </summary>
@@ -96,7 +96,7 @@ public static class ReplayGuard
     }
 }
 
-/// <summary>Hosts for which the replay prompt is suppressed. Lives for the current run only (SPEC 7.6); never persisted.</summary>
+/// <summary>Hosts for which the replay prompt is suppressed. Lives for the current run only; never persisted.</summary>
 public sealed class ReplayGuardSuppressions
 {
     private readonly HashSet<string> _hosts = new(StringComparer.OrdinalIgnoreCase);

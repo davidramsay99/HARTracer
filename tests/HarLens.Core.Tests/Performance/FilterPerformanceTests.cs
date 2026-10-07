@@ -9,7 +9,7 @@ namespace HarLens.Core.Tests.Performance;
 [Collection("Large files")]
 public sealed class FilterPerformanceTests(ITestOutputHelper output)
 {
-    /// <summary>SPEC 6.4: the filter applies to the index only and returns within 100 ms for 200,000 entries.</summary>
+    /// <summary>The filter applies to the index only and returns within 100 ms for 200,000 entries.</summary>
     [LargeFact]
     public void Two_hundred_thousand_entries_filter_under_100_ms()
     {

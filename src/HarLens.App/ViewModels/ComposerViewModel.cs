@@ -67,7 +67,7 @@ public sealed partial class OverrideRow : ObservableObject
     public partial string TargetPort { get; set; } = "";
 }
 
-/// <summary>The Request Composer (SPEC 7). Sending is impossible while Offline Mode is ON (SPEC 3.3).</summary>
+/// <summary>The Request Composer. Sending is impossible while Offline Mode is ON.</summary>
 public sealed partial class ComposerViewModel : ObservableObject
 {
     private readonly MainViewModel _main;
@@ -147,7 +147,7 @@ public sealed partial class ComposerViewModel : ObservableObject
     [ObservableProperty]
     public partial string BinaryFilePath { get; set; } = "";
 
-    // Auth helper (SPEC 7.1): writes the Authorization header and nothing else.
+    // Auth helper: writes the Authorization header and nothing else.
     [ObservableProperty]
     public partial string AuthUser { get; set; } = "";
 
@@ -400,7 +400,7 @@ public sealed partial class ComposerViewModel : ObservableObject
 
     private static string? Blank(string s) => string.IsNullOrWhiteSpace(s) ? null : s;
 
-    // ------------------------------------------------------------------ URL and query grid, two-way (SPEC 7.1)
+    // ------------------------------------------------------------------ URL and query grid, two-way
 
     partial void OnUrlChanged(string value)
     {
@@ -545,7 +545,7 @@ public sealed partial class ComposerViewModel : ObservableObject
         ImportWarnings = null;
     }
 
-    // ------------------------------------------------------------------ cURL import and export (SPEC 7.2, 7.3)
+    // ------------------------------------------------------------------ cURL import and export
 
     [RelayCommand]
     private void ImportCurl()
@@ -577,7 +577,7 @@ public sealed partial class ComposerViewModel : ObservableObject
         ResultIsError = false;
     }
 
-    // ------------------------------------------------------------------ send (SPEC 7.4, 7.6)
+    // ------------------------------------------------------------------ send
 
     [RelayCommand(CanExecute = nameof(CanSend))]
     private async Task Send()
@@ -621,7 +621,7 @@ public sealed partial class ComposerViewModel : ObservableObject
         _sendCts = new CancellationTokenSource();
         try
         {
-            // First use loads HarLens.Net (SPEC 3.1). Never reached while Offline Mode is on.
+            // First use loads HarLens.Net. Never reached while Offline Mode is on.
             var engine = RequestEngineLoader.Load();
             var settings = new SendSettings
             {
@@ -732,7 +732,7 @@ public sealed partial class ComposerViewModel : ObservableObject
         }
     }
 
-    // ------------------------------------------------------------------ history and collections (SPEC 7.5)
+    // ------------------------------------------------------------------ history and collections
 
     private void ReloadHistory()
     {

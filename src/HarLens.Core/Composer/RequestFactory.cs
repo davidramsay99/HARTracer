@@ -9,7 +9,7 @@ namespace HarLens.Core.Composer;
 public static class RequestFactory
 {
     /// <summary>
-    /// Converts an entry to a request. Pseudo-headers and Content-Length are dropped (SPEC 7.3); a Host header equal
+    /// Converts an entry to a request. Pseudo-headers and Content-Length are dropped; a Host header equal
     /// to the URL authority is dropped too so that changing the URL retargets the request, while a different Host is kept.
     /// </summary>
     public static HttpRequestSpec FromEntry(HarEntry entry, DecodedBody? requestBody = null)

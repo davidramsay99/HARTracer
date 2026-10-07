@@ -1,5 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <!-- SPEC 3.1 / 12.2 items 2 and 3. Runs in its own test host process so that no other test
+  <!-- Runs in its own test host process so that no other test
        loads HarLens.Net first. References HarLens.Net so the DLL is present beside the tests:
        the assertion proves it is not loaded, not merely absent. -->
   <PropertyGroup>

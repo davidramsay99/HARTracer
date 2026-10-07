@@ -15,7 +15,7 @@ public sealed record FilterClause(string Text, string? Key, string Value, bool N
 }
 
 /// <summary>
-/// The filter bar language (SPEC 6.4), following Chrome DevTools: space-separated terms combined with AND,
+/// The filter bar language, following Chrome DevTools: space-separated terms combined with AND,
 /// <c>key:value</c> operators, <c>/regex/</c> against the URL, free text as a URL substring, and a leading
 /// <c>-</c> to negate. Unknown keys are treated as free text, as Chrome does.
 /// </summary>

@@ -2,7 +2,7 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:sys="clr-namespace:System;assembly=System.Runtime"
                     xmlns:conv="clr-namespace:HarLens.App.Converters">
-  <!-- Monospace for all protocol data (SPEC 9). Cascadia Mono ships with Windows 11; Consolas with every Windows. -->
+  <!-- Monospace for all protocol data. Cascadia Mono ships with Windows 11; Consolas with every Windows. -->
   <FontFamily x:Key="MonoFont">Cascadia Mono, Consolas, Courier New</FontFamily>
   <sys:Double x:Key="MonoFontSize">12</sys:Double>
 

@@ -8,7 +8,7 @@ namespace HarLens.App.Services;
 public static class Ui
 {
     public const string HarFilter = "HAR files (*.har;*.json;*.har.gz)|*.har;*.json;*.har.gz;*.gz|All files (*.*)|*.*";
-    public const string OpenFilter = "HAR and SAZ files (*.har;*.json;*.har.gz;*.saz)|*.har;*.json;*.har.gz;*.gz;*.saz|HAR files (*.har;*.json;*.har.gz)|*.har;*.json;*.har.gz;*.gz|Fiddler archives (*.saz)|*.saz|All files (*.*)|*.*";
+    public const string OpenFilter = "HAR and SAZ files (*.har;*.json;*.har.gz;*.saz)|*.har;*.json;*.har.gz;*.gz;*.saz|HAR files (*.har;*.json;*.har.gz)|*.har;*.json;*.har.gz;*.gz|SAZ session archives (*.saz)|*.saz|All files (*.*)|*.*";
 
     public static Window? ActiveWindow =>
         Application.Current?.Windows.OfType<Window>().FirstOrDefault(w => w.IsActive) ?? Application.Current?.MainWindow;
@@ -43,7 +43,7 @@ public static class Ui
     public static bool Confirm(string message, string title = "HarLens") =>
         MessageBox.Show(ActiveWindow!, message, title, MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.No) == MessageBoxResult.Yes;
 
-    /// <summary>Puts text on the clipboard. Callers apply the secret mask first when it is on (SPEC 8).</summary>
+    /// <summary>Puts text on the clipboard. Callers apply the secret mask first when it is on.</summary>
     public static void Copy(string? text)
     {
         if (string.IsNullOrEmpty(text))

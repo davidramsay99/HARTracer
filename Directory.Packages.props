@@ -1,5 +1,5 @@
 <Project>
-  <!-- Section 4.1: closed list. Adding a package requires an entry in DECISIONS.md. -->
+  <!-- Closed list. -->
   <PropertyGroup>
     <CentralPackageTransitivePinningEnabled>false</CentralPackageTransitivePinningEnabled>
   </PropertyGroup>

@@ -1,5 +1,5 @@
 <Project>
-  <!-- Shared settings for every project. See DECISIONS.md for the reasoning behind each. -->
+  <!-- Shared settings for every project. -->
   <PropertyGroup>
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
@@ -11,7 +11,7 @@
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
     <!-- Keep the restore graph identical for build and publish so that packages.lock.json is stable
-         (SPEC 11: restore in locked mode). Every project restores for both Windows RIDs, and the
+         (restore in locked mode). Every project restores for both Windows RIDs, and the
          single-file/trim analyzers are off so the SDK does not add its version-specific ILLink package.
          Trimming and Native AOT are not used (WPF does not support them). -->
     <RuntimeIdentifiers>win-x64;win-arm64</RuntimeIdentifiers>
@@ -24,7 +24,7 @@
     <Copyright>Copyright (c) 2026 the HarLens authors</Copyright>
   </PropertyGroup>
 
-  <!-- Section 3.1: projects that must not touch the network opt in with EnforceLocalOnly=true. -->
+  <!-- Projects that must not touch the network opt in with EnforceLocalOnly=true. -->
   <ItemGroup Condition="'$(EnforceLocalOnly)' == 'true'">
     <PackageReference Include="Microsoft.CodeAnalysis.BannedApiAnalyzers" PrivateAssets="all" IncludeAssets="runtime; build; native; contentfiles; analyzers; buildtransitive" />
     <AdditionalFiles Include="$(MSBuildProjectDirectory)/BannedSymbols.txt" />
