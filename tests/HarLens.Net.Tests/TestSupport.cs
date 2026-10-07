@@ -49,11 +49,12 @@ internal static class TestCertificates
         return Persist(request);
     }
 
-    // A PKCS#12 round trip gives a key that SslStream can use on every platform.
+    // A PKCS#12 round trip gives a key that SslStream can use on every platform. Exportable, because the tests
+    // write the client certificate out again as PFX and PEM, and Windows CNG enforces the export policy.
     private static X509Certificate2 Persist(CertificateRequest request)
     {
         using var certificate = request.CreateSelfSigned(DateTimeOffset.UtcNow.AddDays(-1), DateTimeOffset.UtcNow.AddDays(30));
-        return X509CertificateLoader.LoadPkcs12(certificate.Export(X509ContentType.Pkcs12), null);
+        return X509CertificateLoader.LoadPkcs12(certificate.Export(X509ContentType.Pkcs12), null, X509KeyStorageFlags.Exportable);
     }
 }
 
