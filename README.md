@@ -84,6 +84,6 @@ scripts/           vendor-packages, package, fixture and notices generators
 
 ## Status
 
-Everything except the user interface has been built and tested; see the verification table in
-[DECISIONS.md](DECISIONS.md#verification-status). The WPF app compiles but has not yet been run on Windows; the UI
-smoke test and the CI workflow in `.github/workflows/build.yml` exist to do that.
+Builds and passes every test on Linux and on Windows Server 2025 (GitHub Actions), including a UI smoke test that
+drives the real windows. Cold start time and 200,000-row scrolling still need a manual check on a Windows desktop.
+Details and measurements: [DECISIONS.md](DECISIONS.md#verification-status).

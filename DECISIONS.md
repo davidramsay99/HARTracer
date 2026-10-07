@@ -53,7 +53,9 @@ because Python's standard library has no brotli encoder.
    large-file checks, the UI smoke test, and uploads the zips. `actions/setup-dotnet` downloads the SDK on the runner;
    that is build-machine traffic, as SPEC 11 allows.
 9. **LICENSE is a placeholder.** It reserves all rights. The project owner should choose the actual license.
-10. **Telemetry on the build machine.** The .NET CLI has its own telemetry. Scripts and CI set
+10. **Fixtures are byte-exact.** `.gitattributes` marks `tests/fixtures/**` binary; a Windows checkout with
+    `core.autocrlf` otherwise rewrites them to CRLF and shifts the byte offsets the truncation tests assert.
+11. **Telemetry on the build machine.** The .NET CLI has its own telemetry. Scripts and CI set
     `DOTNET_CLI_TELEMETRY_OPTOUT=1`. The shipped application contains no telemetry.
 
 ## HAR ingestion (spec 5)
@@ -131,7 +133,9 @@ because Python's standard library has no brotli encoder.
    fetched. Text editors show at most 16 M characters of a body, with a notice; Save writes all of it.
 8. **Images** decode through the Windows Imaging Component. WebP and HEIF depend on the codecs installed; when none
    exists the view says so. SVG is text only.
-9. **AvalonEdit hyperlinks are disabled**, so clicking a URL in a body can never launch a browser.
+9. **AvalonEdit hyperlinks are disabled**, so clicking a URL in a body can never launch a browser. Syntax
+   highlighting is on in the light theme only: AvalonEdit's built-in palettes are designed for light backgrounds and
+   its definitions are frozen, so dark mode shows text in the theme's foreground color without highlighting.
 10. **Search (Ctrl+Shift+F)** matches header lines as `Name: Value`, keeps at most 100 hits per location and 10,000
     overall, and can span all open tabs. Ctrl+F uses AvalonEdit's search panel in text views; header grids have a
     find box.
@@ -240,20 +244,22 @@ because Python's standard library has no brotli encoder.
 
 ## Verification status
 
-| Check | Where it ran | Result |
+| Check | Linux container (SDK 10.0.112) | Windows Server 2025, GitHub Actions (SDK 10.0.401) |
 | :- | :- | :- |
-| `dotnet restore --locked-mode`, `dotnet build -c Release -warnaserror` (whole solution, WPF included) | Linux, .NET SDK 10.0.112 | Pass |
-| Core tests (2,269, including all cURL fixtures and round trips) | Linux | Pass |
-| Net tests (86, loopback only, including HTTP/2 and TLS) | Linux | Pass |
-| Isolation tests: SPEC 3.1 assembly-load test, acceptance test 3 for Core and App | Linux | Pass |
-| Large-file checks (100 MB, 200,000 entries filter under 100 ms, 1 GB) | Linux, `HARLENS_LARGE_TESTS=1` | Pass |
-| Self-contained single-file publish, win-x64 and win-arm64, online and from `./nuget-offline` | Linux (cross-publish) | Pass |
-| UI smoke test (`tests/HarLens.App.Tests`) and running HarLens.exe | Not run: needs Windows | Pending: runs in the Windows CI workflow |
+| `dotnet restore --locked-mode` | Pass | Pass (different SDK patch: the lock files hold) |
+| `dotnet build -c Release -warnaserror`, whole solution with WPF | Pass | Pass |
+| Core tests (2,269, including every cURL fixture and round trip) | Pass | Pass |
+| Net tests (86, loopback only, including HTTP/2, TLS, client certificates) | Pass | Pass |
+| Isolation tests: SPEC 3.1 assembly-load test; acceptance test 3 for Core and App | Pass | Pass |
+| UI smoke test: real windows, every fixture, every row and body view, filters, themes, tool windows, merge; HarLens.Net still unloaded | Not runnable | Pass |
+| 100 MB HAR indexed | 0.5 to 1.2 s | 0.46 s |
+| 1.43 GB HAR | 6.7 s, peak working set 269 MB | 5.8 s, peak working set 250 MB |
+| 200,000 entries, eight filter expressions, cold first pass | slowest 92 ms | slowest 55 ms |
+| Single-file self-contained publish, win-x64 and win-arm64, zipped with LICENSE and notices | Pass, also from `./nuget-offline` only | Pass |
 
-The WPF user interface has not been run by its author. It compiles (XAML included) under warnings-as-errors, but
-runtime behaviour (layout, bindings, theme resources, the 200,000-row scrolling target, cold start under 1.5 s) needs
-the Windows CI run or a manual pass on Windows. An attempt to run it under Wine 9 on Linux failed inside Wine's
-DirectWrite font fallback before the first window rendered, which says nothing about the app on Windows.
+Not yet measured: cold start to interactive window (target 1.5 s) and scrolling 200,000 rows without stutter. Both
+need a person at a Windows desktop. An attempt to run the UI under Wine 9 failed inside Wine's DirectWrite font
+fallback before the first window rendered; the Windows run above supersedes it.
 
 ## Open questions
 
