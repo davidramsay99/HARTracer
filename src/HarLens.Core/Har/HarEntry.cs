@@ -84,10 +84,10 @@ public static class ColorMarks
 /// </summary>
 public sealed class HarEntry
 {
-    private string? _host;
-    private string? _path;
+    private string _url = "";
     private string? _scheme;
-    private int _port = -2;
+    private string? _host;
+    private int _port = -1;
 
     public HarEntry(HarSource source, int fileIndex, long offset, int length)
     {
@@ -122,7 +122,16 @@ public sealed class HarEntry
 
     public string Method { get; internal set; } = "";
 
-    public string Url { get; internal set; } = "";
+    public string Url
+    {
+        get => _url;
+        internal set
+        {
+            _url = value;
+            _scheme = null;
+            _host = null;
+        }
+    }
 
     public string RequestHttpVersion { get; internal set; } = "";
 
@@ -212,6 +221,9 @@ public sealed class HarEntry
     /// <summary>Source file label for merged sessions (SPEC 5.5).</summary>
     public string? SourceTag { get; set; }
 
+    /// <summary>Cached resource category for the type chips, -1 until computed.</summary>
+    internal int CategoryCache { get; set; } = -1;
+
     // Derived values.
     public bool IsFailed => Status == 0 || Error is not null;
 
@@ -266,11 +278,12 @@ public sealed class HarEntry
 
     public DateTimeOffset EndDateTime => StartedDateTime.AddMilliseconds(Math.Max(0, TotalTime));
 
+    /// <summary>Lower-case scheme. Set during indexing so filtering never parses URLs.</summary>
     public string Scheme
     {
         get
         {
-            EnsureUrlParts();
+            EnsureAuthority();
             return _scheme!;
         }
     }
@@ -280,7 +293,7 @@ public sealed class HarEntry
     {
         get
         {
-            EnsureUrlParts();
+            EnsureAuthority();
             return _host!;
         }
     }
@@ -290,23 +303,16 @@ public sealed class HarEntry
     {
         get
         {
-            EnsureUrlParts();
+            EnsureAuthority();
             return _port;
         }
     }
 
-    /// <summary>Path and query.</summary>
-    public string Path
-    {
-        get
-        {
-            EnsureUrlParts();
-            return _path!;
-        }
-    }
+    /// <summary>Path and query, computed on demand (list column).</summary>
+    public string Path => UrlParts.Split(_url).PathAndQuery;
 
     /// <summary>Host with port when the port is not the scheme default (Fiddler's Host column).</summary>
-    public string HostDisplay => Port > 0 && !UrlParts.IsDefaultPort(Scheme, Port)
+    public string HostDisplay => Port > 0 && !Http.UrlParts.IsDefaultPort(Scheme, Port)
         ? $"{Host}:{Port.ToString(CultureInfo.InvariantCulture)}"
         : Host;
 
@@ -319,6 +325,25 @@ public sealed class HarEntry
     public bool HasResponseHeader(string name) => FindHeader(ResponseHeaders, name) is not null;
 
     public override string ToString() => $"#{Id} {Method} {Url} {Status}";
+
+    /// <summary>Sets the URL and its scheme, host and port, interning the repeated parts.</summary>
+    internal void AssignUrl(string url, StringPool? pool)
+    {
+        _url = url;
+        (_scheme, _host, _port) = UrlParts.SplitAuthority(url, pool);
+    }
+
+    private void EnsureAuthority()
+    {
+        if (_host is null || _scheme is null)
+        {
+            // Entries built outside the indexer. Benign race: every thread computes the same values.
+            var (scheme, host, port) = UrlParts.SplitAuthority(_url, null);
+            _port = port;
+            _host = host;
+            _scheme = scheme;
+        }
+    }
 
     /// <summary>A copy for another session (merge), so display numbers and annotations stay per tab.</summary>
     public HarEntry CopyForSession() => (HarEntry)MemberwiseClone();
@@ -337,19 +362,5 @@ public sealed class HarEntry
         }
 
         return null;
-    }
-
-    private void EnsureUrlParts()
-    {
-        if (_scheme is not null)
-        {
-            return;
-        }
-
-        var parts = UrlParts.Split(Url);
-        _host = parts.Host;
-        _path = parts.PathAndQuery;
-        _port = parts.Port;
-        _scheme = parts.Scheme;
     }
 }

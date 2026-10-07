@@ -154,7 +154,7 @@ internal sealed class EntryIndexer
             else if (r.ValueTextEquals("url"u8))
             {
                 r.Read();
-                entry.Url = JsonRead.String(ref r) ?? "";
+                entry.AssignUrl(JsonRead.String(ref r) ?? "", _pool);
             }
             else if (r.ValueTextEquals("httpVersion"u8))
             {
