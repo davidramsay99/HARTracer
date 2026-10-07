@@ -14,7 +14,11 @@ public static class JsonPretty
     {
         Indented = true,
         Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+        MaxDepth = MaxDepth,
     };
+
+    /// <summary>Deeper documents are shown unformatted; reader and writer share the limit.</summary>
+    private const int MaxDepth = 256;
 
     public static bool TryFormat(string? text, out string pretty)
     {
@@ -26,7 +30,7 @@ public static class JsonPretty
 
         try
         {
-            using var doc = JsonDocument.Parse(text, new JsonDocumentOptions { AllowTrailingCommas = true, CommentHandling = JsonCommentHandling.Skip, MaxDepth = 4096 });
+            using var doc = JsonDocument.Parse(text, new JsonDocumentOptions { AllowTrailingCommas = true, CommentHandling = JsonCommentHandling.Skip, MaxDepth = MaxDepth });
             using var stream = new MemoryStream();
             using (var writer = new Utf8JsonWriter(stream, Options))
             {
@@ -36,7 +40,7 @@ public static class JsonPretty
             pretty = Encoding.UTF8.GetString(stream.GetBuffer(), 0, (int)stream.Length);
             return true;
         }
-        catch (JsonException)
+        catch (Exception ex) when (ex is JsonException or InvalidOperationException)
         {
             return false;
         }
@@ -56,11 +60,17 @@ public static class JsonPretty
 
 public static class XmlPretty
 {
-    /// <summary>Indents XML. DTDs are prohibited and no resolver is set, so nothing external is ever fetched.</summary>
+    private const int MaxDepth = 256;
+    private const int MaxLength = 8_000_000;
+
+    /// <summary>
+    /// Indents XML. DTDs are ignored and no resolver is set, so nothing external is ever fetched. Documents that are
+    /// very large or nested deeper than <see cref="MaxDepth"/> are shown unformatted.
+    /// </summary>
     public static bool TryFormat(string? text, out string pretty)
     {
         pretty = text ?? "";
-        if (string.IsNullOrWhiteSpace(text))
+        if (string.IsNullOrWhiteSpace(text) || text.Length > MaxLength)
         {
             return false;
         }
@@ -73,6 +83,17 @@ public static class XmlPretty
                 XmlResolver = null,
                 IgnoreWhitespace = true,
             };
+            using (var probe = XmlReader.Create(new StringReader(text), settings))
+            {
+                while (probe.Read())
+                {
+                    if (probe.Depth > MaxDepth)
+                    {
+                        return false;
+                    }
+                }
+            }
+
             using var reader = XmlReader.Create(new StringReader(text), settings);
             var sb = new StringBuilder();
             using (var writer = XmlWriter.Create(sb, new XmlWriterSettings { Indent = true, IndentChars = "  ", OmitXmlDeclaration = !text.TrimStart().StartsWith("<?xml", StringComparison.Ordinal) }))
@@ -103,15 +124,24 @@ public static partial class HtmlIndenter
 
     private static readonly HashSet<string> RawText = new(StringComparer.OrdinalIgnoreCase) { "script", "style", "pre", "textarea" };
 
-    [GeneratedRegex(@"<!--.*?-->|<(/?)([a-zA-Z!][a-zA-Z0-9:-]*)[^>]*?(/?)>", RegexOptions.Singleline)]
-    private static partial Regex TagRegex();
+    // Non-backtracking keeps the scan linear when tags or comments never close.
+    private static readonly Regex Tags = new(@"<!--.*?-->|<(/?)([a-zA-Z!][a-zA-Z0-9:-]*)[^>]*?(/?)>",
+        RegexOptions.Singleline | RegexOptions.NonBacktracking);
+
+    private const int MaxIndentDepth = 32;
+    private const int MaxLength = 8_000_000;
 
     public static string Format(string html)
     {
+        if (html.Length > MaxLength)
+        {
+            return html;
+        }
+
         var sb = new StringBuilder(html.Length + html.Length / 4);
         var depth = 0;
         var position = 0;
-        foreach (Match m in TagRegex().Matches(html))
+        foreach (Match m in Tags.Matches(html))
         {
             if (m.Index < position)
             {
@@ -168,7 +198,7 @@ public static partial class HtmlIndenter
         }
     }
 
-    private static void AppendLine(StringBuilder sb, string line, int depth) => sb.Append(' ', depth * 2).Append(line).Append('\n');
+    private static void AppendLine(StringBuilder sb, string line, int depth) => sb.Append(' ', Math.Min(depth, MaxIndentDepth) * 2).Append(line).Append('\n');
 }
 
 /// <summary>Offset, hex, ASCII rows for the Hex view, produced on demand per row for virtualization.</summary>
@@ -252,8 +282,8 @@ public sealed record JwtToken(string Token, string Location, string HeaderJson, 
 
 public static partial class Jwt
 {
-    [GeneratedRegex(@"\beyJ[A-Za-z0-9_-]{2,}\.[A-Za-z0-9_-]{2,}\.[A-Za-z0-9_-]*")]
-    private static partial Regex JwtRegex();
+    // Non-backtracking keeps the scan linear on long runs of token-like text.
+    private static readonly Regex Tokens = new(@"\beyJ[A-Za-z0-9_-]{2,}\.[A-Za-z0-9_-]{2,}\.[A-Za-z0-9_-]*", RegexOptions.NonBacktracking);
 
     /// <summary>Finds and decodes every three-part base64url token in <paramref name="text"/>.</summary>
     public static IEnumerable<JwtToken> FindAll(string? text, string location)
@@ -264,7 +294,7 @@ public static partial class Jwt
         }
 
         var seen = new HashSet<string>(StringComparer.Ordinal);
-        foreach (Match m in JwtRegex().Matches(text))
+        foreach (Match m in Tokens.Matches(text))
         {
             if (seen.Add(m.Value) && TryDecode(m.Value, location, out var token))
             {

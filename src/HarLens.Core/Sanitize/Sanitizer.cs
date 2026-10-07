@@ -519,6 +519,12 @@ public sealed class Sanitizer
                             changed = true;
                         }
                     }
+                    else if (_options.ParameterNames.Contains(name) && child is JsonObject or JsonArray)
+                    {
+                        // A secret held in a structure ({"client_secret": ["x"]}) is replaced as a whole.
+                        obj[name] = Replace(child!.ToJsonString(), $"{path} → {name}", RedactionKind.JsonProperty, name, ctx);
+                        changed = true;
+                    }
                     else if (child is not null)
                     {
                         changed |= RedactJsonProperties(child, path, ctx);
@@ -671,7 +677,8 @@ public sealed class Sanitizer
         }
         catch (RegexMatchTimeoutException)
         {
-            return input;
+            // Fail closed: a value that cannot be scanned in time is dropped from the export.
+            return RedactedToken;
         }
     }
 
@@ -683,7 +690,8 @@ public sealed class Sanitizer
         }
         catch (RegexMatchTimeoutException)
         {
-            return input;
+            // Fail closed: a value that cannot be scanned in time is dropped from the export.
+            return RedactedToken;
         }
     }
 
