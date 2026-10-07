@@ -11,10 +11,12 @@ public static class SecretMasker
     public const string Bullets = "••••";
 
     private static readonly Regex JwtRegex = new(@"\beyJ[A-Za-z0-9_-]{2,}\.[A-Za-z0-9_-]{2,}\.[A-Za-z0-9_-]*",
-        RegexOptions.CultureInvariant | RegexOptions.Compiled, TimeSpan.FromSeconds(1));
+        RegexOptions.CultureInvariant | RegexOptions.NonBacktracking);
 
     private static readonly Regex AuthRegex = new(@"\b(?<scheme>Bearer|Basic)\s+(?<secret>[A-Za-z0-9\-._~+/]{6,}=*)",
-        RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.Compiled, TimeSpan.FromSeconds(1));
+        RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.NonBacktracking);
+
+    public const string TooLongToCheck = "[hidden: too long to check for secrets]";
 
     private static readonly Regex ParamRegex = BuildParamRegex(SanitizeOptions.DefaultParameterNames);
 
@@ -97,7 +99,8 @@ public static class SecretMasker
         }
         catch (RegexMatchTimeoutException)
         {
-            return text;
+            // Fail closed: text that cannot be checked in time is hidden rather than shown unmasked.
+            return TooLongToCheck;
         }
     }
 

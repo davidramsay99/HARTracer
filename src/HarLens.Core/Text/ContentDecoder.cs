@@ -82,7 +82,7 @@ public static class ContentDecoder
                     return null;
             }
         }
-        catch (InvalidDataException)
+        catch (Exception ex) when (ex is InvalidDataException or InvalidOperationException)
         {
             return null;
         }

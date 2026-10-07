@@ -20,7 +20,7 @@ public static partial class SazImporter
 {
     private static readonly JsonWriterOptions WriterOptions = new() { Indented = true, Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping };
 
-    [GeneratedRegex(@"^raw/(\d+)_c\.txt$", RegexOptions.IgnoreCase)]
+    [GeneratedRegex(@"^raw/([0-9]{1,9})_c\.txt$", RegexOptions.IgnoreCase)]
     private static partial Regex RequestFileRegex();
 
     public static HarLoadResult Import(string path, CancellationToken cancellationToken = default)
@@ -49,6 +49,10 @@ public static partial class SazImporter
         catch (IOException ex)
         {
             return new HarLoadResult { FatalError = $"Cannot read '{path}': {ex.Message}" };
+        }
+        catch (Exception ex) when (ex is ArgumentException or InvalidOperationException or OverflowException or FormatException)
+        {
+            return new HarLoadResult { FatalError = $"'{Path.GetFileName(path)}' could not be imported: {ex.Message}" };
         }
     }
 
@@ -90,11 +94,24 @@ public static partial class SazImporter
         return stream.ToArray();
     }
 
+    private const long MaxEntryBytes = 512L * 1024 * 1024;
+
     private static byte[] ReadAll(ZipArchiveEntry entry)
     {
         using var s = entry.Open();
         using var ms = new MemoryStream();
-        s.CopyTo(ms);
+        var buffer = new byte[81920];
+        int read;
+        while ((read = s.Read(buffer, 0, buffer.Length)) > 0)
+        {
+            if (ms.Length + read > MaxEntryBytes)
+            {
+                throw new InvalidDataException($"'{entry.FullName}' expands beyond {MaxEntryBytes / (1024 * 1024)} MB.");
+            }
+
+            ms.Write(buffer, 0, read);
+        }
+
         return ms.ToArray();
     }
 
@@ -373,7 +390,7 @@ public static partial class SazImporter
                 }
 
                 var sizeText = Encoding.ASCII.GetString(body, i, lineEnd).Split(';')[0].Trim();
-                if (!int.TryParse(sizeText, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out var size) || size == 0)
+                if (!int.TryParse(sizeText, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out var size) || size <= 0)
                 {
                     break;
                 }

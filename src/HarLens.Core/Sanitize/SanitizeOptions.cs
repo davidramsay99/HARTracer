@@ -4,19 +4,30 @@ namespace HarLens.Core.Sanitize;
 public sealed class SanitizeOptions
 {
     public static readonly IReadOnlyList<string> DefaultHeaderNames =
-        ["Authorization", "Proxy-Authorization", "Cookie", "Set-Cookie", "X-Api-Key"];
+    [
+        "Authorization", "Proxy-Authorization", "Cookie", "Set-Cookie", "X-Api-Key", "Api-Key", "X-Auth-Token",
+        "X-Access-Token", "X-CSRF-Token", "X-XSRF-Token", "X-Amz-Security-Token", "X-Goog-Api-Key", "Private-Token",
+        "Ocp-Apim-Subscription-Key", "X-Functions-Key",
+    ];
 
     public static readonly IReadOnlyList<string> DefaultParameterNames =
     [
         "access_token", "id_token", "refresh_token", "code", "client_secret", "password", "sig", "signature",
-        "SAMLResponse", "SAMLRequest",
+        "SAMLResponse", "SAMLRequest", "token", "api_key", "key", "secret", "session_id", "jsessionid", "assertion",
+        "client_assertion", "private_key", "X-Amz-Signature", "X-Amz-Credential", "X-Amz-Security-Token",
     ];
 
+    /// <summary>
+    /// Compares names ignoring case, '_' and '-', so <c>accessToken</c>, <c>access-token</c> and <c>ACCESS_TOKEN</c>
+    /// all match <c>access_token</c>.
+    /// </summary>
+    public static readonly IEqualityComparer<string> NameComparer = new LooseNameComparer();
+
     /// <summary>Headers whose values are redacted. Authorization keeps its scheme word; cookies keep their names.</summary>
-    public HashSet<string> HeaderNames { get; } = new(DefaultHeaderNames, StringComparer.OrdinalIgnoreCase);
+    public HashSet<string> HeaderNames { get; } = new(DefaultHeaderNames, NameComparer);
 
     /// <summary>Query, fragment, form and JSON property names whose values are redacted.</summary>
-    public HashSet<string> ParameterNames { get; } = new(DefaultParameterNames, StringComparer.OrdinalIgnoreCase);
+    public HashSet<string> ParameterNames { get; } = new(DefaultParameterNames, NameComparer);
 
     public bool RedactJwt { get; set; } = true;
 
@@ -89,3 +100,23 @@ public enum RedactionKind
 
 /// <summary>One redaction, listed in the preview before anything is written. The original is shown masked.</summary>
 public sealed record Redaction(int EntryId, string Location, RedactionKind Kind, string Rule, string MaskedOriginal, string Replacement);
+
+internal sealed class LooseNameComparer : IEqualityComparer<string>
+{
+    public bool Equals(string? x, string? y) =>
+        x is null || y is null ? ReferenceEquals(x, y) : string.Equals(Normalize(x), Normalize(y), StringComparison.Ordinal);
+
+    public int GetHashCode(string obj) => Normalize(obj).GetHashCode(StringComparison.Ordinal);
+
+    private static string Normalize(string name) => string.Create(name.Length - name.Count(c => c is '_' or '-'), name, static (span, source) =>
+    {
+        var i = 0;
+        foreach (var c in source)
+        {
+            if (c is not ('_' or '-'))
+            {
+                span[i++] = char.ToLowerInvariant(c);
+            }
+        }
+    });
+}
