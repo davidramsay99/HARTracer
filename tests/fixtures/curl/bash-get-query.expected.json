@@ -1,0 +1,12 @@
+{
+  "description": "-G moves -d and --data-urlencode data into the query, joined with '&'. --data-urlencode encodes space as '+' like curl 8. Output-only options are ignored without a warning.",
+  "dialect": "Bash",
+  "bodyMode": "None",
+  "ignoredOptions": [ "-s", "-S", "-o", "-w" ],
+  "request": {
+    "method": "GET",
+    "url": "https://search.example.com/find?lang=en&q=caf%C3%A9&name=John+Doe+%26+co&50%25&page=2",
+    "headers": [],
+    "options": { "autoDecompress": false }
+  }
+}

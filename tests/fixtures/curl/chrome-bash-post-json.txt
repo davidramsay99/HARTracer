@@ -1,0 +1,8 @@
+curl 'https://api.example.com/v1/orders' \
+  -H 'accept: application/json' \
+  -H 'authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0In0.c2lnbmF0dXJl' \
+  -H 'content-type: application/json' \
+  -H 'origin: https://api.example.com' \
+  -H 'user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36' \
+  --data-raw '{"items":[{"sku":"A-100","qty":2}],"note":"deliver after 5pm","total":19.99}' \
+  --compressed

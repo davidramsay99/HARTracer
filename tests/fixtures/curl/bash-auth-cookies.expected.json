@@ -1,0 +1,17 @@
+{
+  "description": "-u becomes a Basic Authorization header (split at the first colon), -A User-Agent, -e Referer without ';auto', two -b cookies joined with ';' as curl 8 does; all in command-line order with the -H header.",
+  "dialect": "Bash",
+  "bodyMode": "None",
+  "request": {
+    "method": "GET",
+    "url": "https://secure.example.com/admin",
+    "headers": [
+      { "name": "Authorization", "value": "Basic YWRtaW46cEBzczp3b3Jk" },
+      { "name": "User-Agent", "value": "HarLensTest/1.0" },
+      { "name": "Referer", "value": "https://ref.example.com/" },
+      { "name": "Cookie", "value": "a=1;b=2" },
+      { "name": "X-Trace", "value": "on" }
+    ],
+    "options": { "autoDecompress": false }
+  }
+}
