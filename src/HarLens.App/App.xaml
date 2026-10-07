@@ -1,0 +1,8 @@
+<Application x:Class="HarLens.App.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             ShutdownMode="OnMainWindowClose">
+  <!-- Resources are added in OnStartup after Application.ThemeMode is set, so that styles in
+       Themes/Common.xaml are based on the Fluent control styles rather than the classic ones. -->
+  <Application.Resources />
+</Application>

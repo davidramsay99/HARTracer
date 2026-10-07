@@ -1,0 +1,8 @@
+# Source files are normalized to LF in the repository.
+* text=auto
+
+# Fixtures are byte-exact: tests assert byte offsets, line numbers and hashes.
+tests/fixtures/** binary
+*.har binary
+*.saz binary
+*.gz binary

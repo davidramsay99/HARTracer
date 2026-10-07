@@ -1,0 +1,34 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <!-- HarLens semantic colors, light theme. Control chrome comes from WPF's Fluent theme. -->
+  <SolidColorBrush x:Key="Status3xxForeground" Color="#7A7A7A" />
+  <SolidColorBrush x:Key="Status4xxForeground" Color="#9A5B00" />
+  <SolidColorBrush x:Key="Status5xxForeground" Color="#C42B1C" />
+  <SolidColorBrush x:Key="FailedForeground" Color="#C42B1C" />
+  <SolidColorBrush x:Key="MutedForeground" Color="#6B6B6B" />
+  <SolidColorBrush x:Key="EditorForeground" Color="#1B1B1B" />
+  <SolidColorBrush x:Key="NoticeBackground" Color="#FFF4CE" />
+  <SolidColorBrush x:Key="NoticeForeground" Color="#4A3B00" />
+  <SolidColorBrush x:Key="DangerBannerBackground" Color="#C42B1C" />
+  <SolidColorBrush x:Key="DangerBannerForeground" Color="White" />
+  <SolidColorBrush x:Key="DiffInsertedBackground" Color="#DFF3E0" />
+  <SolidColorBrush x:Key="DiffDeletedBackground" Color="#FBE3E1" />
+  <SolidColorBrush x:Key="DiffModifiedBackground" Color="#FFF1CC" />
+  <SolidColorBrush x:Key="ChipCheckedBackground" Color="#D0E4F7" />
+  <SolidColorBrush x:Key="GroupHeaderBackground" Color="#EEF2F6" />
+  <!-- Waterfall phases: blocked, DNS, connect, TLS, send, wait, receive. -->
+  <SolidColorBrush x:Key="PhaseBlocked" Color="#B8B8B8" />
+  <SolidColorBrush x:Key="PhaseDns" Color="#2BA39B" />
+  <SolidColorBrush x:Key="PhaseConnect" Color="#E3A21A" />
+  <SolidColorBrush x:Key="PhaseTls" Color="#9B59B6" />
+  <SolidColorBrush x:Key="PhaseSend" Color="#2D7D9A" />
+  <SolidColorBrush x:Key="PhaseWait" Color="#2E8B57" />
+  <SolidColorBrush x:Key="PhaseReceive" Color="#2F6FD6" />
+  <!-- Annotation color marks (row tint). -->
+  <SolidColorBrush x:Key="MarkRed" Color="#33E81123" />
+  <SolidColorBrush x:Key="MarkOrange" Color="#33F7630C" />
+  <SolidColorBrush x:Key="MarkYellow" Color="#44FFB900" />
+  <SolidColorBrush x:Key="MarkGreen" Color="#3310893E" />
+  <SolidColorBrush x:Key="MarkBlue" Color="#330078D4" />
+  <SolidColorBrush x:Key="MarkPurple" Color="#33881798" />
+</ResourceDictionary>

@@ -1,0 +1,86 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=System.Runtime"
+                    xmlns:conv="clr-namespace:HarLens.App.Converters">
+  <!-- Monospace for all protocol data (SPEC 9). Cascadia Mono ships with Windows 11; Consolas with every Windows. -->
+  <FontFamily x:Key="MonoFont">Cascadia Mono, Consolas, Courier New</FontFamily>
+  <sys:Double x:Key="MonoFontSize">12</sys:Double>
+
+  <conv:BoolToVisibilityConverter x:Key="BoolToVisibility" />
+  <conv:BoolToVisibilityConverter x:Key="InverseBoolToVisibility" Invert="True" />
+  <conv:NullToVisibilityConverter x:Key="NullToVisibility" />
+  <conv:NullToVisibilityConverter x:Key="NullToCollapsed" Invert="True" />
+  <conv:InverseBoolConverter x:Key="InverseBool" />
+  <conv:ColorMarkBrushConverter x:Key="ColorMarkBrush" />
+  <conv:DiffKindBrushConverter x:Key="DiffKindBrush" />
+  <conv:EqualityToBoolConverter x:Key="EqualityToBool" />
+  <conv:ResourceBrushConverter x:Key="ResourceBrush" />
+  <conv:EqualityToVisibilityConverter x:Key="EqualityToVisibility" />
+
+  <Style x:Key="MonoText" TargetType="TextBlock">
+    <Setter Property="FontFamily" Value="{StaticResource MonoFont}" />
+    <Setter Property="FontSize" Value="{DynamicResource MonoFontSize}" />
+  </Style>
+
+  <Style x:Key="MonoTextBox" TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+    <Setter Property="FontFamily" Value="{StaticResource MonoFont}" />
+    <Setter Property="FontSize" Value="{DynamicResource MonoFontSize}" />
+  </Style>
+
+  <Style x:Key="SectionHeader" TargetType="TextBlock">
+    <Setter Property="FontWeight" Value="SemiBold" />
+    <Setter Property="Margin" Value="0,8,0,4" />
+  </Style>
+
+  <!-- Notice bar used for parse warnings, body notices and import warnings. -->
+  <Style x:Key="NoticeBorder" TargetType="Border">
+    <Setter Property="Background" Value="{DynamicResource NoticeBackground}" />
+    <Setter Property="Padding" Value="8,4" />
+    <Setter Property="Margin" Value="0,0,0,4" />
+    <Setter Property="CornerRadius" Value="3" />
+  </Style>
+
+  <!-- Compact grid cells for protocol data. -->
+  <Style x:Key="CompactCell" TargetType="DataGridCell" BasedOn="{StaticResource {x:Type DataGridCell}}">
+    <Setter Property="Padding" Value="4,0" />
+    <Setter Property="MinHeight" Value="0" />
+    <Setter Property="FontFamily" Value="{StaticResource MonoFont}" />
+    <Setter Property="FontSize" Value="{DynamicResource MonoFontSize}" />
+  </Style>
+
+  <Style x:Key="CompactGrid" TargetType="DataGrid" BasedOn="{StaticResource {x:Type DataGrid}}">
+    <Setter Property="AutoGenerateColumns" Value="False" />
+    <Setter Property="IsReadOnly" Value="True" />
+    <Setter Property="HeadersVisibility" Value="Column" />
+    <Setter Property="GridLinesVisibility" Value="None" />
+    <Setter Property="RowHeight" Value="22" />
+    <Setter Property="MinRowHeight" Value="0" />
+    <Setter Property="CanUserAddRows" Value="False" />
+    <Setter Property="CanUserDeleteRows" Value="False" />
+    <Setter Property="SelectionMode" Value="Extended" />
+    <Setter Property="SelectionUnit" Value="FullRow" />
+    <Setter Property="EnableRowVirtualization" Value="True" />
+    <Setter Property="VirtualizingPanel.IsVirtualizing" Value="True" />
+    <Setter Property="VirtualizingPanel.VirtualizationMode" Value="Recycling" />
+    <Setter Property="CellStyle" Value="{StaticResource CompactCell}" />
+  </Style>
+
+  <Style x:Key="EditableGrid" TargetType="DataGrid" BasedOn="{StaticResource {x:Type DataGrid}}">
+    <Setter Property="AutoGenerateColumns" Value="False" />
+    <Setter Property="HeadersVisibility" Value="Column" />
+    <Setter Property="GridLinesVisibility" Value="Horizontal" />
+    <Setter Property="CanUserAddRows" Value="True" />
+    <Setter Property="CanUserDeleteRows" Value="True" />
+    <Setter Property="SelectionUnit" Value="FullRow" />
+    <Setter Property="CellStyle" Value="{StaticResource CompactCell}" />
+  </Style>
+
+  <!-- Filter chips. -->
+  <Style x:Key="Chip" TargetType="ToggleButton" BasedOn="{StaticResource {x:Type ToggleButton}}">
+    <Setter Property="Padding" Value="8,1" />
+    <Setter Property="Margin" Value="0,0,3,0" />
+    <Setter Property="MinHeight" Value="0" />
+    <Setter Property="MinWidth" Value="0" />
+    <Setter Property="FontSize" Value="12" />
+  </Style>
+</ResourceDictionary>

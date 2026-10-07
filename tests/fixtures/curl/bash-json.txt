@@ -1,0 +1,1 @@
+curl https://api.example.com/v2/events --json '{"type":"click",' --json '"at":1}' -H 'Accept: application/x-ndjson'
