@@ -1,0 +1,1 @@
+curl --data-binary @payload.bin -H 'Content-Type: application/octet-stream' -X PUT --http1.1 https://files.example.com/blob/7

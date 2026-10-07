@@ -1,0 +1,20 @@
+{
+  "description": "Firefox 'Copy as cURL' (POSIX): one line, explicit -X POST, --compressed where Accept-Encoding was, Cookie as -H, and a $'...' body with \\xHH escapes for Latin-1 characters (\\xe9 is taken as U+00E9), \\uHHHH for others, \\' and \\x21 for '!'.",
+  "dialect": "Bash",
+  "bodyMode": "Json",
+  "request": {
+    "method": "POST",
+    "url": "https://api.example.com/v1/notes?lang=fr",
+    "headers": [
+      { "name": "User-Agent", "value": "Mozilla/5.0 (X11; Linux x86_64; rv:128.0) Gecko/20100101 Firefox/128.0" },
+      { "name": "Accept", "value": "application/json" },
+      { "name": "Accept-Language", "value": "fr-FR,fr;q=0.8" },
+      { "name": "Content-Type", "value": "application/json" },
+      { "name": "Origin", "value": "https://api.example.com" },
+      { "name": "Connection", "value": "keep-alive" },
+      { "name": "Cookie", "value": "sid=ff01" }
+    ],
+    "body": { "mode": "Json", "text": "{\"title\":\"café ☃\",\"note\":\"it's done!\",\"path\":\"a\\\\b\"}" },
+    "options": { "autoDecompress": true }
+  }
+}

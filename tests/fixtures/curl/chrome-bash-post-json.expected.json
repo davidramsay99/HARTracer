@@ -1,0 +1,18 @@
+{
+  "description": "Chrome 'Copy as cURL (bash)': POST with a JSON body in --data-raw. Chrome drops Content-Length and Accept-Encoding and adds --compressed.",
+  "dialect": "Bash",
+  "bodyMode": "Json",
+  "request": {
+    "method": "POST",
+    "url": "https://api.example.com/v1/orders",
+    "headers": [
+      { "name": "accept", "value": "application/json" },
+      { "name": "authorization", "value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0In0.c2lnbmF0dXJl" },
+      { "name": "content-type", "value": "application/json" },
+      { "name": "origin", "value": "https://api.example.com" },
+      { "name": "user-agent", "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36" }
+    ],
+    "body": { "mode": "Json", "text": "{\"items\":[{\"sku\":\"A-100\",\"qty\":2}],\"note\":\"deliver after 5pm\",\"total\":19.99}" },
+    "options": { "autoDecompress": true }
+  }
+}
