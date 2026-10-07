@@ -57,6 +57,12 @@ dotnet publish src/HarLens.App -c Release -r win-x64 --self-contained true `
 `scripts/package.ps1` does all of that for win-x64 and win-arm64 and writes zips with `HarLens.exe`, `LICENSE` and
 `THIRD-PARTY-NOTICES.txt` to `artifacts/`.
 
+`installer/HarLens.iss` (Inno Setup 6 or later) turns that output into a per-user installer, no administrator rights
+needed: `iscc /DArch=x64 installer\HarLens.iss` writes `artifacts\HarLens-<version>-x64-setup.exe`. It installs to
+`%LOCALAPPDATA%\Programs\HarLens`, adds a Start menu entry, optionally adds HarLens to "Open with" for `.har` files,
+and registers an uninstaller under Settings > Apps. Settings and history in `%LOCALAPPDATA%\HarLens` are kept on
+uninstall. CI builds both installers and checks a silent install and uninstall.
+
 Offline builds: run `scripts/vendor-packages.ps1` once on a connected machine to fill `./nuget-offline/`, then
 `dotnet restore --locked-mode --configfile NuGet.offline.config` (or `scripts/package.ps1 -Offline`). That restore is
 the only point at which a build uses the internet.
