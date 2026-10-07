@@ -10,8 +10,6 @@
     <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
-    <!-- CI and the documented build use locked mode; local edits may refresh the lock file. -->
-    <RestoreLockedMode Condition="'$(ContinuousIntegrationBuild)' == 'true'">true</RestoreLockedMode>
     <!-- Keep the restore graph identical for build and publish so that packages.lock.json is stable
          (SPEC 11: restore in locked mode). Every project restores for both Windows RIDs, and the
          single-file/trim analyzers are off so the SDK does not add its version-specific ILLink package.

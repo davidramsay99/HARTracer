@@ -11,3 +11,4 @@ TestResults/
 tests/fixtures/generated/
 *.binlog
 .claude/worktrees/
+.nuget-vendor-cache/
