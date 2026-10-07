@@ -1,7 +1,7 @@
 namespace HarLens.Core.Http;
 
-/// <summary>Fast, allocation-light URL splitting for list columns. Tolerates the odd URLs HAR files contain (data:, blob:, chrome-extension:).</summary>
-public readonly record struct UrlParts(string Scheme, string Host, int Port, string PathAndQuery, string Query)
+/// <summary>Immutable (safe to publish across threads) URL splitting for list columns. Tolerates the odd URLs HAR files contain (data:, blob:, chrome-extension:).</summary>
+public sealed record UrlParts(string Scheme, string Host, int Port, string PathAndQuery, string Query)
 {
     public static bool IsDefaultPort(string scheme, int port) => (scheme, port) switch
     {
@@ -15,6 +15,72 @@ public readonly record struct UrlParts(string Scheme, string Host, int Port, str
         "https" or "wss" => 443,
         _ => -1,
     };
+
+    /// <summary>
+    /// Scheme and host (both lower case) and explicit port, parsed over spans and interned through
+    /// <paramref name="pool"/> so that indexing allocates nothing for repeated hosts.
+    /// </summary>
+    internal static (string Scheme, string Host, int Port) SplitAuthority(string url, Har.StringPool? pool)
+    {
+        var span = url.AsSpan();
+        var colon = span.IndexOf(':');
+        if (colon <= 0 || !IsScheme(span[..colon]))
+        {
+            return ("", "", -1);
+        }
+
+        var scheme = Intern(span[..colon], pool);
+        if (span.Length < colon + 3 || span[colon + 1] != '/' || span[colon + 2] != '/')
+        {
+            return (scheme, "", -1);
+        }
+
+        var rest = span[(colon + 3)..];
+        var end = rest.IndexOfAny('/', '?', '#');
+        var authority = end < 0 ? rest : rest[..end];
+        var at = authority.LastIndexOf('@');
+        if (at >= 0)
+        {
+            authority = authority[(at + 1)..];
+        }
+
+        var host = authority;
+        var port = -1;
+        if (authority.StartsWith("["))
+        {
+            var close = authority.IndexOf(']');
+            if (close > 0)
+            {
+                host = authority[..(close + 1)];
+                if (close + 2 < authority.Length && authority[close + 1] == ':' &&
+                    !int.TryParse(authority[(close + 2)..], System.Globalization.NumberStyles.None, System.Globalization.CultureInfo.InvariantCulture, out port))
+                {
+                    port = -1;
+                }
+            }
+        }
+        else
+        {
+            var portColon = authority.LastIndexOf(':');
+            if (portColon >= 0)
+            {
+                host = authority[..portColon];
+                if (!int.TryParse(authority[(portColon + 1)..], System.Globalization.NumberStyles.None, System.Globalization.CultureInfo.InvariantCulture, out port))
+                {
+                    port = -1;
+                }
+            }
+        }
+
+        return (scheme, Intern(host, pool), port);
+    }
+
+    private static string Intern(ReadOnlySpan<char> value, Har.StringPool? pool)
+    {
+        Span<char> lower = value.Length <= 256 ? stackalloc char[value.Length] : new char[value.Length];
+        value.ToLowerInvariant(lower);
+        return pool is null ? new string(lower) : pool.Get(lower);
+    }
 
     public static UrlParts Split(string url)
     {
