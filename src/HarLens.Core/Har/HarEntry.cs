@@ -135,7 +135,8 @@ public sealed class HarEntry
 
     public string RequestHttpVersion { get; internal set; } = "";
 
-    public HarHeader[] RequestHeaders { get; internal set; } = [];
+    /// <summary>Request headers, a segment of a per-file block so that header filters scan memory sequentially.</summary>
+    public ArraySegment<HarHeader> RequestHeaders { get; internal set; } = ArraySegment<HarHeader>.Empty;
 
     public long RequestHeadersSize { get; internal set; } = -1;
 
@@ -153,7 +154,7 @@ public sealed class HarEntry
 
     public string ResponseHttpVersion { get; internal set; } = "";
 
-    public HarHeader[] ResponseHeaders { get; internal set; } = [];
+    public ArraySegment<HarHeader> ResponseHeaders { get; internal set; } = ArraySegment<HarHeader>.Empty;
 
     public long ResponseHeadersSize { get; internal set; } = -1;
 
@@ -351,7 +352,8 @@ public sealed class HarEntry
     /// <summary>Stable key of the entry within its source, used for caches and replay provenance.</summary>
     public string Key => $"{Source.Id}:{Offset}";
 
-    internal static string? FindHeader(HarHeader[] headers, string name)
+    [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveOptimization)]
+    public static string? FindHeader(ReadOnlySpan<HarHeader> headers, string name)
     {
         foreach (var h in headers)
         {

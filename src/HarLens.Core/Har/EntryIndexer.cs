@@ -10,7 +10,10 @@ namespace HarLens.Core.Har;
 internal sealed class EntryIndexer
 {
     private readonly StringPool _pool = new();
+    private const int HeaderBlockSize = 4096;
     private readonly List<HarHeader> _scratch = new(64);
+    private HarHeader[]? _headerBlock;
+    private int _headerBlockUsed;
 
     public HarEntry Index(HarSource source, ReadOnlySpan<byte> entryJson, long absoluteOffset, int fileIndex)
     {
@@ -384,12 +387,12 @@ internal sealed class EntryIndexer
         }
     }
 
-    private HarHeader[] ParseHeaders(ref Utf8JsonReader r)
+    private ArraySegment<HarHeader> ParseHeaders(ref Utf8JsonReader r)
     {
         if (r.TokenType != JsonTokenType.StartArray)
         {
             r.Skip();
-            return [];
+            return ArraySegment<HarHeader>.Empty;
         }
 
         _scratch.Clear();
@@ -425,7 +428,33 @@ internal sealed class EntryIndexer
             _scratch.Add(new HarHeader(name, value));
         }
 
-        return _scratch.Count == 0 ? [] : _scratch.ToArray();
+        return StoreHeaders();
+    }
+
+    /// <summary>Copies the parsed headers into a shared block (below the large-object threshold) and returns the segment.</summary>
+    private ArraySegment<HarHeader> StoreHeaders()
+    {
+        var count = _scratch.Count;
+        if (count == 0)
+        {
+            return ArraySegment<HarHeader>.Empty;
+        }
+
+        if (count > HeaderBlockSize / 4)
+        {
+            return new ArraySegment<HarHeader>(_scratch.ToArray());
+        }
+
+        if (_headerBlock is null || _headerBlockUsed + count > _headerBlock.Length)
+        {
+            _headerBlock = new HarHeader[HeaderBlockSize];
+            _headerBlockUsed = 0;
+        }
+
+        _scratch.CopyTo(_headerBlock, _headerBlockUsed);
+        var segment = new ArraySegment<HarHeader>(_headerBlock, _headerBlockUsed, count);
+        _headerBlockUsed += count;
+        return segment;
     }
 
     private static HarTimings ParseTimings(ref Utf8JsonReader r)
