@@ -19,13 +19,13 @@ $env:DOTNET_NOLOGO = "1"
 Push-Location $root
 try {
     # Restore into a private packages folder so that exactly the needed packages are collected.
-    dotnet restore HarLens.sln --locked-mode --packages $cache
+    dotnet restore Harborer.sln --locked-mode --packages $cache
     if ($LASTEXITCODE -ne 0) { throw "restore failed" }
     foreach ($rid in "win-x64", "win-arm64") {
         # Self-contained publish also needs the runtime and apphost packs for each RID; a throwaway
         # publish is the reliable way to fetch exactly those.
-        $scratch = Join-Path ([IO.Path]::GetTempPath()) ("harlens-vendor-" + [Guid]::NewGuid().ToString("N"))
-        dotnet publish src/HarLens.App -c Release -r $rid --self-contained true -p:PublishSingleFile=true `
+        $scratch = Join-Path ([IO.Path]::GetTempPath()) ("harborer-vendor-" + [Guid]::NewGuid().ToString("N"))
+        dotnet publish src/Harborer.App -c Release -r $rid --self-contained true -p:PublishSingleFile=true `
             -p:IncludeNativeLibrariesForSelfExtract=true --packages $cache -o $scratch
         if ($LASTEXITCODE -ne 0) { throw "publish for $rid failed" }
         Remove-Item $scratch -Recurse -Force

@@ -1,0 +1,82 @@
+<Window x:Class="Harborer.App.Views.CompareWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="{Binding Title}" Width="1200" Height="760" AutomationProperties.Name="Compare entries">
+  <Window.Resources>
+    <Style x:Key="DiffRow" TargetType="DataGridRow" BasedOn="{StaticResource {x:Type DataGridRow}}">
+      <Setter Property="Background" Value="{Binding Kind, Converter={StaticResource DiffKindBrush}}" />
+    </Style>
+    <DataTemplate x:Key="BodyDiff">
+      <DataGrid Style="{StaticResource CompactGrid}" ItemsSource="{Binding}" RowStyle="{StaticResource DiffRow}" AutomationProperties.Name="Body differences">
+        <DataGrid.Columns>
+          <DataGridTextColumn Header="#" Binding="{Binding LeftNumber}" Width="50" />
+          <DataGridTextColumn Header="Left" Binding="{Binding Left}" Width="*" />
+          <DataGridTextColumn Header="#" Binding="{Binding RightNumber}" Width="50" />
+          <DataGridTextColumn Header="Right" Binding="{Binding Right}" Width="*" />
+        </DataGrid.Columns>
+      </DataGrid>
+    </DataTemplate>
+  </Window.Resources>
+  <DockPanel Margin="8">
+    <Grid DockPanel.Dock="Top" Margin="0,0,0,6">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*" />
+        <ColumnDefinition Width="*" />
+      </Grid.ColumnDefinitions>
+      <TextBlock Text="{Binding LeftTitle}" FontWeight="SemiBold" />
+      <TextBlock Grid.Column="1" Text="{Binding RightTitle}" FontWeight="SemiBold" />
+    </Grid>
+    <TabControl>
+      <TabItem Header="Summary">
+        <DataGrid Style="{StaticResource CompactGrid}" ItemsSource="{Binding Summary}" Margin="4" AutomationProperties.Name="Request and status line">
+          <DataGrid.RowStyle>
+            <Style TargetType="DataGridRow" BasedOn="{StaticResource {x:Type DataGridRow}}">
+              <Style.Triggers>
+                <DataTrigger Binding="{Binding Same}" Value="False">
+                  <Setter Property="Background" Value="{DynamicResource DiffModifiedBackground}" />
+                </DataTrigger>
+              </Style.Triggers>
+            </Style>
+          </DataGrid.RowStyle>
+          <DataGrid.Columns>
+            <DataGridTextColumn Header="Field" Binding="{Binding Field}" Width="140" />
+            <DataGridTextColumn Header="Left" Binding="{Binding Left}" Width="*" />
+            <DataGridTextColumn Header="Right" Binding="{Binding Right}" Width="*" />
+          </DataGrid.Columns>
+        </DataGrid>
+      </TabItem>
+      <TabItem Header="Request headers">
+        <DataGrid Style="{StaticResource CompactGrid}" ItemsSource="{Binding RequestHeaders}" RowStyle="{StaticResource DiffRow}" Margin="4"
+                  AutomationProperties.Name="Request header differences">
+          <DataGrid.Columns>
+            <DataGridTextColumn Header="Header" Binding="{Binding Name}" Width="200" />
+            <DataGridTextColumn Header="Left" Binding="{Binding Left}" Width="*" />
+            <DataGridTextColumn Header="Right" Binding="{Binding Right}" Width="*" />
+          </DataGrid.Columns>
+        </DataGrid>
+      </TabItem>
+      <TabItem Header="Request body">
+        <DockPanel Margin="4">
+          <TextBlock DockPanel.Dock="Top" Text="{Binding RequestBodyNote}" Foreground="{DynamicResource MutedForeground}" />
+          <ContentControl Content="{Binding RequestBody}" ContentTemplate="{StaticResource BodyDiff}" />
+        </DockPanel>
+      </TabItem>
+      <TabItem Header="Response headers">
+        <DataGrid Style="{StaticResource CompactGrid}" ItemsSource="{Binding ResponseHeaders}" RowStyle="{StaticResource DiffRow}" Margin="4"
+                  AutomationProperties.Name="Response header differences">
+          <DataGrid.Columns>
+            <DataGridTextColumn Header="Header" Binding="{Binding Name}" Width="200" />
+            <DataGridTextColumn Header="Left" Binding="{Binding Left}" Width="*" />
+            <DataGridTextColumn Header="Right" Binding="{Binding Right}" Width="*" />
+          </DataGrid.Columns>
+        </DataGrid>
+      </TabItem>
+      <TabItem Header="Response body">
+        <DockPanel Margin="4">
+          <TextBlock DockPanel.Dock="Top" Text="{Binding ResponseBodyNote}" Foreground="{DynamicResource MutedForeground}" />
+          <ContentControl Content="{Binding ResponseBody}" ContentTemplate="{StaticResource BodyDiff}" />
+        </DockPanel>
+      </TabItem>
+    </TabControl>
+  </DockPanel>
+</Window>

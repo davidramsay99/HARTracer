@@ -1,5 +1,5 @@
 {
-  "description": "Older Chrome 'Copy as cURL (cmd)' that left '&' unescaped inside ^\"...^\". Real cmd.exe would split the command there; HarLens keeps it literal and warns.",
+  "description": "Older Chrome 'Copy as cURL (cmd)' that left '&' unescaped inside ^\"...^\". Real cmd.exe would split the command there; HARborer keeps it literal and warns.",
   "dialect": "Cmd",
   "bodyMode": "None",
   "warnings": [ "unescaped '&'" ],

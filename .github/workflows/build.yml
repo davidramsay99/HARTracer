@@ -1,4 +1,4 @@
-# Builds, tests and packages HarLens on Windows.
+# Builds, tests and packages HARborer on Windows.
 name: build
 
 on:
@@ -36,8 +36,8 @@ jobs:
 
       - name: Large-file checks (100 MB, 200,000 entries, 1 GB)
         env:
-          HARLENS_LARGE_TESTS: "1"
-        run: dotnet test tests/HarLens.Core.Tests -c Release --no-build --filter "FullyQualifiedName~Performance" --logger "console;verbosity=detailed"
+          HARBORER_LARGE_TESTS: "1"
+        run: dotnet test tests/Harborer.Core.Tests -c Release --no-build --filter "FullyQualifiedName~Performance" --logger "console;verbosity=detailed"
 
       - name: Package
         shell: pwsh
@@ -45,7 +45,7 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: HarLens-zips
+          name: HARborer-zips
           path: artifacts/*.zip
 
       - name: Installers
@@ -56,7 +56,7 @@ jobs:
           if (-not $iscc) { throw "ISCC.exe not found" }
           $version = ([xml](Get-Content Directory.Build.props)).Project.PropertyGroup.Version | Where-Object { $_ } | Select-Object -First 1
           foreach ($arch in "x64", "arm64") {
-            & $iscc.FullName "/DArch=$arch" "/DAppVersion=$version" installer\HarLens.iss
+            & $iscc.FullName "/DArch=$arch" "/DAppVersion=$version" installer\Harborer.iss
             if ($LASTEXITCODE -ne 0) { throw "installer for $arch failed" }
           }
 
@@ -65,18 +65,18 @@ jobs:
         run: |
           $setup = Get-ChildItem artifacts\*-x64-setup.exe | Select-Object -First 1
           Start-Process $setup.FullName -ArgumentList "/VERYSILENT", "/SUPPRESSMSGBOXES", "/NORESTART", "/CURRENTUSER", "/TASKS=harfiles" -Wait
-          $exe = "$env:LOCALAPPDATA\Programs\HarLens\HarLens.exe"
-          if (-not (Test-Path $exe)) { throw "HarLens.exe was not installed to $exe" }
-          if (-not (Test-Path "HKCU:\Software\Classes\HarLens.har\shell\open\command")) { throw ".har association missing" }
-          Start-Process "$env:LOCALAPPDATA\Programs\HarLens\unins000.exe" -ArgumentList "/VERYSILENT", "/SUPPRESSMSGBOXES", "/NORESTART" -Wait
+          $exe = "$env:LOCALAPPDATA\Programs\HARborer\HARborer.exe"
+          if (-not (Test-Path $exe)) { throw "HARborer.exe was not installed to $exe" }
+          if (-not (Test-Path "HKCU:\Software\Classes\Harborer.har\shell\open\command")) { throw ".har association missing" }
+          Start-Process "$env:LOCALAPPDATA\Programs\HARborer\unins000.exe" -ArgumentList "/VERYSILENT", "/SUPPRESSMSGBOXES", "/NORESTART" -Wait
           # The uninstaller hands off to a copy of itself; wait for it to finish.
           for ($i = 0; $i -lt 60 -and (Test-Path $exe); $i++) { Start-Sleep -Seconds 1 }
-          if (Test-Path $exe) { throw "uninstall left HarLens.exe behind" }
-          if (Test-Path "HKCU:\Software\Classes\HarLens.har") { throw "uninstall left the .har association behind" }
+          if (Test-Path $exe) { throw "uninstall left HARborer.exe behind" }
+          if (Test-Path "HKCU:\Software\Classes\Harborer.har") { throw "uninstall left the .har association behind" }
 
       - uses: actions/upload-artifact@v4
         with:
-          name: HarLens-installers
+          name: HARborer-installers
           path: artifacts/*-setup.exe
 
       - uses: actions/upload-artifact@v4
@@ -84,3 +84,30 @@ jobs:
         with:
           name: test-results
           path: TestResults
+
+  # A pushed v* tag publishes a GitHub Release with fixed file names, so
+  # https://github.com/davidramsay99/HARTracer/releases/latest/download/HARborer-setup-x64.exe stays valid.
+  release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: HARborer-*
+          merge-multiple: true
+          path: dist
+
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cd dist
+          mv HARborer-*-x64-setup.exe HARborer-setup-x64.exe
+          mv HARborer-*-arm64-setup.exe HARborer-setup-arm64.exe
+          mv HARborer-*-win-x64.zip HARborer-win-x64.zip
+          mv HARborer-*-win-arm64.zip HARborer-win-arm64.zip
+          gh release create "$GITHUB_REF_NAME" HARborer-setup-x64.exe HARborer-setup-arm64.exe HARborer-win-x64.zip HARborer-win-arm64.zip \
+            --repo "$GITHUB_REPOSITORY" --title "HARborer ${GITHUB_REF_NAME#v}" --generate-notes

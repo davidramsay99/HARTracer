@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Request engine. The single assembly permitted to use System.Net.*.
+       Harborer.App never references these types directly; it loads this assembly
+       through Harborer.Core.Engine.RequestEngineLoader the first time Send is pressed. -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>Harborer.Net</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Harborer.Core\Harborer.Core.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="Harborer.Net.Tests" />
+  </ItemGroup>
+</Project>

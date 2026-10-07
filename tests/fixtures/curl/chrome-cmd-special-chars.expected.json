@@ -1,5 +1,5 @@
 {
-  "description": "Chrome 'Copy as cURL (cmd)' of the PUT in chrome-bash-ansi-c-body: %, quotes, backslashes, shell operators, line feeds (^ LF LF) and non-ASCII. Chrome doubles every backslash, but the C runtime only halves backslashes that precede a quote, so curl.exe receives interior backslashes doubled (C:\\\\temp) while a backslash before the closing quote arrives single. HarLens imports exactly what curl.exe would receive.",
+  "description": "Chrome 'Copy as cURL (cmd)' of the PUT in chrome-bash-ansi-c-body: %, quotes, backslashes, shell operators, line feeds (^ LF LF) and non-ASCII. Chrome doubles every backslash, but the C runtime only halves backslashes that precede a quote, so curl.exe receives interior backslashes doubled (C:\\\\temp) while a backslash before the closing quote arrives single. HARborer imports exactly what curl.exe would receive.",
   "dialect": "Cmd",
   "bodyMode": "Raw",
   "request": {

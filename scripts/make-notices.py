@@ -21,10 +21,10 @@ def read(path):
 
 
 def main():
-    header = f"""HarLens third-party notices
+    header = f"""HARborer third-party notices
 ===========================
 
-HarLens.exe is a self-contained .NET application. It includes the components
+HARborer.exe is a self-contained .NET application. It includes the components
 listed below. Build-time and test-time packages (Microsoft.CodeAnalysis.BannedApiAnalyzers,
 xunit, xunit.runner.visualstudio, Microsoft.NET.Test.Sdk) are not shipped.
 

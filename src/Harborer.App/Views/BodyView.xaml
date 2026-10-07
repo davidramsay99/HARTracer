@@ -1,0 +1,123 @@
+<UserControl x:Class="Harborer.App.Views.BodyView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:Harborer.App.ViewModels"
+             xmlns:controls="clr-namespace:Harborer.App.Controls">
+  <DockPanel Margin="4">
+    <!-- Sub-view selector: auto-selected from the MIME type, overridable. -->
+    <DockPanel DockPanel.Dock="Top" Margin="0,0,0,4">
+      <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+        <CheckBox Content="JSON as text" IsChecked="{Binding ShowJsonAsText}" Margin="0,0,10,0" VerticalAlignment="Center"
+                  Visibility="{Binding CanPretty, Converter={StaticResource BoolToVisibility}}" />
+        <Button Content="Copy" Command="{Binding CopyTextCommand}" Margin="0,0,4,0" AutomationProperties.Name="Copy body text" />
+        <Button Content="Save…" Command="{Binding SaveToFileCommand}" AutomationProperties.Name="Save body to file" />
+      </StackPanel>
+      <StackPanel Orientation="Horizontal">
+        <RadioButton Content="Pretty" Margin="0,0,10,0" IsEnabled="{Binding CanPretty}"
+                     IsChecked="{Binding SelectedView, Converter={StaticResource EqualityToBool}, ConverterParameter=Pretty}" />
+        <RadioButton Content="Text" Margin="0,0,10,0"
+                     IsChecked="{Binding SelectedView, Converter={StaticResource EqualityToBool}, ConverterParameter=Text}" />
+        <RadioButton Content="Hex" Margin="0,0,10,0" IsEnabled="{Binding HasBody}"
+                     IsChecked="{Binding SelectedView, Converter={StaticResource EqualityToBool}, ConverterParameter=Hex}" />
+        <RadioButton Content="Image" Margin="0,0,10,0" IsEnabled="{Binding CanImage}"
+                     IsChecked="{Binding SelectedView, Converter={StaticResource EqualityToBool}, ConverterParameter=Image}" />
+        <RadioButton Content="JWT" Margin="0,0,10,0" IsEnabled="{Binding HasJwt}"
+                     IsChecked="{Binding SelectedView, Converter={StaticResource EqualityToBool}, ConverterParameter=Jwt}" />
+        <TextBlock Text="{Binding Summary}" Foreground="{DynamicResource MutedForeground}" VerticalAlignment="Center" Margin="6,0,0,0" />
+      </StackPanel>
+    </DockPanel>
+
+    <Border DockPanel.Dock="Top" Style="{StaticResource NoticeBorder}" Visibility="{Binding Notice, Converter={StaticResource NullToVisibility}}">
+      <TextBlock Text="{Binding Notice}" TextWrapping="Wrap" Foreground="{DynamicResource NoticeForeground}" />
+    </Border>
+
+    <Grid>
+      <!-- Pretty -->
+      <Grid x:Name="PrettyPane" Visibility="Collapsed">
+        <TreeView x:Name="JsonTree" ItemsSource="{Binding JsonRoots}" AutomationProperties.Name="JSON tree"
+                  VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling">
+          <TreeView.ItemContainerStyle>
+            <Style TargetType="TreeViewItem" BasedOn="{StaticResource {x:Type TreeViewItem}}">
+              <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
+              <Setter Property="MinHeight" Value="0" />
+              <Setter Property="Padding" Value="0" />
+            </Style>
+          </TreeView.ItemContainerStyle>
+          <TreeView.ItemTemplate>
+            <HierarchicalDataTemplate DataType="{x:Type vm:JsonTreeNode}" ItemsSource="{Binding Children}">
+              <TextBlock Style="{StaticResource MonoText}">
+                <Run Text="{Binding Name, Mode=OneWay}" FontWeight="SemiBold" /><Run Text=": " /><Run Text="{Binding Value, Mode=OneWay}" />
+              </TextBlock>
+            </HierarchicalDataTemplate>
+          </TreeView.ItemTemplate>
+        </TreeView>
+        <controls:CodeEditor x:Name="PrettyEditor" Code="{Binding PrettyText}" Syntax="{Binding PrettyHighlighting}" />
+        <DataGrid x:Name="FormGrid" Style="{StaticResource CompactGrid}" ItemsSource="{Binding FormFields}" AutomationProperties.Name="Form fields">
+          <DataGrid.Columns>
+            <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="200" />
+            <DataGridTextColumn Header="Value" Binding="{Binding Value}" Width="*" />
+          </DataGrid.Columns>
+        </DataGrid>
+        <DataGrid x:Name="PartsGrid" Style="{StaticResource CompactGrid}" ItemsSource="{Binding Parts}" AutomationProperties.Name="Multipart parts">
+          <DataGrid.Columns>
+            <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="140" />
+            <DataGridTextColumn Header="File name" Binding="{Binding FileName}" Width="140" />
+            <DataGridTextColumn Header="Content type" Binding="{Binding ContentType}" Width="140" />
+            <DataGridTextColumn Header="Value" Binding="{Binding Preview}" Width="*" />
+          </DataGrid.Columns>
+        </DataGrid>
+      </Grid>
+
+      <!-- Text -->
+      <controls:CodeEditor x:Name="TextEditor" Code="{Binding Text}" Syntax="{Binding Highlighting}" Visibility="Collapsed" />
+
+      <!-- Hex: virtualized rows formatted on demand -->
+      <ListBox x:Name="HexList" ItemsSource="{Binding HexRows}" Visibility="Collapsed" AutomationProperties.Name="Hex view"
+               VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling"
+               ScrollViewer.HorizontalScrollBarVisibility="Auto">
+        <ListBox.ItemContainerStyle>
+          <Style TargetType="ListBoxItem" BasedOn="{StaticResource {x:Type ListBoxItem}}">
+            <Setter Property="Padding" Value="2,0" />
+            <Setter Property="MinHeight" Value="0" />
+          </Style>
+        </ListBox.ItemContainerStyle>
+        <ListBox.ItemTemplate>
+          <DataTemplate>
+            <TextBlock Text="{Binding Text}" Style="{StaticResource MonoText}" />
+          </DataTemplate>
+        </ListBox.ItemTemplate>
+      </ListBox>
+
+      <!-- Image -->
+      <DockPanel x:Name="ImagePane" Visibility="Collapsed">
+        <TextBlock DockPanel.Dock="Top" Text="{Binding ImageInfo}" Margin="0,0,0,4" Foreground="{DynamicResource MutedForeground}" />
+        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+          <Image Source="{Binding Image}" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Top"
+                 RenderOptions.BitmapScalingMode="NearestNeighbor" AutomationProperties.Name="Image preview" />
+        </ScrollViewer>
+      </DockPanel>
+
+      <!-- JWT: decoded only, no signature verification -->
+      <ScrollViewer x:Name="JwtPane" Visibility="Collapsed" VerticalScrollBarVisibility="Auto">
+        <StackPanel>
+          <TextBlock Text="Decoded only. The signature is not verified." Foreground="{DynamicResource MutedForeground}" Margin="0,0,0,6" />
+          <ItemsControl ItemsSource="{Binding JwtTokens}">
+            <ItemsControl.ItemTemplate>
+              <DataTemplate>
+                <StackPanel Margin="0,0,0,12">
+                  <TextBlock FontWeight="SemiBold">
+                    <Run Text="{Binding Location, Mode=OneWay}" /><Run Text="   expires " /><Run Text="{Binding Expires, Mode=OneWay, TargetNullValue='(no exp)'}" />
+                  </TextBlock>
+                  <TextBlock Text="Header" Style="{StaticResource SectionHeader}" />
+                  <TextBox Text="{Binding HeaderJson, Mode=OneWay}" IsReadOnly="True" Style="{StaticResource MonoTextBox}" TextWrapping="Wrap" />
+                  <TextBlock Text="Payload" Style="{StaticResource SectionHeader}" />
+                  <TextBox Text="{Binding PayloadJson, Mode=OneWay}" IsReadOnly="True" Style="{StaticResource MonoTextBox}" TextWrapping="Wrap" />
+                </StackPanel>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+        </StackPanel>
+      </ScrollViewer>
+    </Grid>
+  </DockPanel>
+</UserControl>
