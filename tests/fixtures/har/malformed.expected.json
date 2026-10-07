@@ -1,0 +1,7 @@
+{
+  "recovered": 2,
+  "offset": 7496,
+  "line": 277,
+  "column": 21,
+  "path": "$.log.entries[2].response.status"
+}
