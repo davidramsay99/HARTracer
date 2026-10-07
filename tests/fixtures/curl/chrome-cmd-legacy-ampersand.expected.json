@@ -1,0 +1,29 @@
+{
+  "description": "Older Chrome 'Copy as cURL (cmd)' that left '&' unescaped inside ^\"...^\". Real cmd.exe would split the command there; HarLens keeps it literal and warns.",
+  "dialect": "Cmd",
+  "bodyMode": "None",
+  "warnings": [ "unescaped '&'" ],
+  "request": {
+    "method": "GET",
+    "url": "https://shop.example.com/api/v2/cart?session=abc123&currency=EUR&items[0]=42",
+    "headers": [
+      { "name": "accept", "value": "application/json, text/plain, */*" },
+      { "name": "accept-language", "value": "en-GB,en;q=0.9,de;q=0.8" },
+      { "name": "cache-control", "value": "no-cache" },
+      { "name": "Cookie", "value": "sid=s%3A9f8e7d.Xy; theme=dark; consent={\"ads\":false}" },
+      { "name": "pragma", "value": "no-cache" },
+      { "name": "priority", "value": "u=1, i" },
+      { "name": "referer", "value": "https://shop.example.com/cart" },
+      { "name": "sec-ch-ua", "value": "\"Chromium\";v=\"128\", \"Not;A=Brand\";v=\"24\", \"Google Chrome\";v=\"128\"" },
+      { "name": "sec-ch-ua-mobile", "value": "?0" },
+      { "name": "sec-ch-ua-platform", "value": "\"Windows\"" },
+      { "name": "sec-fetch-dest", "value": "empty" },
+      { "name": "sec-fetch-mode", "value": "cors" },
+      { "name": "sec-fetch-site", "value": "same-origin" },
+      { "name": "user-agent", "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36" },
+      { "name": "x-empty", "value": "" },
+      { "name": "x-request-id", "value": "7d0f3a" }
+    ],
+    "options": { "autoDecompress": true }
+  }
+}
