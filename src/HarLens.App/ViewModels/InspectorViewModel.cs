@@ -94,7 +94,7 @@ public sealed partial class InspectorViewModel : ObservableObject, IDisposable
         {
             if (Row is not null)
             {
-                Row.ColorMark = value;
+                Row.ColorMark = value == "none" ? null : value;
                 OnPropertyChanged();
             }
         }

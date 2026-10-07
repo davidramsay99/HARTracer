@@ -56,7 +56,7 @@ public sealed class EntryRowViewModel : ObservableObject
 
     public string? PageRef => Entry.PageRef;
 
-    public string PageGroup => _owner.PageGroupLabel(Entry.PageRef);
+    public string PageGroup => _owner.PageGroupLabel(Entry);
 
     /// <summary>"failed", "5xx", "4xx", "3xx" or "ok", for row styling (SPEC 6.2).</summary>
     public string RowState => Entry.IsFailed ? "failed" : Entry.StatusClass switch

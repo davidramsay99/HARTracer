@@ -6,6 +6,7 @@
   <SolidColorBrush x:Key="Status5xxForeground" Color="#FF7B72" />
   <SolidColorBrush x:Key="FailedForeground" Color="#FF7B72" />
   <SolidColorBrush x:Key="MutedForeground" Color="#A0A0A0" />
+  <SolidColorBrush x:Key="EditorForeground" Color="#E4E4E4" />
   <SolidColorBrush x:Key="NoticeBackground" Color="#3D3420" />
   <SolidColorBrush x:Key="NoticeForeground" Color="#F5E6B8" />
   <SolidColorBrush x:Key="DangerBannerBackground" Color="#B3261E" />

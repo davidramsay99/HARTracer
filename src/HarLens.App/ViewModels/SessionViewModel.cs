@@ -26,7 +26,7 @@ public sealed partial class SessionViewModel : ObservableObject, IDisposable
     private CancellationTokenSource? _filterCts;
     private CancellationTokenSource? _loadCts;
     private List<EntryRowViewModel> _allRows = [];
-    private Dictionary<string, string> _pageLabels = [];
+    private Dictionary<(HarSource Source, string Id), string> _pageLabels = [];
     private bool _suppressChipEvents;
 
     public SessionViewModel(MainViewModel main, string title)
@@ -170,14 +170,15 @@ public sealed partial class SessionViewModel : ObservableObject, IDisposable
 
     public ListSortDirection SortDirection { get; private set; }
 
-    public string PageGroupLabel(string? pageRef)
+    /// <summary>Group header for page grouping. Pages are keyed by source too: merged files often share ids such as "page_1".</summary>
+    public string PageGroupLabel(HarEntry entry)
     {
-        if (pageRef is null)
+        if (entry.PageRef is not { } pageRef)
         {
             return "(no page)";
         }
 
-        return _pageLabels.TryGetValue(pageRef, out var label) ? label : pageRef;
+        return _pageLabels.TryGetValue((entry.Source, pageRef), out var label) ? label : pageRef;
     }
 
     /// <summary>Loads a file off the UI thread with progress and cancel (SPEC 10: no UI-thread work over 50 ms).</summary>
@@ -248,10 +249,19 @@ public sealed partial class SessionViewModel : ObservableObject, IDisposable
         FirstStart = Session.FirstStart;
         var last = Session.LastEnd;
         AxisMilliseconds = Math.Max(1, (last - FirstStart).TotalMilliseconds);
-        _pageLabels = Session.Pages.ToDictionary(
-            p => p.Id,
-            p => $"{(string.IsNullOrEmpty(p.Title) ? p.Id : p.Title)}    DOMContentLoaded {DisplayFormat.Duration(p.OnContentLoad)}    Load {DisplayFormat.Duration(p.OnLoad)}",
-            StringComparer.Ordinal);
+        _pageLabels = [];
+        foreach (var p in Session.Pages)
+        {
+            var source = p.Source ?? Session.Documents[0].Source;
+            var title = string.IsNullOrEmpty(p.Title) ? p.Id : p.Title;
+            var label = $"{title}    DOMContentLoaded {DisplayFormat.Duration(p.OnContentLoad)}    Load {DisplayFormat.Duration(p.OnLoad)}";
+            if (Session.Kind == SessionKind.Merged)
+            {
+                label = $"{source.DisplayName}: {label}";
+            }
+
+            _pageLabels.TryAdd((source, p.Id), label);
+        }
         _allRows = Session.Entries.Select(e => new EntryRowViewModel(e, this)).ToList();
     }
 

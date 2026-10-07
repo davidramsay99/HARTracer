@@ -26,7 +26,8 @@ public sealed class CodeEditor : TextEditor
         ShowLineNumbers = true;
         FontFamily = new FontFamily("Cascadia Mono, Consolas, Courier New");
         SetResourceReference(FontSizeProperty, "MonoFontSize");
-        SetResourceReference(ForegroundProperty, SystemColors.WindowTextBrushKey);
+        SetResourceReference(ForegroundProperty, "EditorForeground");
+        SetResourceReference(LineNumbersForegroundProperty, "MutedForeground");
         Background = Brushes.Transparent;
         HorizontalScrollBarVisibility = System.Windows.Controls.ScrollBarVisibility.Auto;
         VerticalScrollBarVisibility = System.Windows.Controls.ScrollBarVisibility.Auto;
@@ -36,12 +37,32 @@ public sealed class CodeEditor : TextEditor
         SearchPanel.Install(this);
         System.Windows.Automation.AutomationProperties.SetName(this, "Text view");
 
+        // AvalonEdit's built-in palettes are made for light backgrounds; in dark mode text is shown unhighlighted.
+        s_editors.Add(new WeakReference<CodeEditor>(this));
+
         // Word wrap follows the View menu toggle (SPEC 6.3).
         WordWrap = Services.AppServices.Current.Settings.WordWrap;
         if (ViewModels.MainViewModel.Instance is { } main)
         {
             System.ComponentModel.PropertyChangedEventManager.AddHandler(main, (_, _) => WordWrap = main.WordWrap, nameof(ViewModels.MainViewModel.WordWrap));
         }
+    }
+
+    private static readonly List<WeakReference<CodeEditor>> s_editors = [];
+
+    static CodeEditor()
+    {
+        Services.ThemeManager.ThemeChanged += (_, _) =>
+        {
+            s_editors.RemoveAll(w => !w.TryGetTarget(out _));
+            foreach (var weak in s_editors)
+            {
+                if (weak.TryGetTarget(out var editor))
+                {
+                    editor.SetSyntax(editor.Syntax);
+                }
+            }
+        };
     }
 
     public string? Code
@@ -76,5 +97,5 @@ public sealed class CodeEditor : TextEditor
     }
 
     private void SetSyntax(string? name) =>
-        SyntaxHighlighting = string.IsNullOrEmpty(name) ? null : HighlightingManager.Instance.GetDefinition(name);
+        SyntaxHighlighting = string.IsNullOrEmpty(name) || Services.ThemeManager.IsDark ? null : HighlightingManager.Instance.GetDefinition(name);
 }
