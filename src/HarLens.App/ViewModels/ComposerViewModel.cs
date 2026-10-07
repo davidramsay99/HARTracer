@@ -598,10 +598,13 @@ public sealed partial class ComposerViewModel : ObservableObject
         }
 
         // Replay guard: captured credentials need confirmation, naming the host and the fields.
+        // Suppression is per origin (scheme, host, port); the dialog names where the bytes actually go.
+        var origin = $"{uri.Scheme}://{uri.IdnHost}:{uri.Port}";
+        var destination = Destination(request, uri);
         var findings = ReplayGuard.Inspect(request, Origin);
-        if (findings.Count > 0 && !AppServices.Current.ReplaySuppressions.IsSuppressed(uri.Host))
+        if (findings.Count > 0 && !AppServices.Current.ReplaySuppressions.IsSuppressed(origin))
         {
-            var choice = ReplayGuardDialog.Ask(uri.Host, findings);
+            var choice = ReplayGuardDialog.Ask(destination, findings);
             switch (choice)
             {
                 case ReplayGuardChoice.Cancel:
@@ -610,14 +613,14 @@ public sealed partial class ComposerViewModel : ObservableObject
                     request = ReplayGuard.StripCredentials(request, findings);
                     break;
                 case ReplayGuardChoice.SendAndSuppressHost:
-                    AppServices.Current.ReplaySuppressions.Suppress(uri.Host);
+                    AppServices.Current.ReplaySuppressions.Suppress(origin);
                     break;
             }
         }
 
         IsSending = true;
         ResultIsError = false;
-        ResultSummary = $"Sending to {uri.Host}…";
+        ResultSummary = $"Sending to {destination}…";
         _sendCts = new CancellationTokenSource();
         try
         {
@@ -646,6 +649,17 @@ public sealed partial class ComposerViewModel : ObservableObject
 
     [RelayCommand]
     private void CancelSend() => _sendCts?.Cancel();
+
+    private static string Destination(HttpRequestSpec request, Uri uri)
+    {
+        if (!string.IsNullOrWhiteSpace(request.Options.Proxy))
+        {
+            return $"{uri.Host} through proxy {request.Options.Proxy}";
+        }
+
+        var o = request.Options.ConnectOverrides.FirstOrDefault(c => string.Equals(c.Host, uri.Host, StringComparison.OrdinalIgnoreCase) && c.TargetHost.Length > 0);
+        return o is null ? uri.Host : $"{uri.Host} (connecting to {o.TargetHost})";
+    }
 
     private void ShowOutcome(HttpRequestSpec request, SendOutcome outcome)
     {

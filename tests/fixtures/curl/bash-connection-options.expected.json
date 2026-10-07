@@ -3,7 +3,7 @@
   "dialect": "Bash",
   "bodyMode": "None",
   "ignoredOptions": [ "-s", "-S" ],
-  "warnings": [ "only the first, 127.0.0.1", "'C:\\certs\\client.pfx'", "'client.key'" ],
+  "warnings": [ "only the first, 127.0.0.1", "'C:\\certs\\client.pfx'", "'client.key'", "not the one DNS returns", "not to the URL's host", "go through the proxy http://proxy.local:3128" ],
   "request": {
     "method": "GET",
     "url": "https://api.example.com/health",

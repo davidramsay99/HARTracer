@@ -24,6 +24,12 @@ public sealed class HarWriteOptions
     /// <summary>Optional rewrite of each <c>log</c> property value (name, raw JSON) and of each page.</summary>
     public Func<string, byte[], byte[]?>? LogPropertyTransform { get; init; }
 
+    /// <summary>
+    /// Leave out properties beside <c>log</c> and duplicate <c>entries</c> arrays, which no transform sees
+    /// (the sanitized export).
+    /// </summary>
+    public bool DropUnrecognizedContainers { get; init; }
+
     public IProgress<double>? Progress { get; init; }
 
     public CancellationToken CancellationToken { get; init; }
@@ -102,6 +108,11 @@ public static class HarWriter
                 }
 
                 var prop = log.LogProperties[i];
+                if (options.DropUnrecognizedContainers && prop.Name == "entries")
+                {
+                    continue;
+                }
+
                 var value = prop.Name == "pages" && (isSubset || pageRemap.Count > 0) ? PagesArray(pages) : prop.RawValue;
                 WriteProperty(writer, prop.Name, value, options);
             }
@@ -129,7 +140,7 @@ public static class HarWriter
         }
 
         writer.WriteEndObject();
-        if (log is not null)
+        if (log is not null && !options.DropUnrecognizedContainers)
         {
             foreach (var root in log.RootProperties)
             {

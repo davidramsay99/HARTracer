@@ -158,7 +158,7 @@ public sealed class RedirectTests
         Assert.False(requests[2].HasHeader("Authorization"));
         Assert.False(requests[2].HasHeader("Cookie"));
         Assert.Equal("kept", requests[2].Header("X-Custom"));
-        Assert.Contains(outcome.Exchanges[2].Notices, n => n.Contains("Authorization and Cookie", StringComparison.Ordinal));
+        Assert.Contains(outcome.Exchanges[2].Notices, n => n.Contains("Authorization, Proxy-Authorization, Cookie and Host", StringComparison.Ordinal));
     }
 
     [Fact]
