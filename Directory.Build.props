@@ -1,0 +1,35 @@
+<Project>
+  <!-- Shared settings for every project. -->
+  <PropertyGroup>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <MSBuildTreatWarningsAsErrors>true</MSBuildTreatWarningsAsErrors>
+    <Deterministic>true</Deterministic>
+    <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+    <!-- Keep the restore graph identical for build and publish so that packages.lock.json is stable
+         (restore in locked mode). Every project restores for both Windows RIDs, and the
+         single-file/trim analyzers are off so the SDK does not add its version-specific ILLink package.
+         Trimming and Native AOT are not used (WPF does not support them). -->
+    <RuntimeIdentifiers>win-x64;win-arm64</RuntimeIdentifiers>
+    <EnableSingleFileAnalyzer>false</EnableSingleFileAnalyzer>
+    <EnableTrimAnalyzer>false</EnableTrimAnalyzer>
+    <EnableAotAnalyzer>false</EnableAotAnalyzer>
+    <Company>HarLens</Company>
+    <Product>HarLens</Product>
+    <Version>1.0.0</Version>
+    <Copyright>Copyright (c) 2026 the HarLens authors</Copyright>
+  </PropertyGroup>
+
+  <!-- Projects that must not touch the network opt in with EnforceLocalOnly=true. -->
+  <ItemGroup Condition="'$(EnforceLocalOnly)' == 'true'">
+    <PackageReference Include="Microsoft.CodeAnalysis.BannedApiAnalyzers" PrivateAssets="all" IncludeAssets="runtime; build; native; contentfiles; analyzers; buildtransitive" />
+    <AdditionalFiles Include="$(MSBuildProjectDirectory)/BannedSymbols.txt" />
+  </ItemGroup>
+  <PropertyGroup Condition="'$(EnforceLocalOnly)' == 'true'">
+    <WarningsAsErrors>$(WarningsAsErrors);RS0030;RS0031;RS0035</WarningsAsErrors>
+  </PropertyGroup>
+</Project>

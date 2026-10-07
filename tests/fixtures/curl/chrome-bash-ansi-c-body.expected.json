@@ -1,0 +1,17 @@
+{
+  "description": "Chrome 'Copy as cURL (bash)' of a PUT whose body needs $'...' quoting: line feeds, a single quote, '!' and a tab written as \\u escapes, backslashes, shell metacharacters and non-ASCII text.",
+  "dialect": "Bash",
+  "bodyMode": "Raw",
+  "request": {
+    "method": "PUT",
+    "url": "https://forms.example.com/submit?q=100%25&path=%PATH%",
+    "headers": [
+      { "name": "content-type", "value": "text/plain;charset=UTF-8" },
+      { "name": "x-path", "value": "C:\\Users\\" },
+      { "name": "x-quote", "value": "say \"hi\"" },
+      { "name": "user-agent", "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36" }
+    ],
+    "body": { "mode": "Raw", "text": "line one\nit's \"quoted\" & <tagged> | piped ^caret !bang %PATH% %%\nback\\slash C:\\temp\\ end\ttab\ncafé naïve 東京 😀\n" },
+    "options": { "autoDecompress": true }
+  }
+}

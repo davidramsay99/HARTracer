@@ -1,0 +1,6 @@
+curl -G 'https://search.example.com/find?lang=en' \
+  -d 'q=caf%C3%A9' \
+  --data-urlencode 'name=John Doe & co' \
+  --data-urlencode '=50%' \
+  -d page=2 \
+  -sS -o results.json -w '%{http_code}\n'

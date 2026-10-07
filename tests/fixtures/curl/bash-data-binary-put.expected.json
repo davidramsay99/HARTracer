@@ -1,0 +1,16 @@
+{
+  "description": "--data-binary @file becomes a binary-file body that the engine reads at send time; -X PUT overrides the implied POST.",
+  "dialect": "Bash",
+  "bodyMode": "BinaryFile",
+  "warnings": [ "'payload.bin'" ],
+  "request": {
+    "method": "PUT",
+    "url": "https://files.example.com/blob/7",
+    "httpVersion": "Http11",
+    "headers": [
+      { "name": "Content-Type", "value": "application/octet-stream" }
+    ],
+    "body": { "mode": "BinaryFile", "filePath": "payload.bin" },
+    "options": { "autoDecompress": false }
+  }
+}

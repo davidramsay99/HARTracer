@@ -1,0 +1,10 @@
+curl.exe 'https://api.example.com/v1/users/42?fields=name,tags' `
+  -X PATCH `
+  -H 'Content-Type: application/json' `
+  -H "Authorization: Bearer abc.def.ghi" `
+  -H 'X-Note: it''s $fine' `
+  -H "X-Tabbed: a`tb" `
+  -H "X-Quoted: say ""hi"" and `"bye`"" `
+  --data-raw '{"name":"Zoë","tags":["a","b"],"cost":"$5"}' `
+  -m 30 `
+  --compressed

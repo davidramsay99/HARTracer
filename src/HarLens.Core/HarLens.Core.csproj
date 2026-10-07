@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- HAR model, streaming parser, filter engine, search, sanitizer, cURL parser and generators.
+       No UI, no network (enforced by BannedSymbols.txt). -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>HarLens.Core</RootNamespace>
+    <EnforceLocalOnly>true</EnforceLocalOnly>
+  </PropertyGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="HarLens.Core.Tests" />
+  </ItemGroup>
+</Project>

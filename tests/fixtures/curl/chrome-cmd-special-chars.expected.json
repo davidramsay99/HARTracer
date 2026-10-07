@@ -1,0 +1,17 @@
+{
+  "description": "Chrome 'Copy as cURL (cmd)' of the PUT in chrome-bash-ansi-c-body: %, quotes, backslashes, shell operators, line feeds (^ LF LF) and non-ASCII. Chrome doubles every backslash, but the C runtime only halves backslashes that precede a quote, so curl.exe receives interior backslashes doubled (C:\\\\temp) while a backslash before the closing quote arrives single. HarLens imports exactly what curl.exe would receive.",
+  "dialect": "Cmd",
+  "bodyMode": "Raw",
+  "request": {
+    "method": "PUT",
+    "url": "https://forms.example.com/submit?q=100%25&path=%PATH%",
+    "headers": [
+      { "name": "content-type", "value": "text/plain;charset=UTF-8" },
+      { "name": "x-path", "value": "C:\\\\Users\\" },
+      { "name": "x-quote", "value": "say \"hi\"" },
+      { "name": "user-agent", "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36" }
+    ],
+    "body": { "mode": "Raw", "text": "line one\nit's \"quoted\" & <tagged> | piped ^caret !bang %PATH% %%\nback\\\\slash C:\\\\temp\\\\ end\ttab\ncafé naïve 東京 😀\n" },
+    "options": { "autoDecompress": true }
+  }
+}

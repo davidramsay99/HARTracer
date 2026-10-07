@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Request engine. The single assembly permitted to use System.Net.*.
+       HarLens.App never references these types directly; it loads this assembly
+       through HarLens.Core.Engine.RequestEngineLoader the first time Send is pressed. -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>HarLens.Net</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\HarLens.Core\HarLens.Core.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="HarLens.Net.Tests" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,27 @@
+{
+  "description": "Bundled short options (-sSL), redirects, -k, decimal -m, --connect-timeout, --http2, --resolve with two addresses (first used), --connect-to with empty fields and an IPv6 target, a proxy without scheme, and a Windows PFX path with a password that contains a colon.",
+  "dialect": "Bash",
+  "bodyMode": "None",
+  "ignoredOptions": [ "-s", "-S" ],
+  "warnings": [ "only the first, 127.0.0.1", "'C:\\certs\\client.pfx'", "'client.key'" ],
+  "request": {
+    "method": "GET",
+    "url": "https://api.example.com/health",
+    "httpVersion": "Http2",
+    "headers": [],
+    "options": {
+      "followRedirects": true,
+      "maxRedirects": 5,
+      "insecure": true,
+      "timeout": "00:00:02.5000000",
+      "connectTimeout": "00:00:10",
+      "autoDecompress": false,
+      "proxy": "http://proxy.local:3128",
+      "connectOverrides": [
+        { "kind": "Resolve", "host": "api.example.com", "port": 443, "targetHost": "127.0.0.1" },
+        { "kind": "ConnectTo", "host": "", "port": 0, "targetHost": "::1", "targetPort": 8443 }
+      ],
+      "clientCertificate": { "source": "PfxFile", "path": "C:\\certs\\client.pfx", "password": "s3cr:et", "keyPath": "client.key" }
+    }
+  }
+}

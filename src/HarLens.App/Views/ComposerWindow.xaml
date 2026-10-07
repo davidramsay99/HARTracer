@@ -1,0 +1,309 @@
+<Window x:Class="HarLens.App.Views.ComposerWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:HarLens.App.ViewModels"
+        Title="Request Composer" Width="1180" Height="800" MinWidth="760" MinHeight="480"
+        AutomationProperties.Name="Request Composer">
+  <Window.InputBindings>
+    <KeyBinding Gesture="Ctrl+Enter" Command="{Binding SendCommand}" />
+    <KeyBinding Gesture="Escape" Command="{Binding CancelSendCommand}" />
+  </Window.InputBindings>
+  <DockPanel Margin="10">
+    <!-- Offline Mode -->
+    <Border DockPanel.Dock="Top" Style="{StaticResource NoticeBorder}" Visibility="{Binding OfflineMode, Converter={StaticResource BoolToVisibility}}">
+      <TextBlock TextWrapping="Wrap" Foreground="{DynamicResource NoticeForeground}"
+                 Text="Offline Mode is on, so Send is disabled. You can still edit, import and export requests. Turn Offline Mode off in the Tools menu to send." />
+    </Border>
+    <!-- Certificate validation off -->
+    <Border DockPanel.Dock="Top" Background="{DynamicResource DangerBannerBackground}" Padding="8,4" Margin="0,0,0,4"
+            Visibility="{Binding Insecure, Converter={StaticResource BoolToVisibility}}">
+      <TextBlock Foreground="{DynamicResource DangerBannerForeground}" FontWeight="SemiBold"
+                 Text="Certificate validation is OFF. The server's identity is not checked." />
+    </Border>
+
+    <!-- Request line -->
+    <Grid DockPanel.Dock="Top">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="120" />
+        <ColumnDefinition Width="*" />
+        <ColumnDefinition Width="110" />
+        <ColumnDefinition Width="Auto" />
+        <ColumnDefinition Width="Auto" />
+      </Grid.ColumnDefinitions>
+      <ComboBox IsEditable="True" ItemsSource="{x:Static vm:ComposerViewModel.Methods}" Text="{Binding Method, UpdateSourceTrigger=PropertyChanged}"
+                AutomationProperties.Name="Method" />
+      <TextBox Grid.Column="1" Margin="6,0,0,0" Text="{Binding Url, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource MonoTextBox}"
+               AutomationProperties.Name="URL" VerticalContentAlignment="Center" />
+      <ComboBox Grid.Column="2" Margin="6,0,0,0" ItemsSource="{x:Static vm:ComposerViewModel.Versions}" SelectedItem="{Binding HttpVersion}"
+                AutomationProperties.Name="HTTP version" ToolTip="Default lets TLS negotiate HTTP/2 when offered" />
+      <Button Grid.Column="3" Margin="6,0,0,0" Content="Send" MinWidth="90" Command="{Binding SendCommand}" ToolTip="Send (Ctrl+Enter)"
+              FontWeight="SemiBold" />
+      <Button Grid.Column="4" Margin="6,0,0,0" Content="Cancel" MinWidth="70" Command="{Binding CancelSendCommand}"
+              IsEnabled="{Binding IsSending}" />
+    </Grid>
+
+    <!-- Toolbar -->
+    <WrapPanel DockPanel.Dock="Top" Margin="0,6,0,6">
+      <Button Content="New" Command="{Binding NewCommand}" Margin="0,0,6,0" />
+      <Button Content="Import cURL…" Command="{Binding ImportCurlCommand}" Margin="0,0,6,0" />
+      <Button Content="Copy as cURL (bash)" Command="{Binding CopyAsCommand}" CommandParameter="CurlBash" Margin="0,0,6,0" />
+      <Button Content="cURL (cmd)" Command="{Binding CopyAsCommand}" CommandParameter="CurlCmd" Margin="0,0,6,0" />
+      <Button Content="cURL (PowerShell)" Command="{Binding CopyAsCommand}" CommandParameter="CurlPowerShell" Margin="0,0,6,0" />
+      <Button Content="Invoke-WebRequest" Command="{Binding CopyAsCommand}" CommandParameter="PowerShellInvokeWebRequest" Margin="0,0,6,0" />
+      <Button Content="Raw HTTP" Command="{Binding CopyAsCommand}" CommandParameter="RawHttp" Margin="0,0,16,0" />
+      <Button Content="Save to Collection…" Command="{Binding SaveToCollectionCommand}" />
+    </WrapPanel>
+
+    <!-- Result -->
+    <StackPanel DockPanel.Dock="Bottom" Margin="0,6,0,0">
+      <Border Style="{StaticResource NoticeBorder}" Visibility="{Binding ImportWarnings, Converter={StaticResource NullToVisibility}}">
+        <ScrollViewer MaxHeight="90" VerticalScrollBarVisibility="Auto">
+          <TextBlock Text="{Binding ImportWarnings}" TextWrapping="Wrap" Foreground="{DynamicResource NoticeForeground}" />
+        </ScrollViewer>
+      </Border>
+      <DockPanel>
+        <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+          <Button Content="Show in Composer Tab" Command="{Binding ShowResultCommand}" Margin="6,0,0,0" />
+          <Button Content="Diff Against Original" Command="{Binding DiffAgainstOriginalCommand}" Margin="6,0,0,0"
+                  IsEnabled="{Binding CanDiff}" />
+        </StackPanel>
+        <ProgressBar DockPanel.Dock="Left" Width="60" Height="6" IsIndeterminate="True" Margin="0,0,8,0"
+                     Visibility="{Binding IsSending, Converter={StaticResource BoolToVisibility}}" />
+        <TextBox Text="{Binding ResultSummary, Mode=OneWay}" IsReadOnly="True" BorderThickness="0" Background="Transparent" TextWrapping="Wrap"
+                 AutomationProperties.Name="Result">
+          <TextBox.Style>
+            <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+              <Style.Triggers>
+                <DataTrigger Binding="{Binding ResultIsError}" Value="True">
+                  <Setter Property="Foreground" Value="{DynamicResource Status5xxForeground}" />
+                </DataTrigger>
+              </Style.Triggers>
+            </Style>
+          </TextBox.Style>
+        </TextBox>
+      </DockPanel>
+    </StackPanel>
+
+    <Grid>
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="3*" />
+        <ColumnDefinition Width="5" />
+        <ColumnDefinition Width="*" MinWidth="180" />
+      </Grid.ColumnDefinitions>
+      <TabControl AutomationProperties.Name="Request editor">
+        <TabItem Header="Headers">
+          <DataGrid Style="{StaticResource EditableGrid}" ItemsSource="{Binding Headers}" Margin="4" AutomationProperties.Name="Request headers">
+            <DataGrid.Columns>
+              <DataGridCheckBoxColumn Header="On" Binding="{Binding Enabled, UpdateSourceTrigger=PropertyChanged}" Width="40" />
+              <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="220" />
+              <DataGridTextColumn Header="Value" Binding="{Binding Value}" Width="*" />
+            </DataGrid.Columns>
+          </DataGrid>
+        </TabItem>
+        <TabItem Header="Query">
+          <DockPanel Margin="4">
+            <TextBlock DockPanel.Dock="Top" Text="Edits here update the URL, and edits to the URL update this grid." Foreground="{DynamicResource MutedForeground}" Margin="0,0,0,4" />
+            <DataGrid Style="{StaticResource EditableGrid}" ItemsSource="{Binding QueryParams}" AutomationProperties.Name="Query parameters">
+              <DataGrid.Columns>
+                <DataGridCheckBoxColumn Header="On" Binding="{Binding Enabled, UpdateSourceTrigger=PropertyChanged}" Width="40" />
+                <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="200" />
+                <DataGridTextColumn Header="Value" Binding="{Binding Value}" Width="*" />
+              </DataGrid.Columns>
+            </DataGrid>
+          </DockPanel>
+        </TabItem>
+        <TabItem Header="Body">
+          <DockPanel Margin="4">
+            <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,0,0,4">
+              <TextBlock Text="Body " VerticalAlignment="Center" />
+              <ComboBox ItemsSource="{x:Static vm:ComposerViewModel.BodyModes}" SelectedItem="{Binding BodyMode}" Width="160"
+                        AutomationProperties.Name="Body mode" />
+              <TextBlock Text="  Content-Length is computed when sending." VerticalAlignment="Center" Foreground="{DynamicResource MutedForeground}" />
+            </StackPanel>
+            <Grid>
+              <TextBlock Text="No body." Visibility="{Binding BodyMode, Converter={StaticResource EqualityToVisibility}, ConverterParameter=None}" />
+              <DockPanel Visibility="{Binding BodyMode, Converter={StaticResource EqualityToVisibility}, ConverterParameter=Raw|Json}">
+                <TextBlock DockPanel.Dock="Top" Text="Binary body from the captured entry is sent unchanged. Typing text replaces it."
+                           Visibility="{Binding BodyBytes, Converter={StaticResource NullToVisibility}}" Foreground="{DynamicResource MutedForeground}" />
+                <TextBox Text="{Binding BodyText, UpdateSourceTrigger=PropertyChanged}" AcceptsReturn="True" AcceptsTab="True" TextWrapping="Wrap"
+                         VerticalScrollBarVisibility="Auto" Style="{StaticResource MonoTextBox}" AutomationProperties.Name="Body text"
+                         TextChanged="OnBodyTextChanged" />
+              </DockPanel>
+              <DataGrid Style="{StaticResource EditableGrid}" ItemsSource="{Binding FormFields}" AutomationProperties.Name="Form fields"
+                        Visibility="{Binding BodyMode, Converter={StaticResource EqualityToVisibility}, ConverterParameter=FormUrlEncoded}">
+                <DataGrid.Columns>
+                  <DataGridCheckBoxColumn Header="On" Binding="{Binding Enabled, UpdateSourceTrigger=PropertyChanged}" Width="40" />
+                  <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="200" />
+                  <DataGridTextColumn Header="Value" Binding="{Binding Value}" Width="*" />
+                </DataGrid.Columns>
+              </DataGrid>
+              <DataGrid Style="{StaticResource EditableGrid}" ItemsSource="{Binding Parts}" AutomationProperties.Name="Multipart parts"
+                        Visibility="{Binding BodyMode, Converter={StaticResource EqualityToVisibility}, ConverterParameter=Multipart}">
+                <DataGrid.Columns>
+                  <DataGridCheckBoxColumn Header="On" Binding="{Binding Enabled, UpdateSourceTrigger=PropertyChanged}" Width="40" />
+                  <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="130" />
+                  <DataGridTextColumn Header="Text value" Binding="{Binding Value}" Width="*" />
+                  <DataGridTextColumn Header="File" Binding="{Binding FilePath}" Width="200" />
+                  <DataGridTemplateColumn Width="70">
+                    <DataGridTemplateColumn.CellTemplate>
+                      <DataTemplate>
+                        <Button Content="File…" Padding="4,0" MinHeight="0"
+                                Command="{Binding DataContext.BrowsePartFileCommand, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}" />
+                      </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                  </DataGridTemplateColumn>
+                  <DataGridTextColumn Header="File name" Binding="{Binding FileName}" Width="110" />
+                  <DataGridTextColumn Header="Content type" Binding="{Binding ContentType}" Width="120" />
+                </DataGrid.Columns>
+              </DataGrid>
+              <StackPanel Visibility="{Binding BodyMode, Converter={StaticResource EqualityToVisibility}, ConverterParameter=BinaryFile}">
+                <TextBlock Text="File whose bytes form the body:" Margin="0,0,0,4" />
+                <DockPanel>
+                  <Button DockPanel.Dock="Right" Content="Browse…" Command="{Binding BrowseBinaryCommand}" Margin="6,0,0,0" />
+                  <TextBox Text="{Binding BinaryFilePath}" AutomationProperties.Name="Body file" />
+                </DockPanel>
+              </StackPanel>
+            </Grid>
+          </DockPanel>
+        </TabItem>
+        <TabItem Header="Auth">
+          <StackPanel Margin="8">
+            <TextBlock TextWrapping="Wrap" Foreground="{DynamicResource MutedForeground}"
+                       Text="The auth helper writes the Authorization header and nothing else." />
+            <TextBlock Style="{StaticResource SectionHeader}" Text="Basic" />
+            <StackPanel Orientation="Horizontal">
+              <TextBlock Text="User " VerticalAlignment="Center" Width="70" />
+              <TextBox Text="{Binding AuthUser}" Width="200" AutomationProperties.Name="Basic user name" />
+              <TextBlock Text="  Password " VerticalAlignment="Center" />
+              <TextBox Text="{Binding AuthPassword}" Width="200" AutomationProperties.Name="Basic password" />
+              <Button Content="Set header" Command="{Binding ApplyBasicCommand}" Margin="8,0,0,0" />
+            </StackPanel>
+            <TextBlock Style="{StaticResource SectionHeader}" Text="Bearer" />
+            <StackPanel Orientation="Horizontal">
+              <TextBlock Text="Token " VerticalAlignment="Center" Width="70" />
+              <TextBox Text="{Binding AuthToken}" Width="470" Style="{StaticResource MonoTextBox}" AutomationProperties.Name="Bearer token" />
+              <Button Content="Set header" Command="{Binding ApplyBearerCommand}" Margin="8,0,0,0" />
+            </StackPanel>
+          </StackPanel>
+        </TabItem>
+        <TabItem Header="Options">
+          <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <StackPanel Margin="8">
+              <StackPanel Orientation="Horizontal">
+                <CheckBox Content="Follow redirects" IsChecked="{Binding FollowRedirects}" VerticalAlignment="Center" />
+                <TextBlock Text="   Maximum " VerticalAlignment="Center" />
+                <TextBox Text="{Binding MaxRedirects}" Width="60" AutomationProperties.Name="Maximum redirects" />
+              </StackPanel>
+              <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
+                <TextBlock Text="Timeout (seconds) " VerticalAlignment="Center" Width="170" />
+                <TextBox Text="{Binding TimeoutSeconds}" Width="80" AutomationProperties.Name="Timeout in seconds" />
+                <TextBlock Text="   Connect timeout " VerticalAlignment="Center" />
+                <TextBox Text="{Binding ConnectTimeoutSeconds}" Width="80" AutomationProperties.Name="Connect timeout in seconds" />
+              </StackPanel>
+              <CheckBox Content="Automatic decompression (gzip, deflate, br)" IsChecked="{Binding AutoDecompress}" Margin="0,6,0,0" />
+              <CheckBox Content="Skip certificate validation" IsChecked="{Binding Insecure}" Margin="0,6,0,0" />
+              <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
+                <TextBlock Text="Base directory for files " VerticalAlignment="Center" Width="170" />
+                <TextBox Text="{Binding FileBaseDirectory}" Width="320" AutomationProperties.Name="Base directory for files" />
+                <Button Content="Browse…" Command="{Binding BrowseBaseDirectoryCommand}" Margin="6,0,0,0" />
+              </StackPanel>
+              <CheckBox Content="Keep credential header values in history" IsChecked="{Binding KeepCredentialsInHistory}" Margin="0,10,0,0" />
+            </StackPanel>
+          </ScrollViewer>
+        </TabItem>
+        <TabItem Header="Connection">
+          <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <StackPanel Margin="8">
+              <TextBlock Style="{StaticResource SectionHeader}" Text="Connect override (curl --resolve / --connect-to)" />
+              <TextBlock TextWrapping="Wrap" Foreground="{DynamicResource MutedForeground}"
+                         Text="Connects to a different address while the URL host stays in the Host header and in SNI." />
+              <DataGrid Style="{StaticResource EditableGrid}" ItemsSource="{Binding Overrides}" Height="120" Margin="0,4,0,0"
+                        AutomationProperties.Name="Connect overrides">
+                <DataGrid.Columns>
+                  <DataGridComboBoxColumn Header="Kind" SelectedItemBinding="{Binding Kind}" Width="100"
+                                          ItemsSource="{x:Static vm:ComposerViewModel.OverrideKinds}" />
+                  <DataGridTextColumn Header="URL host" Binding="{Binding Host}" Width="*" />
+                  <DataGridTextColumn Header="URL port" Binding="{Binding Port}" Width="70" />
+                  <DataGridTextColumn Header="Connect to address" Binding="{Binding TargetHost}" Width="*" />
+                  <DataGridTextColumn Header="Port" Binding="{Binding TargetPort}" Width="70" />
+                </DataGrid.Columns>
+              </DataGrid>
+              <TextBlock Style="{StaticResource SectionHeader}" Text="Proxy" />
+              <TextBox Text="{Binding Proxy}" AutomationProperties.Name="Proxy"
+                       ToolTip="Empty means a direct connection. The system proxy is never used unless you enter it here." />
+              <TextBlock Style="{StaticResource SectionHeader}" Text="Client certificate" />
+              <CheckBox Content="Present a client certificate" IsChecked="{Binding UseClientCertificate}" />
+              <StackPanel IsEnabled="{Binding UseClientCertificate}" Margin="0,4,0,0">
+                <ComboBox ItemsSource="{x:Static vm:ComposerViewModel.CertificateSources}" SelectedItem="{Binding CertificateSource}" Width="180"
+                          HorizontalAlignment="Left" AutomationProperties.Name="Certificate source" />
+                <DockPanel Margin="0,4,0,0">
+                  <TextBlock Text="File " Width="90" VerticalAlignment="Center" />
+                  <Button DockPanel.Dock="Right" Content="Browse…" Command="{Binding BrowseCertificateCommand}" Margin="6,0,0,0" />
+                  <TextBox Text="{Binding CertificatePath}" AutomationProperties.Name="Certificate file" />
+                </DockPanel>
+                <DockPanel Margin="0,4,0,0">
+                  <TextBlock Text="Password " Width="90" VerticalAlignment="Center" />
+                  <TextBox Text="{Binding CertificatePassword}" AutomationProperties.Name="Certificate password" />
+                </DockPanel>
+                <DockPanel Margin="0,4,0,0">
+                  <TextBlock Text="PEM key " Width="90" VerticalAlignment="Center" />
+                  <TextBox Text="{Binding CertificateKeyPath}" AutomationProperties.Name="Private key file" />
+                </DockPanel>
+                <DockPanel Margin="0,4,0,0">
+                  <TextBlock Text="Thumbprint " Width="90" VerticalAlignment="Center" />
+                  <TextBox Text="{Binding CertificateThumbprint}" AutomationProperties.Name="Certificate thumbprint in the Windows store" />
+                </DockPanel>
+              </StackPanel>
+            </StackPanel>
+          </ScrollViewer>
+        </TabItem>
+      </TabControl>
+
+      <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" ResizeBehavior="PreviousAndNext" />
+
+      <TabControl Grid.Column="2" AutomationProperties.Name="History and collections">
+        <TabItem Header="History">
+          <DockPanel Margin="4">
+            <Button DockPanel.Dock="Bottom" Content="Clear History" Command="{Binding ClearHistoryCommand}" Margin="0,4,0,0" HorizontalAlignment="Left" />
+            <ListBox ItemsSource="{Binding History}" SelectedItem="{Binding SelectedHistory}" AutomationProperties.Name="History">
+              <ListBox.ItemTemplate>
+                <DataTemplate>
+                  <StackPanel ToolTip="{Binding Title}">
+                    <TextBlock Text="{Binding Title}" TextTrimming="CharacterEllipsis" />
+                    <TextBlock Foreground="{DynamicResource MutedForeground}" FontSize="11">
+                      <Run Text="{Binding Sent, Mode=OneWay, StringFormat=g}" /><Run Text="   " /><Run Text="{Binding Status, Mode=OneWay}" />
+                    </TextBlock>
+                  </StackPanel>
+                </DataTemplate>
+              </ListBox.ItemTemplate>
+            </ListBox>
+          </DockPanel>
+        </TabItem>
+        <TabItem Header="Collections">
+          <TreeView ItemsSource="{Binding Collections}" Margin="4" AutomationProperties.Name="Collections">
+            <TreeView.ItemTemplate>
+              <HierarchicalDataTemplate ItemsSource="{Binding Requests}">
+                <StackPanel Orientation="Horizontal">
+                  <TextBlock Text="{Binding Name}" FontWeight="SemiBold" />
+                  <Button Content="✕" Padding="3,0" MinHeight="0" MinWidth="0" Margin="6,0,0,0" FontSize="10" ToolTip="Delete collection"
+                          Command="{Binding DataContext.DeleteCollectionCommand, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}" />
+                </StackPanel>
+                <HierarchicalDataTemplate.ItemTemplate>
+                  <DataTemplate>
+                    <TextBlock Text="{Binding Name}" ToolTip="Double-click to load">
+                      <TextBlock.InputBindings>
+                        <MouseBinding Gesture="LeftDoubleClick"
+                                      Command="{Binding DataContext.LoadSavedCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                      CommandParameter="{Binding}" />
+                      </TextBlock.InputBindings>
+                    </TextBlock>
+                  </DataTemplate>
+                </HierarchicalDataTemplate.ItemTemplate>
+              </HierarchicalDataTemplate>
+            </TreeView.ItemTemplate>
+          </TreeView>
+        </TabItem>
+      </TabControl>
+    </Grid>
+  </DockPanel>
+</Window>

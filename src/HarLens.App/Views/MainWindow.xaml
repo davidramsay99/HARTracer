@@ -1,0 +1,158 @@
+<Window x:Class="HarLens.App.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:HarLens.App.ViewModels"
+        xmlns:views="clr-namespace:HarLens.App.Views"
+        xmlns:settings="clr-namespace:HarLens.Core.Settings;assembly=HarLens.Core"
+        Title="HarLens" Width="1400" Height="860" MinWidth="720" MinHeight="420"
+        AllowDrop="True" Drop="OnDrop" DragOver="OnDragOver"
+        AutomationProperties.Name="HarLens main window">
+  <Window.InputBindings>
+    <KeyBinding Gesture="Ctrl+O" Command="{Binding OpenCommand}" />
+    <KeyBinding Gesture="Ctrl+W" Command="{Binding CloseTabCommand}" />
+    <KeyBinding Gesture="Ctrl+S" Command="{Binding SaveCommand}" />
+    <KeyBinding Gesture="Ctrl+Shift+F" Command="{Binding FindAllCommand}" />
+    <KeyBinding Gesture="Ctrl+Shift+C" Command="{Binding SelectedSession.CopyAsCommand}" CommandParameter="CurlBash" />
+    <KeyBinding Gesture="Ctrl+R" Command="{Binding SelectedSession.SendToComposerCommand}" />
+    <KeyBinding Gesture="Ctrl+OemPlus" Command="{Binding FontBiggerCommand}" />
+    <KeyBinding Gesture="Ctrl+Add" Command="{Binding FontBiggerCommand}" />
+    <KeyBinding Gesture="Ctrl+OemMinus" Command="{Binding FontSmallerCommand}" />
+    <KeyBinding Gesture="Ctrl+Subtract" Command="{Binding FontSmallerCommand}" />
+    <KeyBinding Gesture="Ctrl+D0" Command="{Binding FontResetCommand}" />
+  </Window.InputBindings>
+  <DockPanel>
+    <Menu DockPanel.Dock="Top" AutomationProperties.Name="Main menu">
+      <MenuItem Header="_File">
+        <MenuItem Header="_Open…" InputGestureText="Ctrl+O" Command="{Binding OpenCommand}" />
+        <MenuItem Header="Open _Recent" ItemsSource="{Binding RecentFiles}">
+          <MenuItem.ItemContainerStyle>
+            <Style TargetType="MenuItem" BasedOn="{StaticResource {x:Type MenuItem}}">
+              <Setter Property="Header" Value="{Binding}" />
+              <Setter Property="Command" Value="{Binding DataContext.OpenRecentCommand, RelativeSource={RelativeSource AncestorType=Window}}" />
+              <Setter Property="CommandParameter" Value="{Binding}" />
+            </Style>
+          </MenuItem.ItemContainerStyle>
+        </MenuItem>
+        <MenuItem Header="Clear Recent Files" Command="{Binding ClearRecentCommand}" />
+        <Separator />
+        <MenuItem Header="_Save HAR…" InputGestureText="Ctrl+S" Command="{Binding SaveCommand}" />
+        <MenuItem Header="Export _Selected Entries as HAR…" Command="{Binding ExportSelectedCommand}" />
+        <MenuItem Header="Export _Filtered Entries as HAR…" Command="{Binding ExportFilteredCommand}" />
+        <MenuItem Header="Export List as _CSV…" Command="{Binding ExportCsvCommand}" />
+        <MenuItem Header="Export Sa_nitized HAR…" Command="{Binding ExportSanitizedCommand}" />
+        <Separator />
+        <MenuItem Header="_Merge Tabs into New Session…" Command="{Binding MergeCommand}" />
+        <MenuItem Header="_Close Tab" InputGestureText="Ctrl+W" Command="{Binding CloseTabCommand}" />
+        <Separator />
+        <MenuItem Header="E_xit" Click="OnExit" />
+      </MenuItem>
+      <MenuItem Header="_Edit">
+        <MenuItem Header="Copy _URL" InputGestureText="Ctrl+C" Command="{Binding SelectedSession.CopyUrlCommand}" />
+        <MenuItem Header="Copy as cURL (bash)" InputGestureText="Ctrl+Shift+C" Command="{Binding SelectedSession.CopyAsCommand}" CommandParameter="CurlBash" />
+        <MenuItem Header="_Find in View" InputGestureText="Ctrl+F" IsEnabled="False" ToolTip="Press Ctrl+F inside a text view." />
+        <MenuItem Header="Find in _All Entries…" InputGestureText="Ctrl+Shift+F" Command="{Binding FindAllCommand}" />
+        <MenuItem Header="Focus _Filter" InputGestureText="Ctrl+L" Click="OnFocusFilter" />
+        <Separator />
+        <MenuItem Header="Co_mment…" Command="{Binding SelectedSession.EditCommentCommand}" />
+        <MenuItem Header="Co_mpare Two Selected Entries" Command="{Binding SelectedSession.CompareCommand}" />
+      </MenuItem>
+      <MenuItem Header="_View">
+        <MenuItem Header="Inspector _Beneath List" Command="{Binding ToggleLayoutCommand}"
+                  IsChecked="{Binding Layout, Mode=OneWay, Converter={StaticResource EqualityToBool}, ConverterParameter=Stacked}" />
+        <MenuItem Header="Group by _Page" IsCheckable="True" IsChecked="{Binding GroupByPage}" />
+        <MenuItem Header="_Word Wrap" IsCheckable="True" IsChecked="{Binding WordWrap}" />
+        <MenuItem Header="_Mask Secrets" IsCheckable="True" IsChecked="{Binding MaskSecrets}" />
+        <Separator />
+        <MenuItem Header="_Time">
+          <MenuItem Header="Relative to First Entry" IsCheckable="True"
+                    IsChecked="{Binding TimeDisplay, Converter={StaticResource EqualityToBool}, ConverterParameter=RelativeToFirst}" />
+          <MenuItem Header="Local Time" IsCheckable="True"
+                    IsChecked="{Binding TimeDisplay, Converter={StaticResource EqualityToBool}, ConverterParameter=LocalTime}" />
+          <MenuItem Header="UTC" IsCheckable="True"
+                    IsChecked="{Binding TimeDisplay, Converter={StaticResource EqualityToBool}, ConverterParameter=Utc}" />
+        </MenuItem>
+        <MenuItem Header="_Sizes">
+          <MenuItem Header="Human-Readable" IsCheckable="True"
+                    IsChecked="{Binding SizeDisplay, Converter={StaticResource EqualityToBool}, ConverterParameter=HumanReadable}" />
+          <MenuItem Header="Bytes" IsCheckable="True"
+                    IsChecked="{Binding SizeDisplay, Converter={StaticResource EqualityToBool}, ConverterParameter=Bytes}" />
+        </MenuItem>
+        <MenuItem Header="T_heme">
+          <MenuItem Header="Follow System" Command="{Binding SetThemeCommand}" CommandParameter="System"
+                    IsChecked="{Binding Theme, Mode=OneWay, Converter={StaticResource EqualityToBool}, ConverterParameter=System}" />
+          <MenuItem Header="Light" Command="{Binding SetThemeCommand}" CommandParameter="Light"
+                    IsChecked="{Binding Theme, Mode=OneWay, Converter={StaticResource EqualityToBool}, ConverterParameter=Light}" />
+          <MenuItem Header="Dark" Command="{Binding SetThemeCommand}" CommandParameter="Dark"
+                    IsChecked="{Binding Theme, Mode=OneWay, Converter={StaticResource EqualityToBool}, ConverterParameter=Dark}" />
+        </MenuItem>
+        <MenuItem Header="Font _Larger" InputGestureText="Ctrl+Plus" Command="{Binding FontBiggerCommand}" />
+        <MenuItem Header="Font S_maller" InputGestureText="Ctrl+Minus" Command="{Binding FontSmallerCommand}" />
+        <Separator />
+        <MenuItem Header="_Statistics" Command="{Binding StatisticsCommand}" />
+      </MenuItem>
+      <MenuItem Header="_Tools">
+        <MenuItem Header="Request _Composer" Command="{Binding OpenComposerEmptyCommand}" />
+        <MenuItem Header="Send Selected to Composer" InputGestureText="Ctrl+R" Command="{Binding SelectedSession.SendToComposerCommand}" />
+        <Separator />
+        <MenuItem Header="_Offline Mode" IsCheckable="True" IsChecked="{Binding OfflineMode}" />
+        <MenuItem Header="_Settings…" Command="{Binding ShowSettingsCommand}" />
+      </MenuItem>
+      <MenuItem Header="_Help">
+        <MenuItem Header="Filter Syntax" Click="OnFilterHelp" />
+        <MenuItem Header="Keyboard Shortcuts" Click="OnShortcutHelp" />
+        <MenuItem Header="_About HarLens" Command="{Binding ShowAboutCommand}" />
+      </MenuItem>
+    </Menu>
+
+    <StatusBar DockPanel.Dock="Bottom" AutomationProperties.Name="Status bar">
+      <StatusBarItem>
+        <TextBlock Text="{Binding StatusText}" TextTrimming="CharacterEllipsis" />
+      </StatusBarItem>
+      <Separator />
+      <StatusBarItem>
+        <TextBlock Text="{Binding SelectedSession.FilterStatus}" />
+      </StatusBarItem>
+      <StatusBarItem>
+        <TextBlock Text="{Binding SelectedSession.SelectionSummary}" />
+      </StatusBarItem>
+      <StatusBarItem HorizontalAlignment="Right">
+        <StackPanel Orientation="Horizontal">
+          <TextBlock Text="Secrets masked   " Visibility="{Binding MaskSecrets, Converter={StaticResource BoolToVisibility}}" />
+          <TextBlock Text="Offline Mode" FontWeight="SemiBold" Visibility="{Binding OfflineMode, Converter={StaticResource BoolToVisibility}}"
+                     ToolTip="Offline Mode is on: nothing in HarLens can use the network." />
+          <TextBlock Text="Online: composer may send" Foreground="{DynamicResource Status4xxForeground}"
+                     Visibility="{Binding OfflineMode, Converter={StaticResource InverseBoolToVisibility}}" />
+        </StackPanel>
+      </StatusBarItem>
+    </StatusBar>
+
+    <Grid>
+      <TabControl x:Name="Tabs" ItemsSource="{Binding Sessions}" SelectedItem="{Binding SelectedSession}"
+                  AutomationProperties.Name="Open sessions">
+        <TabControl.ItemTemplate>
+          <DataTemplate DataType="{x:Type vm:SessionViewModel}">
+            <StackPanel Orientation="Horizontal" ToolTip="{Binding Session.FilePath}">
+              <TextBlock Text="{Binding Title}" MaxWidth="260" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" />
+              <TextBlock Text=" •" Visibility="{Binding HasUnsavedChanges, Converter={StaticResource BoolToVisibility}}" VerticalAlignment="Center" />
+              <Button Content="✕" Margin="6,0,0,0" Padding="4,0" MinWidth="0" MinHeight="0" FontSize="10" Background="Transparent" BorderThickness="0"
+                      Command="{Binding DataContext.CloseTabCommand, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}"
+                      AutomationProperties.Name="Close tab" ToolTip="Close (Ctrl+W)" />
+            </StackPanel>
+          </DataTemplate>
+        </TabControl.ItemTemplate>
+        <TabControl.ContentTemplate>
+          <DataTemplate DataType="{x:Type vm:SessionViewModel}">
+            <views:SessionView />
+          </DataTemplate>
+        </TabControl.ContentTemplate>
+      </TabControl>
+      <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center"
+                  Visibility="{Binding Sessions.Count, Converter={StaticResource InverseBoolToVisibility}}">
+        <TextBlock Text="Open a HAR file (Ctrl+O) or drop files here." FontSize="16" HorizontalAlignment="Center" />
+        <TextBlock Text="HAR 1.1 and 1.2, .har.gz, and .saz session archives. Nothing is sent anywhere."
+                   Foreground="{DynamicResource MutedForeground}" HorizontalAlignment="Center" Margin="0,6,0,0" />
+        <Button Content="Open…" Command="{Binding OpenCommand}" HorizontalAlignment="Center" Margin="0,14,0,0" Padding="18,4" />
+      </StackPanel>
+    </Grid>
+  </DockPanel>
+</Window>
