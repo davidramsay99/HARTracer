@@ -6,7 +6,7 @@ Free code signing provided by [SignPath.io](https://about.signpath.io), certific
 ## What is signed
 
 Only release builds of HARborer: `HARborer.exe` and the `HARborer-setup-*.exe` installers attached to
-[GitHub Releases](https://github.com/davidramsay99/HARTracer/releases). They are built by the GitHub Actions workflow
+[GitHub Releases](https://github.com/davidramsay99/HARborer/releases). They are built by the GitHub Actions workflow
 in `.github/workflows/build.yml` from the source at a tagged commit in this public repository. Nothing built
 elsewhere, and no third-party binary, is submitted for signing.
 

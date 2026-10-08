@@ -86,7 +86,7 @@ jobs:
           path: TestResults
 
   # A pushed v* tag publishes a GitHub Release with fixed file names, so
-  # https://github.com/davidramsay99/HARTracer/releases/latest/download/HARborer-setup-x64.exe stays valid.
+  # https://github.com/davidramsay99/HARborer/releases/latest/download/HARborer-setup-x64.exe stays valid.
   release:
     if: startsWith(github.ref, 'refs/tags/v')
     needs: build

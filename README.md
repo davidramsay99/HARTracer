@@ -42,6 +42,19 @@ Keyboard: `Ctrl+O` open, `Ctrl+W` close tab, `Ctrl+S` save, `Ctrl+F` find in vie
 
 Command line: `HARborer.exe <file.har> [--filter "<expr>"]`.
 
+## Install
+
+1. Go to the [Releases](https://github.com/davidramsay99/HARborer/releases) page.
+2. Under the latest release, open **Assets** and download **`HARborer-setup-x64.exe`**. Use `HARborer-setup-arm64.exe`
+   only on an ARM-based PC, such as a Snapdragon laptop.
+3. Run it. If Windows shows "Windows protected your PC", choose **More info**, then **Run anyway** (the installer is
+   not yet code-signed). Choose **Install for me only**; no administrator rights are needed.
+4. Start HARborer from the Start menu. To open `.har` files by double-clicking, right-click one, choose
+   **Open with > HARborer**, and tick **Always use this app**.
+
+`HARborer-win-x64.zip` is a portable copy: unzip it anywhere and run `HARborer.exe`, nothing is installed. Uninstall
+the installed version from Settings > Apps. Code signing: see [CODE_SIGNING_POLICY.md](CODE_SIGNING_POLICY.md).
+
 ## Build
 
 Requires the .NET 10 SDK. On Windows:
@@ -125,15 +138,6 @@ Not yet measured: cold start to an interactive window, and scrolling 200,000 row
 
 1. **h2c**: offer prior-knowledge HTTP/2 over plain http, or keep the HTTP/1.1 fallback?
 2. **Password-protected SAZ**: support needs a zip AES decoder, a new dependency.
-
-## Download
-
-Latest installer (Windows x64, no administrator rights needed):
-<https://github.com/davidramsay99/HARTracer/releases/latest/download/HARborer-setup-x64.exe>. ARM64 installers and
-portable zips are on the [Releases](https://github.com/davidramsay99/HARTracer/releases) page. Pushing a `v*` tag
-builds, tests and publishes a release.
-
-Code signing: see [CODE_SIGNING_POLICY.md](CODE_SIGNING_POLICY.md).
 
 ## License
 
