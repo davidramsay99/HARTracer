@@ -6,10 +6,10 @@ feed="${1:-nuget-offline}"
 cache="$root/.nuget-vendor-cache"
 export DOTNET_CLI_TELEMETRY_OPTOUT=1 DOTNET_NOLOGO=1
 cd "$root"
-dotnet restore HarLens.sln --locked-mode --packages "$cache"
+dotnet restore Harborer.sln --locked-mode --packages "$cache"
 for rid in win-x64 win-arm64; do
   scratch="$(mktemp -d)"
-  dotnet publish src/HarLens.App -c Release -r "$rid" --self-contained true -p:PublishSingleFile=true \
+  dotnet publish src/Harborer.App -c Release -r "$rid" --self-contained true -p:PublishSingleFile=true \
     -p:IncludeNativeLibrariesForSelfExtract=true --packages "$cache" -o "$scratch"
   rm -rf "$scratch"
 done

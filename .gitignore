@@ -12,3 +12,4 @@ tests/fixtures/generated/
 *.binlog
 .claude/worktrees/
 .nuget-vendor-cache/
+__pycache__/

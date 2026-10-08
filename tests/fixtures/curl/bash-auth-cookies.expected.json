@@ -7,7 +7,7 @@
     "url": "https://secure.example.com/admin",
     "headers": [
       { "name": "Authorization", "value": "Basic YWRtaW46cEBzczp3b3Jk" },
-      { "name": "User-Agent", "value": "HarLensTest/1.0" },
+      { "name": "User-Agent", "value": "HARborerTest/1.0" },
       { "name": "Referer", "value": "https://ref.example.com/" },
       { "name": "Cookie", "value": "a=1;b=2" },
       { "name": "X-Trace", "value": "on" }

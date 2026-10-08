@@ -18,10 +18,10 @@
     <EnableSingleFileAnalyzer>false</EnableSingleFileAnalyzer>
     <EnableTrimAnalyzer>false</EnableTrimAnalyzer>
     <EnableAotAnalyzer>false</EnableAotAnalyzer>
-    <Company>HarLens</Company>
-    <Product>HarLens</Product>
-    <Version>1.0.0</Version>
-    <Copyright>Copyright (c) 2026 the HarLens authors</Copyright>
+    <Company>HARborer</Company>
+    <Product>HARborer</Product>
+    <Version>1.0.2</Version>
+    <Copyright>Copyright (c) 2026 the HARborer authors</Copyright>
   </PropertyGroup>
 
   <!-- Projects that must not touch the network opt in with EnforceLocalOnly=true. -->

@@ -1,0 +1,16 @@
+N:System.Net.Http;only Harborer.Net may use the network
+N:System.Net.Sockets;only Harborer.Net may use the network
+N:System.Net.WebSockets;only Harborer.Net may use the network
+T:System.Net.Dns;only Harborer.Net may use the network
+N:System.Net.NetworkInformation;only Harborer.Net may use the network
+N:System.Net.Security;only Harborer.Net may use the network
+N:System.Net.Quic;only Harborer.Net may use the network
+N:System.Net.Mail;only Harborer.Net may use the network
+T:System.Net.WebClient;only Harborer.Net may use the network
+T:System.Net.WebRequest;only Harborer.Net may use the network
+T:System.Net.HttpWebRequest;only Harborer.Net may use the network
+T:System.Net.FtpWebRequest;only Harborer.Net may use the network
+T:System.Net.FileWebRequest;only Harborer.Net may use the network
+T:System.Net.HttpListener;only Harborer.Net may use the network
+T:System.Net.ServicePointManager;only Harborer.Net may use the network
+T:System.Net.WebProxy;only Harborer.Net may use the network

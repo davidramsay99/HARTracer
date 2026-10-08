@@ -1,22 +1,22 @@
-# HarLens
+# HARborer
 
 A local Windows viewer for HAR (HTTP Archive) files, with a session list beside a request and response inspector,
 and a request composer that imports, edits, sends and exports cURL commands.
 
 ## Local only
 
-HarLens initiates no network traffic of its own: no telemetry, update check, crash upload, remote fonts or online
+HARborer initiates no network traffic of its own: no telemetry, update check, crash upload, remote fonts or online
 help. The Request Composer is the only code that can open a socket, only when you press Send, and only to the host you
-typed. **Offline Mode is on at first run**; while it is on, Send is disabled and the network assembly (`HarLens.Net`)
-is never loaded. HTML bodies are shown as text; there is no embedded browser. State lives in `%LOCALAPPDATA%\HarLens\`,
+typed. **Offline Mode is on at first run**; while it is on, Send is disabled and the network assembly (`Harborer.Net`)
+is never loaded. HTML bodies are shown as text; there is no embedded browser. State lives in `%LOCALAPPDATA%\HARborer\`,
 or in a `data\` folder beside the exe when a `portable.flag` file sits next to it.
 
 This is enforced, not just intended:
 
-- `HarLens.Core` and `HarLens.App` fail to build if they use `System.Net.Http`, `Sockets`, `WebSockets`, `Dns`,
+- `Harborer.Core` and `Harborer.App` fail to build if they use `System.Net.Http`, `Sockets`, `WebSockets`, `Dns`,
   `NetworkInformation` and related types (BannedApiAnalyzers, `RS0030` as an error). A test adds such a call and
   checks the build fails.
-- A test opens every fixture, filters, searches, inspects and exports, then checks `HarLens.Net.dll` is not in
+- A test opens every fixture, filters, searches, inspects and exports, then checks `Harborer.Net.dll` is not in
   `AppDomain.CurrentDomain.GetAssemblies()`.
 
 ## What it does
@@ -40,7 +40,7 @@ Keyboard: `Ctrl+O` open, `Ctrl+W` close tab, `Ctrl+S` save, `Ctrl+F` find in vie
 `Ctrl+L` filter, `Esc` clear filter, `Ctrl+C` copy URL, `Ctrl+Shift+C` copy as cURL, `Ctrl+R` send to composer,
 `Ctrl+Enter` send, `F6` cycle panes, `Ctrl+Plus`/`Ctrl+Minus` font size.
 
-Command line: `HarLens.exe <file.har> [--filter "<expr>"]`.
+Command line: `HARborer.exe <file.har> [--filter "<expr>"]`.
 
 ## Build
 
@@ -50,17 +50,17 @@ Requires the .NET 10 SDK. On Windows:
 dotnet restore --locked-mode
 dotnet build -c Release -warnaserror
 dotnet test  -c Release
-dotnet publish src/HarLens.App -c Release -r win-x64 --self-contained true `
+dotnet publish src/Harborer.App -c Release -r win-x64 --self-contained true `
   -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true
 ```
 
-`scripts/package.ps1` does all of that for win-x64 and win-arm64 and writes zips with `HarLens.exe`, `LICENSE` and
+`scripts/package.ps1` does all of that for win-x64 and win-arm64 and writes zips with `HARborer.exe`, `LICENSE` and
 `THIRD-PARTY-NOTICES.txt` to `artifacts/`.
 
-`installer/HarLens.iss` (Inno Setup 6 or later) turns that output into a per-user installer, no administrator rights
-needed: `iscc /DArch=x64 installer\HarLens.iss` writes `artifacts\HarLens-<version>-x64-setup.exe`. It installs to
-`%LOCALAPPDATA%\Programs\HarLens`, adds a Start menu entry, optionally adds HarLens to "Open with" for `.har` files,
-and registers an uninstaller under Settings > Apps. Settings and history in `%LOCALAPPDATA%\HarLens` are kept on
+`installer/Harborer.iss` (Inno Setup 6 or later) turns that output into a per-user installer, no administrator rights
+needed: `iscc /DArch=x64 installer\Harborer.iss` writes `artifacts\HARborer-<version>-x64-setup.exe`. It installs to
+`%LOCALAPPDATA%\Programs\HARborer`, adds a Start menu entry, optionally adds HARborer to "Open with" for `.har` files,
+and registers an uninstaller under Settings > Apps. Settings and history in `%LOCALAPPDATA%\HARborer` are kept on
 uninstall. CI builds both installers and checks a silent install and uninstall.
 
 Offline builds: run `scripts/vendor-packages.ps1` once on a connected machine to fill `./nuget-offline/`, then
@@ -68,10 +68,10 @@ Offline builds: run `scripts/vendor-packages.ps1` once on a connected machine to
 the only point at which a build uses the internet.
 
 Large-file checks (100 MB load time, 200,000-entry filter time, 1 GB working set) generate their fixtures at test
-time and run when `HARLENS_LARGE_TESTS=1`:
+time and run when `HARBORER_LARGE_TESTS=1`:
 
 ```powershell
-$env:HARLENS_LARGE_TESTS = "1"; dotnet test tests/HarLens.Core.Tests -c Release --filter "FullyQualifiedName~Performance"
+$env:HARBORER_LARGE_TESTS = "1"; dotnet test tests/Harborer.Core.Tests -c Release --filter "FullyQualifiedName~Performance"
 ```
 
 On Linux and macOS, Core, Net and the isolation tests run normally; the WPF app and its UI smoke test build (with
@@ -80,9 +80,9 @@ On Linux and macOS, Core, Net and the isolation tests run normally; the WPF app 
 ## Layout
 
 ```
-src/HarLens.Core   HAR model, streaming parser, index, filter, search, sanitizer, cURL, compare, SAZ. No UI, no network.
-src/HarLens.Net    Request engine: the only assembly that uses System.Net.*
-src/HarLens.App    WPF shell, views, view models
+src/Harborer.Core   HAR model, streaming parser, index, filter, search, sanitizer, cURL, compare, SAZ. No UI, no network.
+src/Harborer.Net    Request engine: the only assembly that uses System.Net.*
+src/Harborer.App    WPF shell, views, view models
 tests/             Core, Net, Isolation, App (Windows UI smoke) tests; fixtures/ (synthetic only)
 scripts/           vendor-packages, package, fixture and notices generators
 ```
@@ -104,7 +104,7 @@ Python 3 is needed only to regenerate committed files (`scripts/fixtures/make_fi
   the URL host. Connect overrides (`--resolve`, `--connect-to`) keep the URL host in both.
 - HTTP/2 over plain http (h2c) falls back to HTTP/1.1 with a notice. HTTP/3 is never attempted.
 - Password-protected `.saz` archives are reported as unsupported.
-- The exe is unsigned. Third-party antivirus can delay start and file opening until HarLens is excluded.
+- The exe is unsigned. Third-party antivirus can delay start and file opening until HARborer is excluded.
 - On Windows 10 the Fluent theme may render differently from Windows 11.
 
 ## Verification
@@ -126,11 +126,20 @@ Not yet measured: cold start to an interactive window, and scrolling 200,000 row
 1. **h2c**: offer prior-knowledge HTTP/2 over plain http, or keep the HTTP/1.1 fallback?
 2. **Password-protected SAZ**: support needs a zip AES decoder, a new dependency.
 
+## Download
+
+Latest installer (Windows x64, no administrator rights needed):
+<https://github.com/davidramsay99/HARTracer/releases/latest/download/HARborer-setup-x64.exe>. ARM64 installers and
+portable zips are on the [Releases](https://github.com/davidramsay99/HARTracer/releases) page. Pushing a `v*` tag
+builds, tests and publishes a release.
+
+Code signing: see [CODE_SIGNING_POLICY.md](CODE_SIGNING_POLICY.md).
+
 ## License
 
 Copyright (C) 2026 davidramsay99
 
-HarLens is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License
+HARborer is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License
 as published by the Free Software Foundation, version 3 or (at your option) any later version. It is distributed in
 the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 FITNESS FOR A PARTICULAR PURPOSE. See [LICENSE](LICENSE) for the full text.

@@ -1,7 +1,7 @@
-HarLens third-party notices
+HARborer third-party notices
 ===========================
 
-HarLens.exe is a self-contained .NET application. It includes the components
+HARborer.exe is a self-contained .NET application. It includes the components
 listed below. Build-time and test-time packages (Microsoft.CodeAnalysis.BannedApiAnalyzers,
 xunit, xunit.runner.visualstudio, Microsoft.NET.Test.Sdk) are not shipped.
 
